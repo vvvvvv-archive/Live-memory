@@ -8,53 +8,79 @@
     body {
       margin: 0;
       font-family: "Helvetica Neue", Arial, sans-serif;
-      background: #f7f3ee;
-      color: #2f2f2f;
+      background: #f6f4f0;
+      color: #2b2b2b;
       line-height: 1.8;
     }
     header {
-      padding: 48px 20px;
+      padding: 72px 20px 56px;
       text-align: center;
-      background: #ffffff;
-      border-bottom: 1px solid #e5ded6;
+      background: linear-gradient(180deg, #ffffff 0%, #f6f4f0 100%);
+    }
+    .logo-small {
+      letter-spacing: 0.28em;
+      color: #6f7fa8;
+      font-weight: bold;
+      margin-bottom: 8px;
     }
     h1 {
       margin: 0;
-      font-size: 2.4rem;
+      font-size: 2.6rem;
       letter-spacing: 0.08em;
     }
     .subtitle {
-      margin-top: 12px;
-      color: #777;
+      margin-top: 16px;
+      color: #666;
+      font-size: 1rem;
     }
     main {
-      max-width: 900px;
-      margin: 32px auto;
+      max-width: 920px;
+      margin: 0 auto 48px;
       padding: 0 20px;
+    }
+    .lead {
+      text-align: center;
+      font-size: 1.15rem;
+      margin: 32px auto;
+      max-width: 680px;
     }
     .card {
       background: #ffffff;
-      border: 1px solid #e5ded6;
-      border-radius: 18px;
-      padding: 24px;
-      margin-bottom: 20px;
+      border: 1px solid #e4ddd4;
+      border-radius: 22px;
+      padding: 28px;
+      margin-bottom: 22px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.04);
     }
-    .nav-grid {
+    h2 {
+      margin-top: 0;
+      color: #3d4f7c;
+    }
+    .archive-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
       gap: 16px;
     }
-    a {
-      color: #4f5f8f;
+    .archive-link {
+      display: block;
+      padding: 18px;
+      border-radius: 16px;
+      background: #f7f8fb;
+      border: 1px solid #dfe4f0;
+      color: #3d4f7c;
       text-decoration: none;
       font-weight: bold;
     }
-    a:hover {
-      text-decoration: underline;
+    .archive-link:hover {
+      background: #eef2fb;
+    }
+    .notice {
+      font-size: 0.95rem;
+      color: #666;
     }
     footer {
       text-align: center;
-      padding: 32px 20px;
+      padding: 36px 20px;
       color: #888;
       font-size: 0.9rem;
     }
@@ -62,40 +88,52 @@
 </head>
 <body>
   <header>
-    <h1>V6 LIVE MEMORY</h1>
-    <p class="subtitle">V6と、V6から続く人たちのライブ記憶アーカイブ</p>
+    <div class="logo-small">V6</div>
+    <h1>LIVE MEMORY</h1>
+    <p class="subtitle">A fan archive preserving the memories of V6.</p>
   </header>
 
   <main>
-    <section class="card">
-      <h2>このサイトについて</h2>
+    <section class="lead">
       <p>
-        V6、20th Century、Coming Century、そして6人それぞれの活動にまつわる
-        ライブ・舞台・イベントの記憶を残していくための場所です。
+        ライブは終わっても、<br>
+        その日の記憶は終わらない。
       </p>
       <p>
-        セットリスト、曲ごとの感想、MC、ファンサ、会場の空気、個人的な思い出。
-        ひとつひとつの記憶を、未来に残していきます。
+        あの日聴いた音。交わした笑顔。思わず笑ったMC。<br>
+        客席の空気。「この瞬間を忘れたくない」気持ち。
+      </p>
+      <p>
+        V6と、V6から続く人たちの記憶を、未来へ残すためのアーカイブです。
       </p>
     </section>
 
     <section class="card">
-      <h2>アーカイブ</h2>
-      <div class="nav-grid">
-        <a href="#">V6</a>
-        <a href="#">20th Century</a>
-        <a href="#">Coming Century</a>
-        <a href="#">Individual</a>
+      <h2>Archive</h2>
+      <div class="archive-grid">
+        <a class="archive-link" href="#">V6</a>
+        <a class="archive-link" href="#">20th Century</a>
+        <a class="archive-link" href="#">Coming Century</a>
+        <a class="archive-link" href="#">Individual</a>
       </div>
     </section>
 
     <section class="card">
-      <h2>最初に作成予定のページ</h2>
+      <h2>First Archive</h2>
       <p>
-        20th Century Live Tour 2026 ～唄う人 踊る人～
+        まずは、<strong>20th Century Live Tour 2026 ～唄う人 踊る人～</strong> のページを作成します。
       </p>
       <p>
-        日程ごとに、セットリスト・曲ごとの感想・MC・ファンサ・その他の思い出を整理していく予定です。
+        公演日ごとに、セットリスト、曲ごとの感想、MC、ファンサ、その他の思い出を整理していきます。
+      </p>
+    </section>
+
+    <section class="card">
+      <h2>Guideline</h2>
+      <p class="notice">
+        このサイトは、ファンそれぞれの記憶や感想を残すための場所です。
+        歌詞、映像、音声、雑誌・公式文章、他の方のレポートの無断転載は避け、
+        ご自身の言葉で記録していくことを大切にします。
       </p>
     </section>
   </main>
