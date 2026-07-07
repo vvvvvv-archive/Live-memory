@@ -27,6 +27,8 @@
 </div>
 
 <div id="giscus-container">
+  <nav class="song-navigation" id="song-navigation">
+</nav>
 
 <p style="text-align:center;color:#888;">
 思い出機能を準備中…
@@ -96,6 +98,45 @@ ${song.title}
 document.getElementById("song-title").textContent=song.title;
 
 document.getElementById("song-artist").textContent=song.artist;
+  const nav=document.getElementById("song-navigation");
+
+const songs=setlist.songs;
+
+const index=songs.findIndex(s=>s.order===order);
+
+let html="";
+
+if(index>0){
+
+const prev=songs[index-1];
+
+html+=`
+<a href="song.html?group=${groupId}&live=${liveId}&performance=${performanceId}&setlist=${setlist.id}&order=${prev.order}">
+← ${prev.title}
+</a>
+`;
+
+}
+
+html+=`
+<a href="performance.html?group=${groupId}&live=${liveId}&performance=${performanceId}">
+公演へ戻る
+</a>
+`;
+
+if(index<songs.length-1){
+
+const next=songs[index+1];
+
+html+=`
+<a href="song.html?group=${groupId}&live=${liveId}&performance=${performanceId}&setlist=${setlist.id}&order=${next.order}">
+${next.title} →
+</a>
+`;
+
+}
+
+nav.innerHTML=html;
 
 }
 
