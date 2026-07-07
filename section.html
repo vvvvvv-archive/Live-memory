@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>V6 LIVE MEMORY</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+  <main>
+    <nav class="breadcrumb" id="breadcrumb"></nav>
+
+    <section class="lead-card">
+      <h1 id="section-title"></h1>
+      <p id="section-description"></p>
+    </section>
+
+    <section class="search-card">
+      <label for="section-search">このページの思い出を探す</label>
+      <input id="section-search" type="search" placeholder="曲名・メンバー名・言葉で探す">
+    </section>
+
+    <section class="section-block" id="content"></section>
+  </main>
+
+  <footer>
+    V6 LIVE MEMORY
+  </footer>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const groupId = params.get("group");
+    const liveId = params.get("live");
+    const sectionId = params.get("section");
+
+    async function loadJson(path) {
+      const response = await fetch(path);
+      return response.json();
+    }
+
+    function createCard(title, subtitle, href) {
+      const a = document.createElement("a");
+      a.className = "archive-card";
+      a.href = href;
+      a.innerHTML = `
+        <h3>${title}</h3>
+        <p>${subtitle}</p>
+      `;
+      return a;
+    }
+
+    async function init() {
+      const groups = await loadJson("data/groups.json");
+      const group = groups.find(g => g.id === groupId);
+      const live = await loadJson(`data/lives/${groupId}/${liveId}.json`);
+      const section = live.sections.find(s => s.id === sectionId);
+
+      document.title = `${section.label} | ${live.title} | V6 LIVE MEMORY`;
+
+      document.getElementById("breadcrumb").innerHTML = `
+        <a href="index.html">HOME</a> &gt;
+        <a href="group.html?id=${group.id}">${group.name}</a> &gt;
+        <a href="live.html?group=${group.id}&live=${live.id}">${live.title}</a> &gt;
+        ${section.label}
+      `;
+
+      document.getElementById("section-title").textContent = section.label;
+      document.getElementById("section-description").textContent = section.description;
+
+      const content = document.getElementById("content");
+
+      if (sectionId === "schedule") {
+        const heading = document.createElement("div");
+        heading.className = "section-heading";
+        heading.innerHTML = `
+          <h2>公演一覧</h2>
+          <p>${live.performances.length}公演</p>
+        `;
+        content.appendChild(heading);
+
+        const grid = document.createElement("div");
+        grid.className = "archive-grid";
+
+        live.performances.forEach(performance => {
+          const title = `${performance.date} ${performance.time}`;
+          const subtitle = `[${performance.area}] ${performance.venue}`;
+          const href = `performance.html?group=${groupId}&live=${liveId}&performance=${performance.id}`;
+          grid.appendChild(createCard(title, subtitle, href));
+        });
+
+        content.appendChild(grid);
+      }
+
+      if (sectionId === "general") {
+        content.innerHTML = `
+          <div class="text-card">
+            <p>ツアー全体の思い出を残す場所です。</p>
+            <button class="button" type="button" disabled>記録する</button>
+            <p class="small-note">※思い出の記録機能は今後実装予定です。</p>
+          </div>
+        `;
+      }
+
+      if (sectionId === "video") {
+        content.innerHTML = `
+          <div class="text-card">
+            <p>映像・円盤で見た思い出を残す場所です。</p>
+            <button class="button" type="button" disabled>記録する</button>
+            <p class="small-note">※セットリストと思い出の記録機能は今後実装予定です。</p>
+          </div>
+        `;
+      }
+
+      if (sectionId === "goods") {
+        content.innerHTML = `
+          <div class="text-card">
+            <p>このライブで発売されたグッズの情報と思い出を集める場所です。</p>
+            <button class="button" type="button" disabled>グッズ情報を教える</button>
+            <button class="button" type="button" disabled>記録する</button>
+            <p class="small-note">※グッズ情報募集と思い出の記録機能は今後実装予定です。</p>
+          </div>
+        `;
+      }
+    }
+
+    init();
+  </script>
+</body>
+</html>
