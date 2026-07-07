@@ -11,15 +11,15 @@
   <main>
     <nav class="breadcrumb" id="breadcrumb"></nav>
 
-    <section class="search-card">
-      <label for="live-search">このライブの思い出を探す</label>
-      <input id="live-search" type="search" placeholder="曲名・メンバー名・言葉で探す">
-    </section>
-
     <section class="lead-card">
       <h1 id="live-year"></h1>
       <h2 id="live-title"></h2>
       <p id="official-link"></p>
+    </section>
+
+    <section class="search-card">
+      <label for="live-search">このライブの思い出を探す</label>
+      <input id="live-search" type="search" placeholder="曲名・メンバー名・言葉で探す">
     </section>
 
     <section class="section-block">
@@ -44,7 +44,6 @@
     async function init() {
       const groups = await loadJson("data/groups.json");
       const group = groups.find(g => g.id === groupId);
-
       const live = await loadJson(`data/lives/${groupId}/${liveId}.json`);
 
       document.title = `${live.title} | V6 LIVE MEMORY`;
@@ -68,14 +67,30 @@
       const sectionLinks = document.getElementById("section-links");
 
       live.sections.forEach(section => {
-        const a = document.createElement("a");
-        a.className = "archive-card";
-        a.href = `section.html?group=${groupId}&live=${liveId}&section=${section.id}`;
-        a.innerHTML = `
+        const card = document.createElement("a");
+        card.className = "archive-card";
+        card.href = `section.html?group=${groupId}&live=${liveId}&section=${section.id}`;
+
+        let subText = section.description;
+
+        if (section.id === "schedule") {
+          subText = `${live.performances.length}公演`;
+        }
+
+        if (section.id === "goods") {
+          subText = `登録グッズ ${live.goods.length}件`;
+        }
+
+        if (section.id === "video") {
+          subText = "映像作品の思い出";
+        }
+
+        card.innerHTML = `
           <h3>${section.label}</h3>
-          <p>${section.description}</p>
+          <p>${subText}</p>
         `;
-        sectionLinks.appendChild(a);
+
+        sectionLinks.appendChild(card);
       });
     }
 
