@@ -4,67 +4,82 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>LIVE | V6 LIVE MEMORY</title>
+  <link rel="stylesheet" href="css/style.css">
 </head>
+
 <body>
-  <nav id="breadcrumb"></nav>
+  <main>
+    <nav class="breadcrumb" id="breadcrumb"></nav>
 
-  <input type="search" placeholder="曲名・メンバー名・言葉で検索">
+    <section class="search-card">
+      <label for="live-search">このライブの思い出を探す</label>
+      <input id="live-search" type="search" placeholder="曲名・メンバー名・言葉で探す">
+    </section>
 
-  <h1 id="year"></h1>
-  <h2 id="title"></h2>
+    <section class="lead-card">
+      <h1 id="live-year"></h1>
+      <h2 id="live-title"></h2>
+      <p id="official-link"></p>
+    </section>
 
-  <p id="official-link"></p>
+    <section class="section-block">
+      <div class="archive-grid" id="section-links"></div>
+    </section>
+  </main>
 
-  <hr>
-
-  <ul>
-    <li><a id="general-link">総合</a></li>
-    <li><a id="schedule-link">公演日程</a></li>
-    <li><a id="video-link">映像・円盤</a></li>
-    <li><a id="goods-link">グッズ</a></li>
-  </ul>
+  <footer>
+    V6 LIVE MEMORY
+  </footer>
 
   <script>
     const params = new URLSearchParams(window.location.search);
     const groupId = params.get("group");
     const liveId = params.get("live");
 
-    fetch("data/archive.json")
-      .then(response => response.json())
-      .then(data => {
-        const group = data.groups.find(g => g.id === groupId);
-        const live = group.sections.live.find(l => l.id === liveId);
+    async function loadJson(path) {
+      const response = await fetch(path);
+      return response.json();
+    }
 
-        document.title = `${live.title} | V6 LIVE MEMORY`;
+    async function init() {
+      const groups = await loadJson("data/groups.json");
+      const group = groups.find(g => g.id === groupId);
 
-        document.getElementById("breadcrumb").innerHTML = `
-          <a href="index.html">HOME</a> &gt;
-          <a href="${group.id}.html">${group.name}</a> &gt;
-          LIVE &gt;
-          ${live.year} ${live.title}
+      const live = await loadJson(`data/lives/${groupId}/${liveId}.json`);
+
+      document.title = `${live.title} | V6 LIVE MEMORY`;
+
+      document.getElementById("breadcrumb").innerHTML = `
+        <a href="index.html">HOME</a> &gt;
+        <a href="group.html?id=${group.id}">${group.name}</a> &gt;
+        ${live.type} &gt;
+        ${live.title}
+      `;
+
+      document.getElementById("live-year").textContent = live.year;
+      document.getElementById("live-title").textContent = live.title;
+
+      document.getElementById("official-link").innerHTML = `
+        <a href="${live.officialUrl}" target="_blank" rel="noopener">
+          公式サイトで確認する
+        </a>
+      `;
+
+      const sectionLinks = document.getElementById("section-links");
+
+      live.sections.forEach(section => {
+        const a = document.createElement("a");
+        a.className = "archive-card";
+        a.href = `section.html?group=${groupId}&live=${liveId}&section=${section.id}`;
+        a.innerHTML = `
+          <h3>${section.label}</h3>
+          <p>${section.description}</p>
         `;
-
-        document.getElementById("year").textContent = live.year;
-        document.getElementById("title").textContent = live.title;
-
-        document.getElementById("official-link").innerHTML = `
-          <a href="${live.officialUrl}" target="_blank" rel="noopener">
-            公式サイトで確認する
-          </a>
-        `;
-
-        document.getElementById("general-link").href =
-          `live-section.html?group=${group.id}&live=${live.id}&section=general`;
-
-        document.getElementById("schedule-link").href =
-          `live-section.html?group=${group.id}&live=${live.id}&section=schedule`;
-
-        document.getElementById("video-link").href =
-          `live-section.html?group=${group.id}&live=${live.id}&section=video`;
-
-        document.getElementById("goods-link").href =
-          `live-section.html?group=${group.id}&live=${live.id}&section=goods`;
+        sectionLinks.appendChild(a);
       });
+    }
+
+    init();
   </script>
 </body>
 </html>
