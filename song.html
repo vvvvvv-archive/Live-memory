@@ -26,21 +26,8 @@
 <p>この公演のこの曲について思い出を記録できます。</p>
 </div>
 
-<script src="https://giscus.app/client.js"
-        data-repo="ibitsu10/V6-Live-memory"
-        data-repo-id="R_kgDOTPl_LQ"
-        data-category="Memory"
-        data-category-id="DIC_kwDOTPl_Lc4DAsjk"
-        data-mapping="title"
-        data-strict="0"
-        data-reactions-enabled="1"
-        data-emit-metadata="1"
-        data-input-position="bottom"
-        data-theme="preferred_color_scheme"
-        data-lang="ja"
-        crossorigin="anonymous"
-        async>
-</script>
+<div id="giscus-container"></div>
+  
 </section>
 
 </main>
@@ -144,7 +131,29 @@ ${next.title} →
 nav.innerHTML=html;
 
 }
+  
+const memoryId =
+  `song:${groupId}:${liveId}:${performanceId}:${setlist.id}:${song.order}`;
 
+const giscus = document.createElement("script");
+
+giscus.src = "https://giscus.app/client.js";
+giscus.setAttribute("data-repo", "ibitsu10/V6-Live-memory");
+giscus.setAttribute("data-repo-id", "R_kgDOTPl_LQ");
+giscus.setAttribute("data-category", "Memory");
+giscus.setAttribute("data-category-id", "DIC_kwDOTPl_Lc4DAsjk");
+giscus.setAttribute("data-mapping", "specific");
+giscus.setAttribute("data-term", memoryId);
+giscus.setAttribute("data-strict", "0");
+giscus.setAttribute("data-reactions-enabled", "1");
+giscus.setAttribute("data-emit-metadata", "1");
+giscus.setAttribute("data-input-position", "bottom");
+giscus.setAttribute("data-theme", "preferred_color_scheme");
+giscus.setAttribute("data-lang", "ja");
+giscus.setAttribute("crossorigin", "anonymous");
+giscus.async = true;
+
+document.getElementById("giscus-container").appendChild(giscus);
 init();
 
 </script>
