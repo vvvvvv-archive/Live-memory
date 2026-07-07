@@ -24,37 +24,30 @@
     <section class="section-block">
       <div class="section-heading">
         <h2>セットリスト</h2>
-        <p>曲ごとの思い出を残す場所です。</p>
+        <p id="setlist-name"></p>
       </div>
-
-      <div class="text-card">
-        <p>セットリストは今後登録予定です。</p>
-      </div>
+      <div class="archive-grid" id="setlist"></div>
     </section>
 
     <section class="section-block">
       <div class="archive-grid">
         <a class="archive-card" href="#">
           <h3>MC</h3>
-          <p>この公演のMCの思い出</p>
+          <p>思い出を記録する</p>
         </a>
-
         <a class="archive-card" href="#">
           <h3>ファンサ</h3>
-          <p>この公演のファンサの思い出</p>
+          <p>思い出を記録する</p>
         </a>
-
         <a class="archive-card" href="#">
           <h3>その他</h3>
-          <p>この公演のその他の思い出</p>
+          <p>思い出を記録する</p>
         </a>
       </div>
     </section>
   </main>
 
-  <footer>
-    V6 LIVE MEMORY
-  </footer>
+  <footer>V6 LIVE MEMORY</footer>
 
   <script>
     const params = new URLSearchParams(window.location.search);
@@ -73,6 +66,10 @@
       const live = await loadJson(`data/lives/${groupId}/${liveId}.json`);
       const performance = live.performances.find(p => p.id === performanceId);
 
+      const setlist = live.setlists.find(s =>
+        s.performanceIds.includes(performanceId)
+      );
+
       document.title = `${performance.date} ${performance.time} | ${live.title} | V6 LIVE MEMORY`;
 
       document.getElementById("breadcrumb").innerHTML = `
@@ -88,6 +85,33 @@
 
       document.getElementById("performance-venue").textContent =
         `[${performance.area}] ${performance.venue}`;
+
+      const setlistName = document.getElementById("setlist-name");
+      const setlistContainer = document.getElementById("setlist");
+
+      if (!setlist) {
+        setlistName.textContent = "この公演のセットリストは未登録です。";
+        return;
+      }
+
+      setlistName.textContent = setlist.name;
+
+      setlist.songs.forEach(song => {
+        const card = document.createElement("a");
+        card.className = "archive-card";
+        card.href = `song.html?group=${groupId}&live=${liveId}&performance=${performanceId}&setlist=${setlist.id}&order=${song.order}`;
+
+        const sectionLabel = song.section === "encore" ? "Encore" : "";
+        const note = song.note ? ` / ${song.note}` : "";
+        const artist = song.artist ? song.artist : "";
+
+        card.innerHTML = `
+          <h3>${song.order}. ${song.title}</h3>
+          <p>${artist}${note}${sectionLabel ? " / " + sectionLabel : ""}</p>
+        `;
+
+        setlistContainer.appendChild(card);
+      });
     }
 
     init();
