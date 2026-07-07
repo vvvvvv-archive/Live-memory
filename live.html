@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LIVE | V6 LIVE MEMORY</title>
+</head>
+<body>
+  <nav id="breadcrumb"></nav>
+
+  <input type="search" placeholder="曲名・メンバー名・言葉で検索">
+
+  <h1 id="year"></h1>
+  <h2 id="title"></h2>
+
+  <p id="official-link"></p>
+
+  <hr>
+
+  <ul>
+    <li><a id="general-link">総合</a></li>
+    <li><a id="schedule-link">公演日程</a></li>
+    <li><a id="video-link">映像・円盤</a></li>
+    <li><a id="goods-link">グッズ</a></li>
+  </ul>
+
+  <script src="data.js"></script>
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const groupId = params.get("group");
+    const liveId = params.get("live");
+
+    const group = SITE_DATA.groups.find(g => g.id === groupId);
+    const live = group.sections.live.find(l => l.id === liveId);
+
+    document.title = `${live.title} | V6 LIVE MEMORY`;
+
+    document.getElementById("breadcrumb").innerHTML = `
+      <a href="index.html">HOME</a> &gt;
+      <a href="${group.id}.html">${group.name}</a> &gt;
+      LIVE &gt;
+      ${live.year} ${live.title}
+    `;
+
+    document.getElementById("year").textContent = live.year;
+    document.getElementById("title").textContent = live.title;
+
+    document.getElementById("official-link").innerHTML = `
+      <a href="${live.officialUrl}" target="_blank" rel="noopener">
+        公式サイトで確認する
+      </a>
+    `;
+
+    document.getElementById("general-link").href =
+      `live-section.html?group=${group.id}&live=${live.id}&section=general`;
+
+    document.getElementById("schedule-link").href =
+      `live-section.html?group=${group.id}&live=${live.id}&section=schedule`;
+
+    document.getElementById("video-link").href =
+      `live-section.html?group=${group.id}&live=${live.id}&section=video`;
+
+    document.getElementById("goods-link").href =
+      `live-section.html?group=${group.id}&live=${live.id}&section=goods`;
+  </script>
+</body>
+</html>
