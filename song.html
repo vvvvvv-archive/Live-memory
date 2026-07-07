@@ -27,7 +27,7 @@
 </div>
 
 <div id="giscus-container"></div>
-  
+<nav class="song-navigation" id="song-navigation"></nav>  
 </section>
 
 </main>
@@ -129,10 +129,7 @@ ${next.title} →
 }
 
 nav.innerHTML=html;
-
-}
-  
-const memoryId =
+  const memoryId =
   `song:${groupId}:${liveId}:${performanceId}:${setlist.id}:${song.order}`;
 
 const giscus = document.createElement("script");
@@ -154,6 +151,10 @@ giscus.setAttribute("crossorigin", "anonymous");
 giscus.async = true;
 
 document.getElementById("giscus-container").appendChild(giscus);
+
+}
+  
+
 init();
 
 </script>
