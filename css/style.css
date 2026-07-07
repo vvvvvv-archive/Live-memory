@@ -172,3 +172,8 @@ footer {
   color: var(--sub);
   border-top: 1px solid var(--line);
 }
+
+.lead-card h1{
+    font-size:2rem;
+    line-height:1.3;
+}
