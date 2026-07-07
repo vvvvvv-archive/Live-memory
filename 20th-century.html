@@ -29,22 +29,25 @@
     <p id="event-empty">準備中</p>
   </section>
 
-  <script src="data.js"></script>
   <script>
-    const group = SITE_DATA.groups.find(g => g.id === "20th-century");
-    const liveList = document.getElementById("live-list");
+    fetch("data/archive.json")
+      .then(response => response.json())
+      .then(data => {
+        const group = data.groups.find(g => g.id === "20th-century");
+        const liveList = document.getElementById("live-list");
 
-    group.sections.live
-      .sort((a, b) => b.year - a.year)
-      .forEach(live => {
-        const li = document.createElement("li");
-        const a = document.createElement("a");
+        group.sections.live
+          .sort((a, b) => b.year - a.year)
+          .forEach(live => {
+            const li = document.createElement("li");
+            const a = document.createElement("a");
 
-        a.href = `live.html?group=${group.id}&live=${live.id}`;
-        a.textContent = `${live.year} ${live.title}`;
+            a.href = `live.html?group=${group.id}&live=${live.id}`;
+            a.textContent = `${live.year} ${live.title}`;
 
-        li.appendChild(a);
-        liveList.appendChild(li);
+            li.appendChild(a);
+            liveList.appendChild(li);
+          });
       });
   </script>
 </body>
