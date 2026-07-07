@@ -14,19 +14,38 @@
 
   <input type="search" placeholder="曲名・メンバー名・言葉で検索">
 
-  <h2>LIVE</h2>
-  <ul>
-    <li>
-      <a href="20th-century-utauhito-odoruhito.html">
-        2026 20th Century Live Tour 2026 ～唄う人 踊る人～
-      </a>
-    </li>
-  </ul>
+  <section>
+    <h2>LIVE</h2>
+    <ul id="live-list"></ul>
+  </section>
 
-  <h2>STAGE</h2>
-  <p>準備中</p>
+  <section>
+    <h2>STAGE</h2>
+    <p id="stage-empty">準備中</p>
+  </section>
 
-  <h2>EVENT</h2>
-  <p>準備中</p>
+  <section>
+    <h2>EVENT</h2>
+    <p id="event-empty">準備中</p>
+  </section>
+
+  <script src="data.js"></script>
+  <script>
+    const group = SITE_DATA.groups.find(g => g.id === "20th-century");
+    const liveList = document.getElementById("live-list");
+
+    group.sections.live
+      .sort((a, b) => b.year - a.year)
+      .forEach(live => {
+        const li = document.createElement("li");
+        const a = document.createElement("a");
+
+        a.href = `live.html?group=${group.id}&live=${live.id}`;
+        a.textContent = `${live.year} ${live.title}`;
+
+        li.appendChild(a);
+        liveList.appendChild(li);
+      });
+  </script>
 </body>
 </html>
