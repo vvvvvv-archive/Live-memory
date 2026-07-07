@@ -177,3 +177,26 @@ footer {
     font-size:2rem;
     line-height:1.3;
 }
+.song-navigation{
+
+display:flex;
+
+justify-content:space-between;
+
+align-items:center;
+
+gap:16px;
+
+margin-top:48px;
+
+flex-wrap:wrap;
+
+}
+
+.song-navigation a{
+
+text-decoration:none;
+
+font-weight:600;
+
+}
