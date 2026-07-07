@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>V6 LIVE MEMORY</title>
+
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+<main>
+
+<nav class="breadcrumb" id="breadcrumb"></nav>
+
+<section class="lead-card">
+  <p id="song-order"></p>
+  <h1 id="song-title"></h1>
+  <p id="song-artist"></p>
+</section>
+
+<section class="section-block">
+
+<div class="section-heading">
+<h2>思い出</h2>
+<p>この公演のこの曲について思い出を記録できます。</p>
+</div>
+
+<div id="giscus-container">
+
+<p style="text-align:center;color:#888;">
+思い出機能を準備中…
+</p>
+
+</div>
+
+</section>
+
+</main>
+
+<footer>
+V6 LIVE MEMORY
+</footer>
+
+<script>
+
+const params = new URLSearchParams(location.search);
+
+const groupId=params.get("group");
+const liveId=params.get("live");
+const performanceId=params.get("performance");
+const setlistId=params.get("setlist");
+const order=Number(params.get("order"));
+
+async function loadJson(path){
+
+const r=await fetch(path);
+
+return await r.json();
+
+}
+
+async function init(){
+
+const groups=await loadJson("data/groups.json");
+
+const group=groups.find(g=>g.id===groupId);
+
+const live=await loadJson(`data/lives/${groupId}/${liveId}.json`);
+
+const performance=live.performances.find(p=>p.id===performanceId);
+
+const setlist=live.setlists.find(s=>s.id===setlistId);
+
+const song=setlist.songs.find(s=>s.order===order);
+
+document.title=`${song.title} | V6 LIVE MEMORY`;
+
+document.getElementById("breadcrumb").innerHTML=`
+<a href="index.html">HOME</a>
+&gt;
+<a href="group.html?id=${group.id}">${group.name}</a>
+&gt;
+<a href="live.html?group=${group.id}&live=${live.id}">
+${live.title}
+</a>
+&gt;
+<a href="performance.html?group=${group.id}&live=${live.id}&performance=${performance.id}">
+${performance.date} ${performance.time}
+</a>
+&gt;
+${song.title}
+`;
+
+document.getElementById("song-order").textContent=`${song.order}曲目`;
+
+document.getElementById("song-title").textContent=song.title;
+
+document.getElementById("song-artist").textContent=song.artist;
+
+}
+
+init();
+
+</script>
+
+</body>
+
+</html>
