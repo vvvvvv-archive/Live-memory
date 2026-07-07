@@ -1,0 +1,22 @@
+[
+  {
+    "id": "v6",
+    "name": "V6",
+    "types": ["LIVE", "STAGE", "EVENT"]
+  },
+  {
+    "id": "20th-century",
+    "name": "20th Century",
+    "types": ["LIVE", "STAGE", "EVENT"]
+  },
+  {
+    "id": "coming-century",
+    "name": "Coming Century",
+    "types": ["LIVE", "STAGE", "EVENT"]
+  },
+  {
+    "id": "individual",
+    "name": "Individual",
+    "types": ["LIVE", "STAGE", "EVENT"]
+  }
+]
