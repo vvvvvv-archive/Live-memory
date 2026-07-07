@@ -4,63 +4,90 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>V6 LIVE MEMORY</title>
-<link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/style.css">
 </head>
+
 <body>
-  <header>
-    <div class="logo-small">V6</div>
+  <header class="hero">
+    <p class="site-kicker">V6</p>
     <h1>LIVE MEMORY</h1>
-    <p class="subtitle">A fan archive preserving the memories of V6.</p>
+    <p class="site-copy">6人との思い出を未来へ残すアーカイブ</p>
   </header>
 
   <main>
-    <section class="lead">
+    <section class="search-card">
+      <label for="site-search">Search</label>
+      <input id="site-search" type="search" placeholder="曲名・ライブ名・言葉で検索（例：Darling、長野博、顔）">
+    </section>
+
+    <section class="lead-card">
       <p>
-        あの日受けた感動　耳に残る歌声　忘れられないあの光景　<br>
+        あの日受けた感動。耳に残る歌声。忘れられないあの光景。
       </p>
       <p>
-        6人とのかけがえのない思い出を、未来へ残すためのアーカイブです。
+        V6 LIVE MEMORY は、V6と20th Century、Coming Century、そして6人それぞれの活動にまつわる
+        ライブ・舞台・イベントの記憶を未来へ残すための、非公式ファンアーカイブです。
       </p>
+    </section>
+
+    <section class="section-block">
+      <div class="section-heading">
+        <h2>Archive</h2>
+        <p>グループ・活動ごとの本棚</p>
+      </div>
+
+      <div class="archive-grid">
+        <a class="archive-card" href="group.html?id=v6">
+          <h3>V6</h3>
+          <p>LIVE / STAGE / EVENT</p>
+        </a>
+
+        <a class="archive-card" href="group.html?id=20th-century">
+          <h3>20th Century</h3>
+          <p>LIVE / STAGE / EVENT</p>
+        </a>
+
+        <a class="archive-card" href="group.html?id=coming-century">
+          <h3>Coming Century</h3>
+          <p>LIVE / STAGE / EVENT</p>
+        </a>
+
+        <a class="archive-card" href="group.html?id=individual">
+          <h3>Individual</h3>
+          <p>坂本昌行 / 長野博 / 井ノ原快彦 / 森田剛 / 三宅健 / 岡田准一</p>
+        </a>
+      </div>
+    </section>
+
+    <section class="section-block">
+      <div class="section-heading">
+        <h2>Memory</h2>
+        <p>検索では出会えない記憶へ</p>
+      </div>
+
+      <div class="memory-card">
         <p>
-       V6 since1995~Forever
-      </p>
+          どこかのライブ、どこかの曲、誰かのひとこと。
+          偶然めくったページから、忘れていた記憶に出会えるように。
+        </p>
+        <button class="button" type="button" disabled>思い出をめくる</button>
+        <p class="small-note">※コメント実装後に使えるようにします。</p>
+      </div>
     </section>
 
-   <section class="card">
-  <h2>Archive</h2>
-  <div class="archive-grid">
-    <a class="archive-link" href="v6.html">V6</a>
+    <section class="section-block">
+      <div class="section-heading">
+        <h2>About</h2>
+        <p>このサイトについて</p>
+      </div>
 
-    <a class="archive-link" href="20th-century.html">
-      20th Century
-    </a>
-
-    <a class="archive-link" href="coming-century.html">
-      Coming Century
-    </a>
-
-    <a class="archive-link" href="individual.html">
-      Individual
-    </a>
-  </div>
-</section>
-
-    <section class="card">
-      <h2>First Archive</h2>
-      <p>
-        まずは、<strong>20th Century Live Tour 2026 ～唄う人 踊る人～</strong> のページを作成します。
-      </p>
-      <p>
-        公演日ごとに、セットリスト、曲ごとの感想、MC、ファンサ、その他の思い出を整理していきます。
-      </p>
-    </section>
-
-    <section class="card">
-      <h2>Guideline</h2>
-      <p class="notice">
-        このサイトは、ファンそれぞれの記憶や感想を残すための場所です。
-        他の方のレポートの無断転載は避け、ご自身の言葉で思い出を綴ってください。
-      </p>
+      <div class="text-card">
+        <p>
+          このサイトは公式情報をまとめる場所ではなく、ファンそれぞれの記憶や感想を残すための場所です。
+          歌詞、映像、音声、雑誌・公式文章、他の方のレポートの無断転載は避け、
+          自分の言葉で記録することを大切にします。
+        </p>
+      </div>
     </section>
   </main>
 
