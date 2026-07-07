@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>V6 LIVE MEMORY</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+  <main>
+    <nav class="breadcrumb">
+      <a href="index.html">HOME</a> &gt; <span id="group-name-breadcrumb"></span>
+    </nav>
+
+    <h1 id="group-name"></h1>
+
+    <section class="search-card">
+      <label for="group-search">このグループの思い出を探す</label>
+      <input id="group-search" type="search" placeholder="曲名・ライブ名・メンバー名・言葉で探す">
+    </section>
+
+    <section class="section-block">
+      <div class="section-heading">
+        <h2>LIVE</h2>
+        <p id="live-count"></p>
+      </div>
+      <ul class="list" id="live-list"></ul>
+    </section>
+
+    <section class="section-block">
+      <div class="section-heading">
+        <h2>STAGE</h2>
+        <p id="stage-count"></p>
+      </div>
+      <ul class="list" id="stage-list"></ul>
+    </section>
+
+    <section class="section-block">
+      <div class="section-heading">
+        <h2>EVENT</h2>
+        <p id="event-count"></p>
+      </div>
+      <ul class="list" id="event-list"></ul>
+    </section>
+  </main>
+
+  <footer>
+    V6 LIVE MEMORY
+  </footer>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const groupId = params.get("id");
+
+    async function loadJson(path) {
+      const response = await fetch(path);
+      return response.json();
+    }
+
+    function renderEmpty(listElement) {
+      const li = document.createElement("li");
+      li.textContent = "準備中";
+      listElement.appendChild(li);
+    }
+
+    function renderLives(listElement, lives, groupId) {
+      if (lives.length === 0) {
+        renderEmpty(listElement);
+        return;
+      }
+
+      lives
+        .sort((a, b) => b.year - a.year)
+        .forEach(live => {
+          const li = document.createElement("li");
+          const a = document.createElement("a");
+
+          a.href = `live.html?group=${groupId}&live=${live.id}`;
+          a.textContent = `${live.year} ${live.title}`;
+
+          li.appendChild(a);
+          listElement.appendChild(li);
+        });
+    }
+
+    async function init() {
+      const groups = await loadJson("data/groups.json");
+      const group = groups.find(g => g.id === groupId);
+
+      document.title = `${group.name} | V6 LIVE MEMORY`;
+      document.getElementById("group-name").textContent = group.name;
+      document.getElementById("group-name-breadcrumb").textContent = group.name;
+
+      let liveItems = [];
+
+      if (groupId === "20th-century") {
+        const live = await loadJson("data/lives/20th-century/utauhito-odoruhito-2026.json");
+        liveItems = [live];
+      }
+
+      const stageItems = [];
+      const eventItems = [];
+
+      document.getElementById("live-count").textContent = `登録数：${liveItems.length}`;
+      document.getElementById("stage-count").textContent = `登録数：${stageItems.length}`;
+      document.getElementById("event-count").textContent = `登録数：${eventItems.length}`;
+
+      renderLives(document.getElementById("live-list"), liveItems, groupId);
+      renderLives(document.getElementById("stage-list"), stageItems, groupId);
+      renderLives(document.getElementById("event-list"), eventItems, groupId);
+    }
+
+    init();
+  </script>
+</body>
+</html>
