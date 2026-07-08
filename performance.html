@@ -21,6 +21,8 @@
       <input id="performance-search" type="search" placeholder="曲名・メンバー名・言葉で探す">
     </section>
 
+    <section class="section-block search-results" id="performance-memory-search-results" hidden></section>
+
     <section class="section-block">
       <div class="archive-grid">
         <a class="archive-card" id="mc-link">
@@ -95,11 +97,20 @@
       cards[1].dataset.search = `${live.title} ${performance.date} ${performance.time} ${performance.area} ${performance.venue} ファンサ fanservice`;
       cards[2].dataset.search = `${live.title} ${performance.date} ${performance.time} ${performance.area} ${performance.venue} その他 other`;
 
+      const input = document.getElementById("performance-search");
+      const memoryResults = await MemorySearch.loadMemoryResults(item =>
+        MemorySearch.isMemoryInPerformance(item, groupId, liveId, performanceId)
+      );
+      const memoryResultsContainer = document.getElementById("performance-memory-search-results");
+
       MemorySearch.bindCardFilter(
-        document.getElementById("performance-search"),
+        input,
         cards,
         { emptyElement: document.getElementById("performance-search-empty") }
       );
+      input.addEventListener("input", () => {
+        MemorySearch.renderResults(memoryResultsContainer, memoryResults, input.value);
+      });
 
     }
 

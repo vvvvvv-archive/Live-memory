@@ -144,6 +144,11 @@
       renderLives(document.getElementById("event-list"), eventItems, groupId);
 
       const searchResults = liveItems.flatMap(live => buildLiveResults(group, live));
+      searchResults.push(
+        ...await MemorySearch.loadMemoryResults(item =>
+          MemorySearch.isMemoryInGroup(item, groupId)
+        )
+      );
       const input = document.getElementById("group-search");
       const container = document.getElementById("group-search-results");
       input.addEventListener("input", () => {

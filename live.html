@@ -126,6 +126,12 @@
         });
       });
 
+      searchResults.push(
+        ...await MemorySearch.loadMemoryResults(item =>
+          MemorySearch.isMemoryInLive(item, groupId, liveId)
+        )
+      );
+
       const input = document.getElementById("live-search");
       const container = document.getElementById("live-search-results");
       input.addEventListener("input", () => {

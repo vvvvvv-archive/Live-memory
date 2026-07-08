@@ -1,0 +1,39 @@
+name: Sync memories
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - "data/memories.json"
+  schedule:
+    - cron: "17 * * * *"
+
+permissions:
+  contents: write
+  discussions: read
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Fetch discussions
+        run: node scripts/fetch-discussions.mjs
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Commit memory search index
+        run: |
+          if git diff --quiet -- data/memories.json; then
+            echo "No memory search index changes."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/memories.json
+          git commit -m "Update memory search index"
+          git push

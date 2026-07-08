@@ -145,6 +145,7 @@
       const group = groups.find(g => g.id === "20th-century");
       const live = await loadJson("data/lives/20th-century/utauhito-odoruhito-2026.json");
       addLiveSearchResults(results, group, live);
+      results.push(...await MemorySearch.loadMemoryResults());
 
       const input = document.getElementById("site-search");
       const container = document.getElementById("site-search-results");

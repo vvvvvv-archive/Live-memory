@@ -1,4 +1,6 @@
 (function () {
+  let memoryResultsCache = null;
+
   function normalizeText(value) {
     return String(value || "")
       .normalize("NFKC")
@@ -71,8 +73,73 @@
     `;
   }
 
+  async function loadMemoryResults(filter = () => true) {
+    if (!memoryResultsCache) {
+      try {
+        const response = await fetch("data/memories.json", { cache: "no-store" });
+        memoryResultsCache = await response.json();
+      } catch (error) {
+        memoryResultsCache = [];
+      }
+    }
+
+    return memoryResultsCache
+      .filter(item => item.href && filter(item))
+      .map(item => ({
+        title: item.title || "記録された思い出",
+        subtitle: item.subtitle || "思い出",
+        href: item.href,
+        searchText: item.searchText || ""
+      }));
+  }
+
+  function memoryParts(item) {
+    return String(item.memoryId || "").split(":");
+  }
+
+  function isMemoryInGroup(item, groupId) {
+    return memoryParts(item)[1] === groupId;
+  }
+
+  function isMemoryInLive(item, groupId, liveId) {
+    const parts = memoryParts(item);
+    return parts[1] === groupId && parts[2] === liveId;
+  }
+
+  function isMemoryInSection(item, groupId, liveId, sectionId) {
+    const parts = memoryParts(item);
+    const type = parts[0];
+
+    if (parts[1] !== groupId || parts[2] !== liveId) {
+      return false;
+    }
+
+    if (sectionId === "general") {
+      return type === "song" || (type === "section" && parts[3] === "general");
+    }
+
+    if (sectionId === "schedule") {
+      return ["mc", "fanservice", "other"].includes(type);
+    }
+
+    return type === "section" && parts[3] === sectionId;
+  }
+
+  function isMemoryInPerformance(item, groupId, liveId, performanceId) {
+    const parts = memoryParts(item);
+    return ["mc", "fanservice", "other"].includes(parts[0])
+      && parts[1] === groupId
+      && parts[2] === liveId
+      && parts[3] === performanceId;
+  }
+
   window.MemorySearch = {
     bindCardFilter,
-    renderResults
+    renderResults,
+    loadMemoryResults,
+    isMemoryInGroup,
+    isMemoryInLive,
+    isMemoryInSection,
+    isMemoryInPerformance
   };
 })();

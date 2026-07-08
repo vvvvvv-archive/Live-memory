@@ -21,6 +21,8 @@
       <input id="section-search" type="search" placeholder="曲名・メンバー名・言葉で探す">
     </section>
 
+    <section class="section-block search-results" id="section-memory-search-results" hidden></section>
+
     <section class="section-block" id="content"></section>
   </main>
 
@@ -201,11 +203,20 @@
       empty.hidden = true;
       content.appendChild(empty);
 
+      const input = document.getElementById("section-search");
+      const memoryResults = await MemorySearch.loadMemoryResults(item =>
+        MemorySearch.isMemoryInSection(item, groupId, liveId, sectionId)
+      );
+      const memoryResultsContainer = document.getElementById("section-memory-search-results");
+
       MemorySearch.bindCardFilter(
-        document.getElementById("section-search"),
+        input,
         searchableCards,
         { emptyElement: empty }
       );
+      input.addEventListener("input", () => {
+        MemorySearch.renderResults(memoryResultsContainer, memoryResults, input.value);
+      });
     }
 
     init();
