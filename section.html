@@ -90,6 +90,36 @@
       return block;
     }
 
+    function appendSetlist(container, live, searchableCards) {
+      const setlist = live.setlists.find(s => s.id === "v2") || live.setlists[live.setlists.length - 1];
+
+      const heading = document.createElement("div");
+      heading.className = "section-heading";
+      heading.innerHTML = `
+        <h2>セットリスト</h2>
+        <p>${setlist.name}</p>
+      `;
+      container.appendChild(heading);
+
+      const grid = document.createElement("div");
+      grid.className = "archive-grid";
+
+      setlist.songs.forEach((song, index) => {
+        const title = `${song.order}. ${song.title}`;
+        const sectionLabel = song.section === "encore" ? "Encore" : "";
+        const note = song.note ? ` / ${song.note}` : "";
+        const artist = song.artist ? song.artist : "";
+        const subtitle = `${artist}${note}${sectionLabel ? " / " + sectionLabel : ""}`;
+        const href = `song.html?group=${groupId}&live=${liveId}&setlist=${setlist.id}&song=${index}&order=${song.order}`;
+        const card = createCard(title, subtitle, href);
+        card.dataset.search = `${live.title} ${title} ${subtitle}`;
+        searchableCards.push(card);
+        grid.appendChild(card);
+      });
+
+      container.appendChild(grid);
+    }
+
     async function init() {
       const groups = await loadJson("data/groups.json");
       const group = groups.find(g => g.id === groupId);
@@ -137,33 +167,7 @@
       }
 
       if (sectionId === "general") {
-        const setlist = live.setlists.find(s => s.id === "v2") || live.setlists[live.setlists.length - 1];
-
-        const heading = document.createElement("div");
-        heading.className = "section-heading";
-        heading.innerHTML = `
-          <h2>セットリスト</h2>
-          <p>${setlist.name}</p>
-        `;
-        content.appendChild(heading);
-
-        const grid = document.createElement("div");
-        grid.className = "archive-grid";
-
-        setlist.songs.forEach((song, index) => {
-          const title = `${song.order}. ${song.title}`;
-          const sectionLabel = song.section === "encore" ? "Encore" : "";
-          const note = song.note ? ` / ${song.note}` : "";
-          const artist = song.artist ? song.artist : "";
-          const subtitle = `${artist}${note}${sectionLabel ? " / " + sectionLabel : ""}`;
-          const href = `song.html?group=${groupId}&live=${liveId}&setlist=${setlist.id}&song=${index}&order=${song.order}`;
-          const card = createCard(title, subtitle, href);
-          card.dataset.search = `${live.title} ${title} ${subtitle}`;
-          searchableCards.push(card);
-          grid.appendChild(card);
-        });
-
-        content.appendChild(grid);
+        appendSetlist(content, live, searchableCards);
 
         const memoryBlock = appendMemoryBlock(
           content,
@@ -176,6 +180,8 @@
       }
 
       if (sectionId === "video") {
+        appendSetlist(content, live, searchableCards);
+
         const memoryBlock = appendMemoryBlock(
           content,
           "思い出",
