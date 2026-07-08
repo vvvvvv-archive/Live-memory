@@ -22,6 +22,8 @@
       <input id="live-search" type="search" placeholder="曲名・メンバー名・言葉で探す">
     </section>
 
+    <section class="section-block search-results" id="live-search-results" hidden></section>
+
     <section class="section-block">
       <div class="archive-grid" id="section-links"></div>
     </section>
@@ -31,6 +33,7 @@
     V6 LIVE MEMORY
   </footer>
 
+  <script src="js/search.js"></script>
   <script>
     const params = new URLSearchParams(window.location.search);
     const groupId = params.get("group");
@@ -91,6 +94,42 @@
         `;
 
         sectionLinks.appendChild(card);
+      });
+
+      const searchResults = [];
+
+      live.sections.forEach(section => {
+        searchResults.push({
+          title: section.label,
+          subtitle: section.description,
+          href: `section.html?group=${groupId}&live=${liveId}&section=${section.id}`,
+          searchText: `${live.title} ${section.label} ${section.description}`
+        });
+      });
+
+      live.performances.forEach(performance => {
+        searchResults.push({
+          title: `${performance.date} ${performance.time}`,
+          subtitle: `[${performance.area}] ${performance.venue}`,
+          href: `performance.html?group=${groupId}&live=${liveId}&performance=${performance.id}`,
+          searchText: `${live.title} ${performance.date} ${performance.time} ${performance.area} ${performance.venue}`
+        });
+      });
+
+      const setlist = live.setlists.find(s => s.id === "v2") || live.setlists[live.setlists.length - 1];
+      setlist.songs.forEach((song, index) => {
+        searchResults.push({
+          title: `${song.order}. ${song.title}`,
+          subtitle: `${song.artist}${song.note ? " / " + song.note : ""}`,
+          href: `song.html?group=${groupId}&live=${liveId}&setlist=${setlist.id}&song=${index}&order=${song.order}`,
+          searchText: `${live.title} ${song.order} ${song.title} ${song.artist} ${song.note || ""}`
+        });
+      });
+
+      const input = document.getElementById("live-search");
+      const container = document.getElementById("live-search-results");
+      input.addEventListener("input", () => {
+        MemorySearch.renderResults(container, searchResults, input.value);
       });
     }
 

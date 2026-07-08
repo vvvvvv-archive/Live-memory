@@ -20,6 +20,8 @@
       <input id="group-search" type="search" placeholder="曲名・ライブ名・メンバー名・言葉で探す">
     </section>
 
+    <section class="section-block search-results" id="group-search-results" hidden></section>
+
     <section class="section-block">
       <div class="section-heading">
         <h2>LIVE</h2>
@@ -49,6 +51,7 @@
     V6 LIVE MEMORY
   </footer>
 
+  <script src="js/search.js"></script>
   <script>
     const params = new URLSearchParams(window.location.search);
     const groupId = params.get("id");
@@ -84,6 +87,36 @@
         });
     }
 
+    function buildLiveResults(group, live) {
+      const results = [{
+        title: live.title,
+        subtitle: `${live.type} / ${live.year}`,
+        href: `live.html?group=${group.id}&live=${live.id}`,
+        searchText: `${group.name} ${live.type} ${live.year} ${live.title}`
+      }];
+
+      live.performances.forEach(performance => {
+        results.push({
+          title: `${performance.date} ${performance.time}`,
+          subtitle: `${live.title} / [${performance.area}] ${performance.venue}`,
+          href: `performance.html?group=${group.id}&live=${live.id}&performance=${performance.id}`,
+          searchText: `${group.name} ${live.title} ${performance.date} ${performance.time} ${performance.area} ${performance.venue}`
+        });
+      });
+
+      const setlist = live.setlists.find(s => s.id === "v2") || live.setlists[live.setlists.length - 1];
+      setlist.songs.forEach((song, index) => {
+        results.push({
+          title: `${song.order}. ${song.title}`,
+          subtitle: `${live.title} / ${song.artist}${song.note ? " / " + song.note : ""}`,
+          href: `song.html?group=${group.id}&live=${live.id}&setlist=${setlist.id}&song=${index}&order=${song.order}`,
+          searchText: `${group.name} ${live.title} ${song.order} ${song.title} ${song.artist} ${song.note || ""}`
+        });
+      });
+
+      return results;
+    }
+
     async function init() {
       const groups = await loadJson("data/groups.json");
       const group = groups.find(g => g.id === groupId);
@@ -109,6 +142,13 @@
       renderLives(document.getElementById("live-list"), liveItems, groupId);
       renderLives(document.getElementById("stage-list"), stageItems, groupId);
       renderLives(document.getElementById("event-list"), eventItems, groupId);
+
+      const searchResults = liveItems.flatMap(live => buildLiveResults(group, live));
+      const input = document.getElementById("group-search");
+      const container = document.getElementById("group-search-results");
+      input.addEventListener("input", () => {
+        MemorySearch.renderResults(container, searchResults, input.value);
+      });
     }
 
     init();

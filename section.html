@@ -28,6 +28,7 @@
     V6 LIVE MEMORY
   </footer>
 
+  <script src="js/search.js"></script>
   <script>
     const params = new URLSearchParams(window.location.search);
     const groupId = params.get("group");
@@ -84,6 +85,7 @@
       `;
       container.appendChild(block);
       appendGiscus(block.querySelector(".giscus-container"), memoryId);
+      return block;
     }
 
     async function init() {
@@ -105,6 +107,7 @@
       document.getElementById("section-description").textContent = section.description;
 
       const content = document.getElementById("content");
+      const searchableCards = [];
 
       if (sectionId === "schedule") {
         const heading = document.createElement("div");
@@ -122,7 +125,10 @@
           const title = `${performance.date} ${performance.time}`;
           const subtitle = `[${performance.area}] ${performance.venue}`;
           const href = `performance.html?group=${groupId}&live=${liveId}&performance=${performance.id}`;
-          grid.appendChild(createCard(title, subtitle, href));
+          const card = createCard(title, subtitle, href);
+          card.dataset.search = `${live.title} ${title} ${subtitle}`;
+          searchableCards.push(card);
+          grid.appendChild(card);
         });
 
         content.appendChild(grid);
@@ -149,36 +155,57 @@
           const artist = song.artist ? song.artist : "";
           const subtitle = `${artist}${note}${sectionLabel ? " / " + sectionLabel : ""}`;
           const href = `song.html?group=${groupId}&live=${liveId}&setlist=${setlist.id}&song=${index}&order=${song.order}`;
-          grid.appendChild(createCard(title, subtitle, href));
+          const card = createCard(title, subtitle, href);
+          card.dataset.search = `${live.title} ${title} ${subtitle}`;
+          searchableCards.push(card);
+          grid.appendChild(card);
         });
 
         content.appendChild(grid);
 
-        appendMemoryBlock(
+        const memoryBlock = appendMemoryBlock(
           content,
           "ライブ全体の思い出",
           "このライブ全体について思い出を記録できます。",
           `section:${groupId}:${liveId}:general`
         );
+        memoryBlock.dataset.search = `${live.title} ライブ全体 総合 思い出`;
+        searchableCards.push(memoryBlock);
       }
 
       if (sectionId === "video") {
-        appendMemoryBlock(
+        const memoryBlock = appendMemoryBlock(
           content,
           "思い出",
           "映像・円盤で見た思い出を記録できます。",
           `section:${groupId}:${liveId}:video`
         );
+        memoryBlock.dataset.search = `${live.title} 映像 円盤 DVD Blu-ray 配信 思い出`;
+        searchableCards.push(memoryBlock);
       }
 
       if (sectionId === "goods") {
-        appendMemoryBlock(
+        const memoryBlock = appendMemoryBlock(
           content,
           "グッズ情報と思い出",
           "このライブで発売されたグッズの情報と思い出を記録できます。",
           `section:${groupId}:${liveId}:goods`
         );
+        memoryBlock.dataset.search = `${live.title} グッズ goods 情報 思い出`;
+        searchableCards.push(memoryBlock);
       }
+
+      const empty = document.createElement("p");
+      empty.className = "search-empty";
+      empty.textContent = "一致する思い出の入口は見つかりませんでした。";
+      empty.hidden = true;
+      content.appendChild(empty);
+
+      MemorySearch.bindCardFilter(
+        document.getElementById("section-search"),
+        searchableCards,
+        { emptyElement: empty }
+      );
     }
 
     init();

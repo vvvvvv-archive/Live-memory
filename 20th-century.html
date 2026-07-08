@@ -4,51 +4,11 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>20th Century | V6 LIVE MEMORY</title>
+  <script>
+    location.replace("group.html?id=20th-century");
+  </script>
 </head>
 <body>
-  <nav>
-    <a href="index.html">HOME</a> &gt; 20th Century
-  </nav>
-
-  <h1>20th Century</h1>
-
-  <input type="search" placeholder="曲名・メンバー名・言葉で検索">
-
-  <section>
-    <h2>LIVE</h2>
-    <ul id="live-list"></ul>
-  </section>
-
-  <section>
-    <h2>STAGE</h2>
-    <p id="stage-empty">準備中</p>
-  </section>
-
-  <section>
-    <h2>EVENT</h2>
-    <p id="event-empty">準備中</p>
-  </section>
-
-  <script>
-    fetch("data/archive.json")
-      .then(response => response.json())
-      .then(data => {
-        const group = data.groups.find(g => g.id === "20th-century");
-        const liveList = document.getElementById("live-list");
-
-        group.sections.live
-          .sort((a, b) => b.year - a.year)
-          .forEach(live => {
-            const li = document.createElement("li");
-            const a = document.createElement("a");
-
-            a.href = `live.html?group=${group.id}&live=${live.id}`;
-            a.textContent = `${live.year} ${live.title}`;
-
-            li.appendChild(a);
-            liveList.appendChild(li);
-          });
-      });
-  </script>
+  <p><a href="group.html?id=20th-century">20th Centuryのページへ移動する</a></p>
 </body>
 </html>

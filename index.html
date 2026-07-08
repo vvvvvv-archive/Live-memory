@@ -20,6 +20,8 @@
       <input id="site-search" type="search" placeholder="曲名・ライブ名・言葉で検索（例：Darling、長野博、顔）">
     </section>
 
+    <section class="section-block search-results" id="site-search-results" hidden></section>
+
     <section class="section-block">
       <div class="section-heading">
         <h2>Archive</h2>
@@ -61,7 +63,7 @@
           偶然めくったページから、忘れていた記憶に出会えるように。
         </p>
         <button class="button" type="button" disabled>思い出をめくる</button>
-        <p class="small-note">※コメント実装後に使えるようにします。</p>
+        <p class="small-note">※ランダムに思い出へ移動する機能は今後実装予定です。</p>
       </div>
     </section>
 
@@ -87,5 +89,71 @@
   <footer>
     V6 LIVE MEMORY
   </footer>
+  <script src="js/search.js"></script>
+  <script>
+    async function loadJson(path) {
+      const response = await fetch(path);
+      return response.json();
+    }
+
+    function addLiveSearchResults(results, group, live) {
+      results.push({
+        title: live.title,
+        subtitle: `${group.name} / ${live.type} / ${live.year}`,
+        href: `live.html?group=${group.id}&live=${live.id}`,
+        searchText: `${group.name} ${live.type} ${live.year} ${live.title}`
+      });
+
+      live.sections.forEach(section => {
+        results.push({
+          title: `${live.title} / ${section.label}`,
+          subtitle: `${group.name} / ${section.description}`,
+          href: `section.html?group=${group.id}&live=${live.id}&section=${section.id}`,
+          searchText: `${group.name} ${live.title} ${section.label} ${section.description}`
+        });
+      });
+
+      live.performances.forEach(performance => {
+        results.push({
+          title: `${performance.date} ${performance.time}`,
+          subtitle: `${live.title} / [${performance.area}] ${performance.venue}`,
+          href: `performance.html?group=${group.id}&live=${live.id}&performance=${performance.id}`,
+          searchText: `${group.name} ${live.title} ${performance.date} ${performance.time} ${performance.area} ${performance.venue}`
+        });
+      });
+
+      const setlist = live.setlists.find(s => s.id === "v2") || live.setlists[live.setlists.length - 1];
+      setlist.songs.forEach((song, index) => {
+        results.push({
+          title: `${song.order}. ${song.title}`,
+          subtitle: `${live.title} / ${song.artist}${song.note ? " / " + song.note : ""}`,
+          href: `song.html?group=${group.id}&live=${live.id}&setlist=${setlist.id}&song=${index}&order=${song.order}`,
+          searchText: `${group.name} ${live.title} ${song.order} ${song.title} ${song.artist} ${song.note || ""}`
+        });
+      });
+    }
+
+    async function initSearch() {
+      const groups = await loadJson("data/groups.json");
+      const results = groups.map(group => ({
+        title: group.name,
+        subtitle: group.types.join(" / "),
+        href: `group.html?id=${group.id}`,
+        searchText: `${group.name} ${group.types.join(" ")}`
+      }));
+
+      const group = groups.find(g => g.id === "20th-century");
+      const live = await loadJson("data/lives/20th-century/utauhito-odoruhito-2026.json");
+      addLiveSearchResults(results, group, live);
+
+      const input = document.getElementById("site-search");
+      const container = document.getElementById("site-search-results");
+      input.addEventListener("input", () => {
+        MemorySearch.renderResults(container, results, input.value);
+      });
+    }
+
+    initSearch();
+  </script>
 </body>
 </html>

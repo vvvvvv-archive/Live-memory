@@ -36,11 +36,13 @@
           <p>思い出を記録する</p>
         </a>
       </div>
+      <p class="search-empty" id="performance-search-empty" hidden>一致する思い出の入口は見つかりませんでした。</p>
     </section>
   </main>
 
   <footer>V6 LIVE MEMORY</footer>
 
+  <script src="js/search.js"></script>
   <script>
     const params = new URLSearchParams(window.location.search);
     const groupId = params.get("group");
@@ -82,6 +84,22 @@
 
       document.getElementById("other-link").href =
         `memory.html?group=${groupId}&live=${liveId}&performance=${performanceId}&type=other`;
+
+      const cards = [
+        document.getElementById("mc-link"),
+        document.getElementById("fanservice-link"),
+        document.getElementById("other-link")
+      ];
+
+      cards[0].dataset.search = `${live.title} ${performance.date} ${performance.time} ${performance.area} ${performance.venue} MC`;
+      cards[1].dataset.search = `${live.title} ${performance.date} ${performance.time} ${performance.area} ${performance.venue} ファンサ fanservice`;
+      cards[2].dataset.search = `${live.title} ${performance.date} ${performance.time} ${performance.area} ${performance.venue} その他 other`;
+
+      MemorySearch.bindCardFilter(
+        document.getElementById("performance-search"),
+        cards,
+        { emptyElement: document.getElementById("performance-search-empty") }
+      );
 
     }
 
