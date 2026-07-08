@@ -63,10 +63,17 @@ async function hrefForMemoryId(memoryId) {
   }
 
   if (type === "song") {
-    const [, groupId, liveId, setlistId, songIndex] = parts;
+    const groupId = parts[1];
+    const liveId = parts[2];
+    const isLegacySongId = parts.length >= 6;
+    const setlistId = isLegacySongId ? parts[4] : parts[3];
+    const songIndexOrOrder = isLegacySongId ? parts[5] : parts[4];
     const live = await loadLive(groupId, liveId);
     const setlist = live.setlists.find(item => item.id === setlistId);
-    const song = setlist?.songs[Number(songIndex)];
+    const songIndex = isLegacySongId
+      ? setlist?.songs.findIndex(song => song.order === Number(songIndexOrOrder))
+      : Number(songIndexOrOrder);
+    const song = setlist?.songs[songIndex];
     const order = song?.order || "";
     return `song.html?group=${groupId}&live=${liveId}&setlist=${setlistId}&song=${songIndex}&order=${order}`;
   }
@@ -91,10 +98,17 @@ async function subtitleForMemoryId(memoryId) {
   }
 
   if (type === "song") {
-    const [, groupId, liveId, setlistId, songIndex] = parts;
+    const groupId = parts[1];
+    const liveId = parts[2];
+    const isLegacySongId = parts.length >= 6;
+    const setlistId = isLegacySongId ? parts[4] : parts[3];
+    const songIndexOrOrder = isLegacySongId ? parts[5] : parts[4];
     const live = await loadLive(groupId, liveId);
     const setlist = live.setlists.find(item => item.id === setlistId);
-    const song = setlist?.songs[Number(songIndex)];
+    const songIndex = isLegacySongId
+      ? setlist?.songs.findIndex(song => song.order === Number(songIndexOrOrder))
+      : Number(songIndexOrOrder);
+    const song = setlist?.songs[songIndex];
     return `${live.title} / ${song ? `${song.order}. ${song.title}` : "曲"}`;
   }
 
