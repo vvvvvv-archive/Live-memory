@@ -62,9 +62,9 @@
         <h2>検索結果</h2>
         <p>${matched.length}件</p>
       </div>
-      <div class="archive-grid">
+      <div class="archive-grid search-result-grid">
         ${matched.map(result => `
-          <a class="archive-card" href="${result.href}">
+          <a class="archive-card search-result-card" href="${result.href}">
             <h3>${result.title}</h3>
             <p>${result.subtitle}</p>
           </a>

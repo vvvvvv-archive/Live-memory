@@ -171,6 +171,40 @@ main {
   color: var(--sub);
 }
 
+.search-results {
+  margin: 10px 0 46px;
+  padding: 24px;
+  background: #f0f4f8;
+  border: 1px solid #d5dfeb;
+  border-left: 6px solid var(--accent);
+  border-radius: 18px;
+  box-shadow: var(--shadow);
+}
+
+.search-results .section-heading {
+  margin-bottom: 18px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #d5dfeb;
+}
+
+.search-results .section-heading h2 {
+  font-size: 1.25rem;
+}
+
+.search-result-grid {
+  gap: 14px;
+}
+
+.search-result-card {
+  background: #ffffff;
+  border-color: #ccd8e6;
+  box-shadow: none;
+}
+
+.search-result-card:hover {
+  background: #e6edf5;
+}
+
 .is-hidden {
   display: none !important;
 }
