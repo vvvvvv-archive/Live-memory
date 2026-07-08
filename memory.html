@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>V6 LIVE MEMORY</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+  <main>
+    <nav class="breadcrumb" id="breadcrumb"></nav>
+
+    <section class="lead-card">
+      <h1 id="memory-title"></h1>
+      <p id="performance-venue"></p>
+    </section>
+
+    <section class="section-block">
+      <div class="section-heading">
+        <h2>思い出</h2>
+        <p id="memory-description"></p>
+      </div>
+
+      <div id="giscus-container"></div>
+    </section>
+  </main>
+
+  <footer>V6 LIVE MEMORY</footer>
+
+  <script>
+    const params = new URLSearchParams(location.search);
+    const groupId = params.get("group");
+    const liveId = params.get("live");
+    const performanceId = params.get("performance");
+    const type = params.get("type");
+
+    const memoryTypes = {
+      mc: "MC",
+      fanservice: "ファンサ",
+      other: "その他"
+    };
+
+    async function loadJson(path) {
+      const response = await fetch(path);
+      return response.json();
+    }
+
+    function appendGiscus(container, memoryId) {
+      const giscus = document.createElement("script");
+
+      giscus.src = "https://giscus.app/client.js";
+      giscus.setAttribute("data-repo", "ibitsu10/V6-Live-memory");
+      giscus.setAttribute("data-repo-id", "R_kgDOTPl_LQ");
+      giscus.setAttribute("data-category", "Memory");
+      giscus.setAttribute("data-category-id", "DIC_kwDOTPl_Lc4DAsjk");
+      giscus.setAttribute("data-mapping", "specific");
+      giscus.setAttribute("data-term", memoryId);
+      giscus.setAttribute("data-strict", "0");
+      giscus.setAttribute("data-reactions-enabled", "1");
+      giscus.setAttribute("data-emit-metadata", "1");
+      giscus.setAttribute("data-input-position", "bottom");
+      giscus.setAttribute("data-theme", "light");
+      giscus.setAttribute("data-lang", "ja");
+      giscus.setAttribute("crossorigin", "anonymous");
+      giscus.async = true;
+
+      container.appendChild(giscus);
+    }
+
+    async function init() {
+      const groups = await loadJson("data/groups.json");
+      const group = groups.find(g => g.id === groupId);
+      const live = await loadJson(`data/lives/${groupId}/${liveId}.json`);
+      const performance = live.performances.find(p => p.id === performanceId);
+      const typeLabel = memoryTypes[type] || "思い出";
+
+      document.title = `${typeLabel} | ${performance.date} ${performance.time} | V6 LIVE MEMORY`;
+
+      document.getElementById("breadcrumb").innerHTML = `
+        <a href="index.html">HOME</a> &gt;
+        <a href="group.html?id=${group.id}">${group.name}</a> &gt;
+        <a href="live.html?group=${group.id}&live=${live.id}">${live.title}</a> &gt;
+        <a href="section.html?group=${group.id}&live=${live.id}&section=schedule">公演日程</a> &gt;
+        <a href="performance.html?group=${group.id}&live=${live.id}&performance=${performance.id}">${performance.date} ${performance.time}</a> &gt;
+        ${typeLabel}
+      `;
+
+      document.getElementById("memory-title").textContent = typeLabel;
+      document.getElementById("performance-venue").textContent =
+        `${performance.date} ${performance.time} [${performance.area}] ${performance.venue}`;
+      document.getElementById("memory-description").textContent =
+        `この公演の${typeLabel}について思い出を記録できます。`;
+
+      const memoryId = `${type}:${groupId}:${liveId}:${performanceId}`;
+      appendGiscus(document.getElementById("giscus-container"), memoryId);
+    }
+
+    init();
+  </script>
+</body>
+</html>

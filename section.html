@@ -50,6 +50,42 @@
       return a;
     }
 
+    function appendGiscus(container, memoryId) {
+      const giscus = document.createElement("script");
+
+      giscus.src = "https://giscus.app/client.js";
+      giscus.setAttribute("data-repo", "ibitsu10/V6-Live-memory");
+      giscus.setAttribute("data-repo-id", "R_kgDOTPl_LQ");
+      giscus.setAttribute("data-category", "Memory");
+      giscus.setAttribute("data-category-id", "DIC_kwDOTPl_Lc4DAsjk");
+      giscus.setAttribute("data-mapping", "specific");
+      giscus.setAttribute("data-term", memoryId);
+      giscus.setAttribute("data-strict", "0");
+      giscus.setAttribute("data-reactions-enabled", "1");
+      giscus.setAttribute("data-emit-metadata", "1");
+      giscus.setAttribute("data-input-position", "bottom");
+      giscus.setAttribute("data-theme", "light");
+      giscus.setAttribute("data-lang", "ja");
+      giscus.setAttribute("crossorigin", "anonymous");
+      giscus.async = true;
+
+      container.appendChild(giscus);
+    }
+
+    function appendMemoryBlock(container, heading, description, memoryId) {
+      const block = document.createElement("section");
+      block.className = "section-block";
+      block.innerHTML = `
+        <div class="section-heading">
+          <h2>${heading}</h2>
+          <p>${description}</p>
+        </div>
+        <div class="giscus-container"></div>
+      `;
+      container.appendChild(block);
+      appendGiscus(block.querySelector(".giscus-container"), memoryId);
+    }
+
     async function init() {
       const groups = await loadJson("data/groups.json");
       const group = groups.find(g => g.id === groupId);
@@ -117,27 +153,31 @@
         });
 
         content.appendChild(grid);
+
+        appendMemoryBlock(
+          content,
+          "ライブ全体の思い出",
+          "このライブ全体について思い出を記録できます。",
+          `section:${groupId}:${liveId}:general`
+        );
       }
 
       if (sectionId === "video") {
-        content.innerHTML = `
-          <div class="text-card">
-            <p>映像・円盤で見た思い出を残す場所です。</p>
-            <button class="button" type="button" disabled>記録する</button>
-            <p class="small-note">※セットリストと思い出の記録機能は今後実装予定です。</p>
-          </div>
-        `;
+        appendMemoryBlock(
+          content,
+          "思い出",
+          "映像・円盤で見た思い出を記録できます。",
+          `section:${groupId}:${liveId}:video`
+        );
       }
 
       if (sectionId === "goods") {
-        content.innerHTML = `
-          <div class="text-card">
-            <p>このライブで発売されたグッズの情報と思い出を集める場所です。</p>
-            <button class="button" type="button" disabled>グッズ情報を教える</button>
-            <button class="button" type="button" disabled>記録する</button>
-            <p class="small-note">※グッズ情報募集と思い出の記録機能は今後実装予定です。</p>
-          </div>
-        `;
+        appendMemoryBlock(
+          content,
+          "グッズ情報と思い出",
+          "このライブで発売されたグッズの情報と思い出を記録できます。",
+          `section:${groupId}:${liveId}:goods`
+        );
       }
     }
 

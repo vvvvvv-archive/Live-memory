@@ -4,87 +4,14 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>V6 LIVE MEMORY</title>
+  <script>
+    location.replace(`section.html${location.search}`);
+  </script>
 </head>
 <body>
-  <nav id="breadcrumb"></nav>
-
-  <input type="search" placeholder="曲名・メンバー名・言葉で検索">
-
-  <h1 id="page-title"></h1>
-  <div id="content"></div>
-
-  <script src="data.js"></script>
+  <p><a id="redirect-link" href="section.html">現在のページへ移動する</a></p>
   <script>
-    const params = new URLSearchParams(window.location.search);
-    const groupId = params.get("group");
-    const liveId = params.get("live");
-    const section = params.get("section");
-
-    const group = SITE_DATA.groups.find(g => g.id === groupId);
-    const live = group.sections.live.find(l => l.id === liveId);
-
-    const sectionNames = {
-      general: "総合",
-      schedule: "公演日程",
-      video: "映像・円盤",
-      goods: "グッズ"
-    };
-
-    document.title = `${sectionNames[section]} | ${live.title} | V6 LIVE MEMORY`;
-
-    document.getElementById("breadcrumb").innerHTML = `
-      <a href="index.html">HOME</a> &gt;
-      <a href="${group.id}.html">${group.name}</a> &gt;
-      <a href="live.html?group=${group.id}&live=${live.id}">LIVE</a> &gt;
-      ${live.title} &gt;
-      ${sectionNames[section]}
-    `;
-
-    document.getElementById("page-title").textContent = sectionNames[section];
-
-    const content = document.getElementById("content");
-
-    if (section === "general") {
-      content.innerHTML = `
-        <p>ツアー全体の感想や思い出を残す場所です。</p>
-        <button>コメントを書く</button>
-        <p>コメント欄は今後実装予定です。</p>
-      `;
-    }
-
-    if (section === "schedule") {
-      const ul = document.createElement("ul");
-
-      live.schedules.forEach(schedule => {
-        const li = document.createElement("li");
-        const a = document.createElement("a");
-
-        a.href = `performance.html?group=${group.id}&live=${live.id}&performance=${schedule.id}`;
-        a.textContent = `${schedule.date} ${schedule.time}　[${schedule.area}] ${schedule.venue}`;
-
-        li.appendChild(a);
-        ul.appendChild(li);
-      });
-
-      content.appendChild(ul);
-    }
-
-    if (section === "video") {
-      content.innerHTML = `
-        <p>DVD、Blu-ray、配信などで見た感想を残す場所です。</p>
-        <button>コメントを書く</button>
-        <p>セットリスト・コメント欄は今後実装予定です。</p>
-      `;
-    }
-
-    if (section === "goods") {
-      content.innerHTML = `
-        <p>このライブで発売されたグッズの情報を集める場所です。</p>
-        <button>グッズ情報を教える</button>
-        <button>コメントを書く</button>
-        <p>グッズ一覧・コメント欄は今後実装予定です。</p>
-      `;
-    }
+    document.getElementById("redirect-link").href = `section.html${location.search}`;
   </script>
 </body>
 </html>

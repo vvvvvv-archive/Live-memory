@@ -23,15 +23,15 @@
 
     <section class="section-block">
       <div class="archive-grid">
-        <a class="archive-card" href="#">
+        <a class="archive-card" id="mc-link">
           <h3>MC</h3>
           <p>思い出を記録する</p>
         </a>
-        <a class="archive-card" href="#">
+        <a class="archive-card" id="fanservice-link">
           <h3>ファンサ</h3>
           <p>思い出を記録する</p>
         </a>
-        <a class="archive-card" href="#">
+        <a class="archive-card" id="other-link">
           <h3>その他</h3>
           <p>思い出を記録する</p>
         </a>
@@ -73,6 +73,15 @@
 
       document.getElementById("performance-venue").textContent =
         `[${performance.area}] ${performance.venue}`;
+
+      document.getElementById("mc-link").href =
+        `memory.html?group=${groupId}&live=${liveId}&performance=${performanceId}&type=mc`;
+
+      document.getElementById("fanservice-link").href =
+        `memory.html?group=${groupId}&live=${liveId}&performance=${performanceId}&type=fanservice`;
+
+      document.getElementById("other-link").href =
+        `memory.html?group=${groupId}&live=${liveId}&performance=${performanceId}&type=other`;
 
     }
 
