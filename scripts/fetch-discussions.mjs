@@ -83,6 +83,11 @@ async function hrefForMemoryId(memoryId) {
     return `memory.html?group=${groupId}&live=${liveId}&performance=${performanceId}&type=${type}`;
   }
 
+  if (type === "goods") {
+    const [, groupId, liveId, goodsId] = parts;
+    return `goods.html?group=${groupId}&live=${liveId}&goods=${goodsId}`;
+  }
+
   return "";
 }
 
@@ -118,6 +123,13 @@ async function subtitleForMemoryId(memoryId) {
     const live = await loadLive(groupId, liveId);
     const performance = live.performances.find(item => item.id === performanceId);
     return `${live.title} / ${performance?.date || performanceId} ${performance?.time || ""} / ${labels[type]}`;
+  }
+
+  if (type === "goods") {
+    const [, groupId, liveId, goodsId] = parts;
+    const live = await loadLive(groupId, liveId);
+    const goods = live.goods.find(item => item.id === goodsId);
+    return `${live.title} / ${goods?.name || "グッズ"}`;
   }
 
   return "思い出";

@@ -126,6 +126,15 @@
         });
       });
 
+      live.goods.forEach(goods => {
+        searchResults.push({
+          title: goods.name,
+          subtitle: `${goods.price.toLocaleString()}円`,
+          href: `goods.html?group=${groupId}&live=${liveId}&goods=${goods.id}`,
+          searchText: `${live.title} ${goods.name} ${goods.price}円 グッズ goods`
+        });
+      });
+
       searchResults.push(
         ...await MemorySearch.loadMemoryResults(item =>
           MemorySearch.isMemoryInLive(item, groupId, liveId)

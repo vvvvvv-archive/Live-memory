@@ -128,5 +128,21 @@
   "video": {
     "setlist": []
   },
-  "goods": []
+  "goods": [
+    { "id": "tonimori-set", "name": "トニもりセット", "price": 2500 },
+    { "id": "sakamoto-mini-uchiwa", "name": "【坂本昌行】ちびうちわ", "price": 700 },
+    { "id": "nagano-mini-uchiwa", "name": "【長野博】ちびうちわ", "price": 700 },
+    { "id": "inohara-mini-uchiwa", "name": "【井ノ原快彦】ちびうちわ", "price": 700 },
+    { "id": "mawaruhito-penlight", "name": "まわる人ペンライト", "price": 5400 },
+    { "id": "tonitee", "name": "トニティー", "price": 4800 },
+    { "id": "pipipi-hand-towel", "name": "ピピピのハンドタオル", "price": 1000 },
+    { "id": "tenimotsuhito-katanikakeruhito", "name": "てにもつ人 かたにかける人", "price": 4000 },
+    { "id": "penlight-parts-group", "name": "【集合】まわる人ペンライトパーツ", "price": 1200 },
+    { "id": "penlight-parts-sakamoto", "name": "【坂本昌行】まわる人ペンライトパーツ", "price": 1200 },
+    { "id": "penlight-parts-nagano", "name": "【長野博】まわる人ペンライトパーツ", "price": 1200 },
+    { "id": "penlight-parts-inohara", "name": "【井ノ原快彦】まわる人ペンライトパーツ", "price": 1200 },
+    { "id": "mapit-blue-keyholder", "name": "【マピット（青）】マスコットキーホルダー", "price": 3500 },
+    { "id": "pipit-purple-keyholder", "name": "【ピピット（紫）】マスコットキーホルダー", "price": 3500 },
+    { "id": "yopit-green-keyholder", "name": "【ヨピット（緑）】マスコットキーホルダー", "price": 3500 }
+  ]
 }

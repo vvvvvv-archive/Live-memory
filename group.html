@@ -114,6 +114,15 @@
         });
       });
 
+      live.goods.forEach(goods => {
+        results.push({
+          title: goods.name,
+          subtitle: `${live.title} / ${goods.price.toLocaleString()}円`,
+          href: `goods.html?group=${group.id}&live=${live.id}&goods=${goods.id}`,
+          searchText: `${group.name} ${live.title} ${goods.name} ${goods.price}円 グッズ goods`
+        });
+      });
+
       return results;
     }
 

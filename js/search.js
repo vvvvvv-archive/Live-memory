@@ -122,6 +122,10 @@
       return type === "song";
     }
 
+    if (sectionId === "goods") {
+      return type === "goods" || (type === "section" && parts[3] === "goods");
+    }
+
     if (sectionId === "schedule") {
       return ["mc", "fanservice", "other"].includes(type);
     }

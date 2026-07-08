@@ -183,6 +183,29 @@
       }
 
       if (sectionId === "goods") {
+        const heading = document.createElement("div");
+        heading.className = "section-heading";
+        heading.innerHTML = `
+          <h2>グッズ一覧</h2>
+          <p>${live.goods.length}件</p>
+        `;
+        content.appendChild(heading);
+
+        const grid = document.createElement("div");
+        grid.className = "archive-grid";
+
+        live.goods.forEach(goods => {
+          const title = goods.name;
+          const subtitle = `${goods.price.toLocaleString()}円`;
+          const href = `goods.html?group=${groupId}&live=${liveId}&goods=${goods.id}`;
+          const card = createCard(title, subtitle, href);
+          card.dataset.search = `${live.title} ${goods.name} ${goods.price}円 グッズ goods`;
+          searchableCards.push(card);
+          grid.appendChild(card);
+        });
+
+        content.appendChild(grid);
+
         const memoryBlock = appendMemoryBlock(
           content,
           "グッズ情報と思い出",
