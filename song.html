@@ -23,7 +23,7 @@
 
 <div class="section-heading">
 <h2>思い出</h2>
-<p>この公演のこの曲について思い出を記録できます。</p>
+<p>このライブのこの曲について思い出を記録できます。</p>
 </div>
 
 <div id="giscus-container"></div>
@@ -42,8 +42,8 @@ const params = new URLSearchParams(location.search);
 
 const groupId=params.get("group");
 const liveId=params.get("live");
-const performanceId=params.get("performance");
 const setlistId=params.get("setlist");
+const songIndexParam=params.get("song");
 const order=Number(params.get("order"));
 
 async function loadJson(path){
@@ -62,11 +62,13 @@ const group=groups.find(g=>g.id===groupId);
 
 const live=await loadJson(`data/lives/${groupId}/${liveId}.json`);
 
-const performance=live.performances.find(p=>p.id===performanceId);
-
 const setlist=live.setlists.find(s=>s.id===setlistId);
 
-const song=setlist.songs.find(s=>s.order===order);
+const songIndex=songIndexParam!==null
+? Number(songIndexParam)
+: setlist.songs.findIndex(s=>s.order===order);
+
+const song=setlist.songs[songIndex];
 
 document.title=`${song.title} | V6 LIVE MEMORY`;
 
@@ -79,8 +81,8 @@ document.getElementById("breadcrumb").innerHTML=`
 ${live.title}
 </a>
 &gt;
-<a href="performance.html?group=${group.id}&live=${live.id}&performance=${performance.id}">
-${performance.date} ${performance.time}
+<a href="section.html?group=${group.id}&live=${live.id}&section=general">
+総合
 </a>
 &gt;
 ${song.title}
@@ -89,12 +91,14 @@ ${song.title}
 
 document.getElementById("song-title").textContent=song.title;
 
-document.getElementById("song-artist").textContent=song.artist;
+document.getElementById("song-artist").textContent=song.note
+? `${song.artist} / ${song.note}`
+: song.artist;
   const nav=document.getElementById("song-navigation");
 
 const songs=setlist.songs;
 
-const index=songs.findIndex(s=>s.order===order);
+const index=songIndex;
 
 let html="";
 
@@ -103,7 +107,7 @@ if(index>0){
 const prev=songs[index-1];
 
 html+=`
-<a href="song.html?group=${groupId}&live=${liveId}&performance=${performanceId}&setlist=${setlist.id}&order=${prev.order}">
+<a href="song.html?group=${groupId}&live=${liveId}&setlist=${setlist.id}&song=${index - 1}&order=${prev.order}">
 ← ${prev.title}
 </a>
 `;
@@ -111,8 +115,8 @@ html+=`
 }
 
 html+=`
-<a href="performance.html?group=${groupId}&live=${liveId}&performance=${performanceId}">
-公演へ戻る
+<a href="section.html?group=${groupId}&live=${liveId}&section=general">
+総合へ戻る
 </a>
 `;
 
@@ -121,7 +125,7 @@ if(index<songs.length-1){
 const next=songs[index+1];
 
 html+=`
-<a href="song.html?group=${groupId}&live=${liveId}&performance=${performanceId}&setlist=${setlist.id}&order=${next.order}">
+<a href="song.html?group=${groupId}&live=${liveId}&setlist=${setlist.id}&song=${index + 1}&order=${next.order}">
 ${next.title} →
 </a>
 `;
@@ -130,7 +134,7 @@ ${next.title} →
 
 nav.innerHTML=html;
   const memoryId =
-  `song:${groupId}:${liveId}:${performanceId}:${setlist.id}:${song.order}`;
+  `song:${groupId}:${liveId}:${setlist.id}:${index}`;
 
 const giscus = document.createElement("script");
 

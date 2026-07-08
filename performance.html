@@ -22,14 +22,6 @@
     </section>
 
     <section class="section-block">
-      <div class="section-heading">
-        <h2>セットリスト</h2>
-        <p id="setlist-name"></p>
-      </div>
-      <div class="archive-grid" id="setlist"></div>
-    </section>
-
-    <section class="section-block">
       <div class="archive-grid">
         <a class="archive-card" href="#">
           <h3>MC</h3>
@@ -66,10 +58,6 @@
       const live = await loadJson(`data/lives/${groupId}/${liveId}.json`);
       const performance = live.performances.find(p => p.id === performanceId);
 
-      const setlist = live.setlists.find(s =>
-        s.performanceIds.includes(performanceId)
-      );
-
       document.title = `${performance.date} ${performance.time} | ${live.title} | V6 LIVE MEMORY`;
 
       document.getElementById("breadcrumb").innerHTML = `
@@ -86,32 +74,6 @@
       document.getElementById("performance-venue").textContent =
         `[${performance.area}] ${performance.venue}`;
 
-      const setlistName = document.getElementById("setlist-name");
-      const setlistContainer = document.getElementById("setlist");
-
-      if (!setlist) {
-        setlistName.textContent = "この公演のセットリストは未登録です。";
-        return;
-      }
-
-      setlistName.textContent = setlist.name;
-
-      setlist.songs.forEach(song => {
-        const card = document.createElement("a");
-        card.className = "archive-card";
-        card.href = `song.html?group=${groupId}&live=${liveId}&performance=${performanceId}&setlist=${setlist.id}&order=${song.order}`;
-
-        const sectionLabel = song.section === "encore" ? "Encore" : "";
-        const note = song.note ? ` / ${song.note}` : "";
-        const artist = song.artist ? song.artist : "";
-
-        card.innerHTML = `
-          <h3>${song.order}. ${song.title}</h3>
-          <p>${artist}${note}${sectionLabel ? " / " + sectionLabel : ""}</p>
-        `;
-
-        setlistContainer.appendChild(card);
-      });
     }
 
     init();
