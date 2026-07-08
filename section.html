@@ -180,15 +180,6 @@
 
       if (sectionId === "video") {
         appendSetlist(content, live, searchableCards);
-
-        const memoryBlock = appendMemoryBlock(
-          content,
-          "思い出",
-          "映像・円盤で見た思い出を記録できます。",
-          `section:${groupId}:${liveId}:video`
-        );
-        memoryBlock.dataset.search = `${live.title} 映像 円盤 DVD Blu-ray 配信 思い出`;
-        searchableCards.push(memoryBlock);
       }
 
       if (sectionId === "goods") {

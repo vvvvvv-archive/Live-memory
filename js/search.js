@@ -118,6 +118,10 @@
       return type === "song" || (type === "section" && parts[3] === "general");
     }
 
+    if (sectionId === "video") {
+      return type === "song";
+    }
+
     if (sectionId === "schedule") {
       return ["mc", "fanservice", "other"].includes(type);
     }
