@@ -69,6 +69,67 @@ function resolveSongFromMemoryParts(live, parts) {
   };
 }
 
+function songMemoryKey(song, index) {
+  const order = song && song.order !== undefined ? song.order : "unknown";
+  const title = song && song.title ? song.title : "song";
+  const slug = encodeURIComponent(title)
+    .replace(/%/g, "_")
+    .replace(/[^A-Za-z0-9_-]/g, "_")
+    .slice(0, 80);
+
+  return `song-${index}:order-${order}:${slug}`;
+}
+
+function currentSongMemoryId(type, groupId, liveId, setlistId, song, index) {
+  return `${type}:${groupId}:${liveId}:${setlistId}:${songMemoryKey(song, index)}`;
+}
+
+async function isCurrentMemoryId(memoryId) {
+  const parts = memoryId.split(":");
+  const type = parts[0];
+  const groupId = parts[1];
+  const liveId = parts[2];
+
+  if (!groupId || !liveId) {
+    return false;
+  }
+
+  const live = await loadLive(groupId, liveId).catch(() => null);
+
+  if (!live) {
+    return false;
+  }
+
+  if (type === "section") {
+    const sectionId = parts[3];
+    return ["general", "goods"].includes(sectionId);
+  }
+
+  if (type === "song" || type === "video-song") {
+    const { setlistId, songIndex, song } = resolveSongFromMemoryParts(live, parts);
+
+    if (!song || songIndex < 0) {
+      return false;
+    }
+
+    return memoryId === currentSongMemoryId(type, groupId, liveId, setlistId, song, songIndex);
+  }
+
+  if (["mc", "fanservice", "other"].includes(type)) {
+    const performanceId = parts[3];
+    return live.performances.some(item => item.id === performanceId)
+      && memoryId === `${type}:${groupId}:${liveId}:${performanceId}`;
+  }
+
+  if (type === "goods") {
+    const goodsId = parts[3];
+    return live.goods.some(item => item.id === goodsId)
+      && memoryId === `goods:${groupId}:${liveId}:${goodsId}`;
+  }
+
+  return false;
+}
+
 function stripMarkdown(value) {
   return String(value || "")
     .replace(/```[\s\S]*?```/g, " ")
@@ -178,6 +239,11 @@ async function subtitleForMemoryId(memoryId) {
 
 async function toSearchItem(discussion) {
   const memoryId = discussion.title;
+
+  if (!await isCurrentMemoryId(memoryId)) {
+    return null;
+  }
+
   const comments = discussion.comments.nodes.map(comment => stripMarkdown(comment.bodyText));
   const bodyText = stripInternalText(stripMarkdown(discussion.bodyText), memoryId);
   const commentText = stripInternalText(comments.join(" "), memoryId);
@@ -240,7 +306,11 @@ async function fetchDiscussions() {
 
     for (const discussion of discussions.nodes) {
       if (discussion.category?.name === "Memory") {
-        items.push(await toSearchItem(discussion));
+        const item = await toSearchItem(discussion);
+
+        if (item) {
+          items.push(item);
+        }
       }
     }
 
