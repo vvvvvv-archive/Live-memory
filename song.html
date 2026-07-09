@@ -49,11 +49,19 @@ const order=Number(params.get("order"));
 
 function redirectVideoSongReferrer(){
 
+try{
+
+const visitedVideoSection = sessionStorage.getItem("lastMemorySection")==="video";
+sessionStorage.removeItem("lastMemorySection");
+
+if(visitedVideoSection){
+location.replace(`video-song.html${location.search}`);
+return true;
+}
+
 if(!document.referrer){
 return false;
 }
-
-try{
 
 const referrer=new URL(document.referrer);
 
