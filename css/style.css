@@ -284,6 +284,27 @@ main {
   background: #e6edf5;
 }
 
+.search-result-context {
+  margin: 4px 0 0;
+  color: var(--sub);
+  font-size: .95rem;
+}
+
+.search-result-excerpt {
+  margin-top: 14px;
+  color: var(--text);
+  font-size: .92rem;
+  line-height: 1.75;
+}
+
+.search-highlight {
+  padding: 0 .12em;
+  color: var(--accent);
+  font-weight: 700;
+  background: #fff2bf;
+  border-radius: 4px;
+}
+
 .is-hidden {
   display: none !important;
 }

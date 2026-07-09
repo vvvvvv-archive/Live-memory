@@ -15,6 +15,102 @@
     return words.every(word => normalizedText.includes(word));
   }
 
+  function queryWords(query) {
+    return normalizeText(query).split(" ").filter(Boolean);
+  }
+
+  function escapeHtml(value) {
+    return String(value || "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  }
+
+  function escapeRegExp(value) {
+    return String(value).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  }
+
+  function deriveMemoryText(item) {
+    let text = item.memoryText || item.bodyText || item.commentText || "";
+
+    if (!text && item.searchText) {
+      text = item.searchText;
+
+      [
+        item.memoryId,
+        item.title,
+        item.subtitle,
+        item.href,
+        item.sourceUrl
+      ].filter(Boolean).forEach(part => {
+        text = text.split(part).join(" ");
+      });
+    }
+
+    return String(text || "").replace(/\s+/g, " ").trim();
+  }
+
+  function makeSnippet(text, query, maxLength = 82) {
+    const source = String(text || "").replace(/\s+/g, " ").trim();
+
+    if (!source) {
+      return "";
+    }
+
+    const words = queryWords(query);
+    const lowerSource = source.toLowerCase();
+    const hitIndex = words
+      .map(word => lowerSource.indexOf(word.toLowerCase()))
+      .filter(index => index >= 0)
+      .sort((a, b) => a - b)[0];
+
+    let start = 0;
+
+    if (hitIndex >= 0) {
+      start = Math.max(0, hitIndex - 28);
+    }
+
+    let snippet = source.slice(start, start + maxLength);
+
+    if (start > 0) {
+      snippet = `…${snippet}`;
+    }
+
+    if (start + maxLength < source.length) {
+      snippet = `${snippet}…`;
+    }
+
+    return snippet;
+  }
+
+  function highlightQuery(text, query) {
+    const words = queryWords(query);
+    let html = escapeHtml(text);
+
+    words.forEach(word => {
+      if (!word) return;
+      const pattern = new RegExp(escapeRegExp(escapeHtml(word)), "gi");
+      html = html.replace(pattern, match => `<mark class="search-highlight">${match}</mark>`);
+    });
+
+    return html;
+  }
+
+  function renderSubtitle(subtitle) {
+    const parts = String(subtitle || "").split(" / ").filter(Boolean);
+
+    if (parts.length <= 1) {
+      return `<h3>${escapeHtml(subtitle)}</h3>`;
+    }
+
+    return `
+      <h3>${escapeHtml(parts[0])}</h3>
+      <p class="search-result-context">${parts.slice(1).map(escapeHtml).join(" / ")}</p>
+    `;
+  }
+
   function bindCardFilter(input, cards, options = {}) {
     const empty = options.emptyElement || null;
 
@@ -63,12 +159,16 @@
         <p>${matched.length}件</p>
       </div>
       <div class="archive-grid search-result-grid">
-        ${matched.map(result => `
+        ${matched.map(result => {
+          const snippet = makeSnippet(result.memoryText || result.searchText, query);
+
+          return `
           <a class="archive-card search-result-card" href="${result.href}">
-            <h3>${result.title}</h3>
-            <p>${result.subtitle}</p>
+            ${renderSubtitle(result.subtitle)}
+            ${snippet ? `<p class="search-result-excerpt">「${highlightQuery(snippet, query)}」</p>` : ""}
           </a>
-        `).join("")}
+        `;
+        }).join("")}
       </div>
     `;
   }
@@ -89,6 +189,7 @@
         title: item.title || "記録された思い出",
         subtitle: item.subtitle || "思い出",
         href: item.href,
+        memoryText: deriveMemoryText(item),
         searchText: item.searchText || ""
       }));
   }

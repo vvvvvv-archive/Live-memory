@@ -139,6 +139,7 @@ async function toSearchItem(discussion) {
   const memoryId = discussion.title;
   const comments = discussion.comments.nodes.map(comment => stripMarkdown(comment.bodyText));
   const bodyText = stripMarkdown(discussion.bodyText);
+  const memoryText = [bodyText, comments.join(" ")].join(" ").replace(/\s+/g, " ").trim();
   const subtitle = await subtitleForMemoryId(memoryId);
   const href = await hrefForMemoryId(memoryId);
 
@@ -149,11 +150,11 @@ async function toSearchItem(discussion) {
     href,
     sourceUrl: discussion.url,
     updatedAt: discussion.updatedAt,
+    memoryText,
     searchText: [
       memoryId,
       subtitle,
-      bodyText,
-      comments.join(" ")
+      memoryText
     ].join(" ")
   };
 }
