@@ -42,6 +42,21 @@
       return response.json();
     }
 
+    function createMemoryGuidelines() {
+      const guidelines = document.createElement("div");
+      guidelines.className = "memory-guidelines";
+      guidelines.innerHTML = `
+        <h3>思い出を残すときのお願い</h3>
+        <ul>
+          <li>他の人や出演者を傷つける内容、公序良俗に反する内容はご遠慮ください。</li>
+          <li>誰かから聞いた話ではなく、ご自身が体験した内容を書いてください。</li>
+          <li>投稿前に、一度ご自身の文章を読み返してご確認ください。</li>
+        </ul>
+        <p>ルールを守って、<br>みんなでしあわせな思い出を共有しましょう。</p>
+      `;
+      return guidelines;
+    }
+
     async function init() {
       const groups = await loadJson("data/groups.json");
       const group = groups.find(g => g.id === groupId);
@@ -83,6 +98,7 @@
       giscus.async = true;
 
       document.getElementById("giscus-container").appendChild(giscus);
+      document.getElementById("giscus-container").appendChild(createMemoryGuidelines());
     }
 
     init();

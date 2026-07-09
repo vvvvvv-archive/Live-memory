@@ -166,6 +166,36 @@ main {
   font-size: .9rem;
 }
 
+.memory-guidelines {
+  margin-top: 16px;
+  padding: 16px 18px;
+  color: var(--sub);
+  font-size: .86rem;
+  line-height: 1.8;
+  background: rgba(255,255,255,.64);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+}
+
+.memory-guidelines h3 {
+  margin: 0 0 8px;
+  color: var(--accent);
+  font-size: .95rem;
+}
+
+.memory-guidelines p {
+  margin: 8px 0 0;
+}
+
+.memory-guidelines ul {
+  margin: 0;
+  padding-left: 1.2em;
+}
+
+.memory-guidelines li {
+  margin: 2px 0;
+}
+
 .search-empty {
   padding: 18px 0;
   color: var(--sub);
