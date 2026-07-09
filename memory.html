@@ -28,6 +28,7 @@
 
   <footer>V6 LIVE MEMORY</footer>
 
+  <script src="js/comment-tools.js"></script>
   <script>
     const params = new URLSearchParams(location.search);
     const groupId = params.get("group");
@@ -66,6 +67,7 @@
       giscus.async = true;
 
       container.appendChild(giscus);
+      container.appendChild(createMemberTagTools());
       container.appendChild(createMemoryGuidelines());
     }
 

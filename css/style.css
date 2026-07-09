@@ -196,6 +196,55 @@ main {
   margin: 2px 0;
 }
 
+.member-tag-tools {
+  margin-top: 16px;
+  padding: 16px 18px;
+  color: var(--sub);
+  font-size: .86rem;
+  line-height: 1.7;
+  background: rgba(255,255,255,.64);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+}
+
+.member-tag-tools h3 {
+  margin: 0 0 6px;
+  color: var(--accent);
+  font-size: .95rem;
+}
+
+.member-tag-tools p {
+  margin: 0 0 10px;
+}
+
+.member-tag-list {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.member-tag-button {
+  padding: 6px 10px;
+  color: var(--accent);
+  font: inherit;
+  font-size: .84rem;
+  background: var(--accent-soft);
+  border: 1px solid #d5dfeb;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.member-tag-button:hover,
+.member-tag-button:focus {
+  background: #e6edf5;
+}
+
+.member-tag-status {
+  min-height: 1.4em;
+  margin: 8px 0 0;
+  color: var(--accent);
+}
+
 .search-empty {
   padding: 18px 0;
   color: var(--sub);
