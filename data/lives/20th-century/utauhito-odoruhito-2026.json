@@ -9,22 +9,22 @@
     {
       "id": "general",
       "label": "総合",
-      "description": "ツアー全体の感想や思い出を残す場所です。"
+      "description": "ツアー全体の思い出や、曲ごとの思い出を残す場所です。"
     },
     {
       "id": "schedule",
       "label": "公演日程",
-      "description": "公演ごとの記憶をたどる場所です。"
+      "description": "各公演ごとのMC、ファンサ、その他の思い出を残す場所です。"
     },
     {
       "id": "video",
       "label": "映像・円盤",
-      "description": "DVD、Blu-ray、配信などで見た感想を残す場所です。"
+      "description": "ライブ映像、特典映像、配信などの思い出を残す場所です。"
     },
     {
       "id": "goods",
       "label": "グッズ",
-      "description": "このライブで発売されたグッズの情報と思い出を集める場所です。"
+      "description": "販売されたグッズに関する思い出を残す場所です。"
     }
   ],
   "performances": [
