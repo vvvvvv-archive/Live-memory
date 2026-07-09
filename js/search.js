@@ -220,7 +220,7 @@
     }
 
     if (sectionId === "video") {
-      return type === "song";
+      return type === "video-song";
     }
 
     if (sectionId === "goods") {

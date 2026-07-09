@@ -62,7 +62,7 @@ async function hrefForMemoryId(memoryId) {
     return `section.html?group=${groupId}&live=${liveId}&section=${sectionId}`;
   }
 
-  if (type === "song") {
+  if (type === "song" || type === "video-song") {
     const groupId = parts[1];
     const liveId = parts[2];
     const isLegacySongId = parts.length >= 6;
@@ -75,7 +75,8 @@ async function hrefForMemoryId(memoryId) {
       : Number(songIndexOrOrder);
     const song = setlist?.songs[songIndex];
     const order = song?.order || "";
-    return `song.html?group=${groupId}&live=${liveId}&setlist=${setlistId}&song=${songIndex}&order=${order}`;
+    const page = type === "video-song" ? "video-song.html" : "song.html";
+    return `${page}?group=${groupId}&live=${liveId}&setlist=${setlistId}&song=${songIndex}&order=${order}`;
   }
 
   if (["mc", "fanservice", "other"].includes(type)) {
@@ -102,7 +103,7 @@ async function subtitleForMemoryId(memoryId) {
     return `${live.title} / ${section?.label || sectionId}`;
   }
 
-  if (type === "song") {
+  if (type === "song" || type === "video-song") {
     const groupId = parts[1];
     const liveId = parts[2];
     const isLegacySongId = parts.length >= 6;
@@ -114,6 +115,9 @@ async function subtitleForMemoryId(memoryId) {
       ? setlist?.songs.findIndex(song => song.order === Number(songIndexOrOrder))
       : Number(songIndexOrOrder);
     const song = setlist?.songs[songIndex];
+    if (type === "video-song") {
+      return `${live.title} / 映像・円盤 / ${song ? `${song.order}. ${song.title}` : "song"}`;
+    }
     return `${live.title} / ${song ? `${song.order}. ${song.title}` : "曲"}`;
   }
 

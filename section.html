@@ -108,7 +108,7 @@
       return block;
     }
 
-    function appendSetlist(container, live, searchableCards) {
+    function appendSetlist(container, live, searchableCards, targetSection = "general") {
       const setlist = live.setlists.find(s => s.id === "v2") || live.setlists[live.setlists.length - 1];
 
       const heading = document.createElement("div");
@@ -127,7 +127,8 @@
         const note = song.note ? ` / ${song.note}` : "";
         const artist = song.artist ? song.artist : "";
         const subtitle = `${artist}${note}${sectionLabel ? " / " + sectionLabel : ""}`;
-        const href = `song.html?group=${groupId}&live=${liveId}&setlist=${setlist.id}&song=${index}&order=${song.order}`;
+        const songPage = targetSection === "video" ? "video-song.html" : "song.html";
+        const href = `${songPage}?group=${groupId}&live=${liveId}&setlist=${setlist.id}&song=${index}&order=${song.order}`;
         const card = createCard(title, subtitle, href);
         card.dataset.search = `${live.title} ${title} ${subtitle}`;
         searchableCards.push(card);
@@ -184,7 +185,7 @@
       }
 
       if (sectionId === "general") {
-        appendSetlist(content, live, searchableCards);
+        appendSetlist(content, live, searchableCards, "general");
 
         const memoryBlock = appendMemoryBlock(
           content,
@@ -197,7 +198,7 @@
       }
 
       if (sectionId === "video") {
-        appendSetlist(content, live, searchableCards);
+        appendSetlist(content, live, searchableCards, "video");
       }
 
       if (sectionId === "goods") {

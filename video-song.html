@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>V6 LIVE MEMORY</title>
+
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+<main>
+
+<nav class="breadcrumb" id="breadcrumb"></nav>
+
+<section class="lead-card">
+  <h1 id="song-title"></h1>
+  <p id="song-artist"></p>
+</section>
+
+<section class="section-block">
+
+<div class="section-heading">
+<h2>映像・円盤で観た思い出</h2>
+<p>ライブ映像、円盤、特典映像でこの曲を観た思い出を記録できます。</p>
+</div>
+
+<div id="giscus-container"></div>
+<nav class="song-navigation" id="song-navigation"></nav>
+</section>
+
+</main>
+
+<footer>
+V6 LIVE MEMORY
+</footer>
+
+<script src="js/comment-tools.js"></script>
+<script>
+
+const params = new URLSearchParams(location.search);
+
+const groupId=params.get("group");
+const liveId=params.get("live");
+const setlistId=params.get("setlist");
+const songIndexParam=params.get("song");
+const order=Number(params.get("order"));
+
+async function loadJson(path){
+
+const r=await fetch(path);
+
+return await r.json();
+
+}
+
+function createMemoryGuidelines(){
+
+const guidelines=document.createElement("div");
+
+guidelines.className="memory-guidelines";
+
+guidelines.innerHTML=`
+  <h3>思い出を残すときのお願い</h3>
+  <ul>
+    <li>他の人や出演者を傷つける内容、公序良俗に反する内容はご遠慮ください。</li>
+    <li>誰かから聞いた話ではなく、ご自身が体験した内容を書いてください。</li>
+    <li>投稿前に、一度ご自身の文章を読み返してご確認ください。</li>
+  </ul>
+  <p>ルールを守って、<br>みんなでしあわせな思い出を共有しましょう。</p>
+`;
+
+return guidelines;
+
+}
+
+async function init(){
+
+const groups=await loadJson("data/groups.json");
+
+const group=groups.find(g=>g.id===groupId);
+
+const live=await loadJson(`data/lives/${groupId}/${liveId}.json`);
+
+const setlist=live.setlists.find(s=>s.id===setlistId);
+
+const songIndex=songIndexParam!==null
+? Number(songIndexParam)
+: setlist.songs.findIndex(s=>s.order===order);
+
+const song=setlist.songs[songIndex];
+
+document.title=`${song.title} | 映像・円盤 | V6 LIVE MEMORY`;
+
+document.getElementById("breadcrumb").innerHTML=`
+<a href="index.html">HOME</a>
+&gt;
+<a href="group.html?id=${group.id}">${group.name}</a>
+&gt;
+<a href="live.html?group=${group.id}&live=${live.id}">
+${live.title}
+</a>
+&gt;
+<a href="section.html?group=${group.id}&live=${live.id}&section=video">
+映像・円盤
+</a>
+&gt;
+${song.title}
+`;
+
+
+document.getElementById("song-title").textContent=song.title;
+
+document.getElementById("song-artist").textContent=song.note
+? `${song.artist} / ${song.note}`
+: song.artist;
+
+const nav=document.getElementById("song-navigation");
+
+const songs=setlist.songs;
+
+const index=songIndex;
+
+let html="";
+
+if(index>0){
+
+const prev=songs[index-1];
+
+html+=`
+<a href="video-song.html?group=${groupId}&live=${liveId}&setlist=${setlist.id}&song=${index - 1}&order=${prev.order}">
+← ${prev.title}
+</a>
+`;
+
+}
+
+html+=`
+<a href="section.html?group=${groupId}&live=${liveId}&section=video">
+映像・円盤へ戻る
+</a>
+`;
+
+if(index<songs.length-1){
+
+const next=songs[index+1];
+
+html+=`
+<a href="video-song.html?group=${groupId}&live=${liveId}&setlist=${setlist.id}&song=${index + 1}&order=${next.order}">
+${next.title} →
+</a>
+`;
+
+}
+
+nav.innerHTML=html;
+
+const memoryId =
+`video-song:${groupId}:${liveId}:${setlist.id}:${index}`;
+
+const giscus = document.createElement("script");
+
+giscus.src = "https://giscus.app/client.js";
+giscus.setAttribute("data-repo", "ibitsu10/V6-Live-memory");
+giscus.setAttribute("data-repo-id", "R_kgDOTPl_LQ");
+giscus.setAttribute("data-category", "Memory");
+giscus.setAttribute("data-category-id", "DIC_kwDOTPl_Lc4DAsjk");
+giscus.setAttribute("data-mapping", "specific");
+giscus.setAttribute("data-term", memoryId);
+giscus.setAttribute("data-strict", "0");
+giscus.setAttribute("data-reactions-enabled", "1");
+giscus.setAttribute("data-emit-metadata", "1");
+giscus.setAttribute("data-input-position", "bottom");
+giscus.setAttribute("data-theme", "light");
+giscus.setAttribute("data-lang", "ja");
+giscus.setAttribute("crossorigin", "anonymous");
+giscus.async = true;
+
+document.getElementById("giscus-container").appendChild(giscus);
+document.getElementById("giscus-container").appendChild(createMemberTagTools());
+document.getElementById("giscus-container").appendChild(createMemoryGuidelines());
+
+}
+
+init();
+
+</script>
+
+</body>
+
+</html>
