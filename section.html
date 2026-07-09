@@ -120,6 +120,16 @@
       return `video-song.html?group=${groupId}&live=${liveId}&setlist=${setlist.id}&song=${index}&order=${song.order}`;
     }
 
+    function leadDescription(sectionId, fallback) {
+      const descriptions = {
+        general: "ツアー全体の思い出や、曲ごとの思い出を残す場所です。",
+        schedule: "各公演ごとのMC、ファンサ、その他の思い出を残す場所です。",
+        goods: "販売されたグッズに関する思い出を残す場所です。"
+      };
+
+      return descriptions[sectionId] || fallback;
+    }
+
     function appendSetlist(container, live, searchableCards, songHrefBuilder) {
       const setlist = live.setlists.find(s => s.id === "v2") || live.setlists[live.setlists.length - 1];
 
@@ -165,7 +175,7 @@
       `;
 
       document.getElementById("section-title").textContent = section.label;
-      document.getElementById("section-description").textContent = section.description;
+      document.getElementById("section-description").textContent = leadDescription(sectionId, section.description);
 
       const content = document.getElementById("content");
       const searchableCards = [];
