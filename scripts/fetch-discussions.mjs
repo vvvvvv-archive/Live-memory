@@ -80,6 +80,27 @@ function stripMarkdown(value) {
     .trim();
 }
 
+function stripInternalText(value, memoryId = "") {
+  return String(value || "")
+    .replaceAll(memoryId, " ")
+    .replace(/https?:\/\/\S+/g, " ")
+    .replace(/\b(?:section|song|video-song|mc|fanservice|other|goods):[A-Za-z0-9:_\-.%]+/g, " ")
+    .replace(/\b(?:identifier|discussionTerm|pathname)\b/gi, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function pageTypeForMemoryId(memoryId) {
+  const type = memoryId.split(":")[0];
+
+  if (type === "song" || type === "section") return { pageType: "general", pageTypeLabel: "総合" };
+  if (type === "video-song") return { pageType: "video", pageTypeLabel: "映像・円盤" };
+  if (["mc", "fanservice", "other"].includes(type)) return { pageType: "schedule", pageTypeLabel: "公演日程" };
+  if (type === "goods") return { pageType: "goods", pageTypeLabel: "グッズ" };
+
+  return { pageType: "", pageTypeLabel: "思い出" };
+}
+
 async function hrefForMemoryId(memoryId) {
   const parts = memoryId.split(":");
   const type = parts[0];
@@ -132,7 +153,7 @@ async function subtitleForMemoryId(memoryId) {
     const live = await loadLive(groupId, liveId);
     const { song } = resolveSongFromMemoryParts(live, parts);
     if (type === "video-song") {
-      return `${live.title} / 映像・円盤 / ${song ? `${song.order}. ${song.title}` : "song"}`;
+      return `${live.title} / 映像・円盤 / ${song ? `${song.order}. ${song.title}` : "曲"}`;
     }
     return `${live.title} / ${song ? `${song.order}. ${song.title}` : "曲"}`;
   }
@@ -158,21 +179,25 @@ async function subtitleForMemoryId(memoryId) {
 async function toSearchItem(discussion) {
   const memoryId = discussion.title;
   const comments = discussion.comments.nodes.map(comment => stripMarkdown(comment.bodyText));
-  const bodyText = stripMarkdown(discussion.bodyText);
-  const memoryText = [bodyText, comments.join(" ")].join(" ").replace(/\s+/g, " ").trim();
+  const bodyText = stripInternalText(stripMarkdown(discussion.bodyText), memoryId);
+  const commentText = stripInternalText(comments.join(" "), memoryId);
+  const memoryText = (commentText || bodyText).replace(/\s+/g, " ").trim();
   const subtitle = await subtitleForMemoryId(memoryId);
   const href = await hrefForMemoryId(memoryId);
+  const { pageType, pageTypeLabel } = pageTypeForMemoryId(memoryId);
 
   return {
     memoryId,
     title: "記録された思い出",
     subtitle,
     href,
+    pageType,
+    pageTypeLabel,
     sourceUrl: discussion.url,
     updatedAt: discussion.updatedAt,
     memoryText,
     searchText: [
-      memoryId,
+      pageTypeLabel,
       subtitle,
       memoryText
     ].join(" ")
@@ -225,7 +250,37 @@ async function fetchDiscussions() {
   return items;
 }
 
-const memories = await fetchDiscussions();
+function dedupeSearchItems(items) {
+  const byHref = new Map();
+
+  items.forEach(item => {
+    const existing = byHref.get(item.href);
+
+    if (!existing) {
+      byHref.set(item.href, item);
+      return;
+    }
+
+    if (item.memoryText && !existing.memoryText.includes(item.memoryText)) {
+      existing.memoryText = [existing.memoryText, item.memoryText].filter(Boolean).join(" ");
+    }
+
+    existing.searchText = [
+      existing.pageTypeLabel,
+      existing.subtitle,
+      existing.memoryText
+    ].filter(Boolean).join(" ");
+
+    if (new Date(item.updatedAt) > new Date(existing.updatedAt)) {
+      existing.updatedAt = item.updatedAt;
+      existing.sourceUrl = item.sourceUrl;
+    }
+  });
+
+  return Array.from(byHref.values());
+}
+
+const memories = dedupeSearchItems(await fetchDiscussions());
 await fs.mkdir("data", { recursive: true });
 await fs.writeFile("data/memories.json", `${JSON.stringify(memories, null, 2)}\n`);
 console.log(`Wrote ${memories.length} memories.`);

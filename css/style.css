@@ -284,6 +284,14 @@ main {
   background: #e6edf5;
 }
 
+.search-result-type {
+  display: inline-block;
+  margin-bottom: 10px;
+  color: var(--accent);
+  font-size: .82rem;
+  font-weight: 700;
+}
+
 .search-result-context {
   margin: 4px 0 0;
   color: var(--sub);

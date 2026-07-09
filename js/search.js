@@ -1,6 +1,15 @@
 (function () {
   let memoryResultsCache = null;
 
+  const PAGE_TYPES = {
+    general: "総合",
+    schedule: "公演日程",
+    video: "映像・円盤",
+    goods: "グッズ",
+    live: "ライブ",
+    group: "グループ"
+  };
+
   function normalizeText(value) {
     return String(value || "")
       .normalize("NFKC")
@@ -32,24 +41,29 @@
     return String(value).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
   }
 
+  function stripInternalText(value, item = {}) {
+    let text = String(value || "");
+    const removals = [
+      item.memoryId,
+      item.href,
+      item.sourceUrl
+    ].filter(Boolean);
+
+    removals.forEach(part => {
+      text = text.split(part).join(" ");
+    });
+
+    return text
+      .replace(/https?:\/\/\S+/g, " ")
+      .replace(/\b(?:section|song|video-song|mc|fanservice|other|goods):[A-Za-z0-9:_\-.%]+/g, " ")
+      .replace(/\b(?:identifier|discussionTerm|pathname)\b/gi, " ")
+      .replace(/\s+/g, " ")
+      .trim();
+  }
+
   function deriveMemoryText(item) {
-    let text = item.memoryText || item.bodyText || item.commentText || "";
-
-    if (!text && item.searchText) {
-      text = item.searchText;
-
-      [
-        item.memoryId,
-        item.title,
-        item.subtitle,
-        item.href,
-        item.sourceUrl
-      ].filter(Boolean).forEach(part => {
-        text = text.split(part).join(" ");
-      });
-    }
-
-    return String(text || "").replace(/\s+/g, " ").trim();
+    const text = item.memoryText || item.bodyText || item.commentText || "";
+    return stripInternalText(text, item);
   }
 
   function makeSnippet(text, query, maxLength = 82) {
@@ -60,9 +74,9 @@
     }
 
     const words = queryWords(query);
-    const lowerSource = source.toLowerCase();
+    const normalizedSource = normalizeText(source);
     const hitIndex = words
-      .map(word => lowerSource.indexOf(word.toLowerCase()))
+      .map(word => normalizedSource.indexOf(word))
       .filter(index => index >= 0)
       .sort((a, b) => a - b)[0];
 
@@ -98,17 +112,88 @@
     return html;
   }
 
-  function renderSubtitle(subtitle) {
-    const parts = String(subtitle || "").split(" / ").filter(Boolean);
+  function memoryParts(item) {
+    return String(item.memoryId || "").split(":");
+  }
 
-    if (parts.length <= 1) {
-      return `<h3>${escapeHtml(subtitle)}</h3>`;
+  function pageTypeFromMemoryId(memoryId) {
+    const type = String(memoryId || "").split(":")[0];
+
+    if (type === "song" || type === "section") return "general";
+    if (type === "video-song") return "video";
+    if (["mc", "fanservice", "other"].includes(type)) return "schedule";
+    if (type === "goods") return "goods";
+
+    return "";
+  }
+
+  function pageTypeFromHref(href) {
+    const value = String(href || "");
+
+    if (value.includes("video-song.html") || value.includes("video.html")) return "video";
+    if (value.includes("goods.html") || value.includes("section=goods")) return "goods";
+    if (value.includes("memory.html") || value.includes("performance.html") || value.includes("section=schedule")) return "schedule";
+    if (value.includes("song.html") || value.includes("section=general")) return "general";
+    if (value.includes("live.html")) return "live";
+    if (value.includes("group.html")) return "group";
+
+    return "";
+  }
+
+  function pageTypeLabel(result) {
+    const type = result.pageType || pageTypeFromMemoryId(result.memoryId) || pageTypeFromHref(result.href);
+    return PAGE_TYPES[type] || result.pageTypeLabel || "思い出";
+  }
+
+  function splitSubtitle(subtitle) {
+    return String(subtitle || "").split(" / ").filter(Boolean);
+  }
+
+  function renderResultText(result) {
+    const parts = splitSubtitle(result.subtitle);
+    const title = result.title || "";
+
+    if (result.isMemoryResult && parts.length) {
+      return `
+        <h3>${escapeHtml(parts[0])}</h3>
+        ${parts.slice(1).map(part => `<p class="search-result-context">${escapeHtml(part)}</p>`).join("")}
+      `;
     }
 
     return `
-      <h3>${escapeHtml(parts[0])}</h3>
-      <p class="search-result-context">${parts.slice(1).map(escapeHtml).join(" / ")}</p>
+      <h3>${escapeHtml(title || parts[0] || "")}</h3>
+      ${parts.length ? `<p class="search-result-context">${escapeHtml(parts.join(" / "))}</p>` : ""}
     `;
+  }
+
+  function uniqueResults(results) {
+    const byHref = new Map();
+
+    results.forEach(result => {
+      const key = result.href || `${result.title}:${result.subtitle}`;
+      const existing = byHref.get(key);
+
+      if (!existing) {
+        byHref.set(key, result);
+        return;
+      }
+
+      const existingText = existing.memoryText || "";
+      const nextText = result.memoryText || "";
+      const preferNext = (!existingText && nextText) || (result.isMemoryResult && !existing.isMemoryResult);
+
+      if (preferNext) {
+        byHref.set(key, {
+          ...result,
+          memoryText: [nextText, existingText].filter(Boolean).join(" ")
+        });
+      } else if (nextText && !existingText.includes(nextText)) {
+        existing.memoryText = [existingText, nextText].filter(Boolean).join(" ");
+        existing.searchText = [existing.searchText, result.searchText].filter(Boolean).join(" ");
+      }
+    });
+
+    return Array.from(byHref.values());
   }
 
   function bindCardFilter(input, cards, options = {}) {
@@ -140,7 +225,7 @@
       return;
     }
 
-    const matched = results.filter(result => matchesQuery(result.searchText, query));
+    const matched = uniqueResults(results.filter(result => matchesQuery(result.searchText, query)));
     container.hidden = false;
 
     if (matched.length === 0) {
@@ -160,11 +245,12 @@
       </div>
       <div class="archive-grid search-result-grid">
         ${matched.map(result => {
-          const snippet = makeSnippet(result.memoryText || result.searchText, query);
+          const snippet = makeSnippet(result.memoryText, query);
 
           return `
-          <a class="archive-card search-result-card" href="${result.href}">
-            ${renderSubtitle(result.subtitle)}
+          <a class="archive-card search-result-card" href="${escapeHtml(result.href)}">
+            <span class="search-result-type">【${escapeHtml(pageTypeLabel(result))}】</span>
+            ${renderResultText(result)}
             ${snippet ? `<p class="search-result-excerpt">「${highlightQuery(snippet, query)}」</p>` : ""}
           </a>
         `;
@@ -183,19 +269,30 @@
       }
     }
 
-    return memoryResultsCache
+    return uniqueResults(memoryResultsCache
       .filter(item => item.href && filter(item))
-      .map(item => ({
-        title: item.title || "記録された思い出",
-        subtitle: item.subtitle || "思い出",
-        href: item.href,
-        memoryText: deriveMemoryText(item),
-        searchText: item.searchText || ""
-      }));
-  }
+      .map(item => {
+        const memoryText = deriveMemoryText(item);
+        const cleanSearchText = stripInternalText(item.searchText || "", item);
+        const pageType = item.pageType || pageTypeFromMemoryId(item.memoryId);
 
-  function memoryParts(item) {
-    return String(item.memoryId || "").split(":");
+        return {
+          title: item.title || "記録された思い出",
+          subtitle: item.subtitle || "思い出",
+          href: item.href,
+          memoryId: item.memoryId,
+          pageType,
+          pageTypeLabel: item.pageTypeLabel,
+          memoryText,
+          isMemoryResult: true,
+          searchText: [
+            item.subtitle,
+            item.pageTypeLabel || PAGE_TYPES[pageType],
+            cleanSearchText,
+            memoryText
+          ].filter(Boolean).join(" ")
+        };
+      }));
   }
 
   function isMemoryInGroup(item, groupId) {
@@ -220,7 +317,7 @@
     }
 
     if (sectionId === "video") {
-      return type === "video-song";
+      return type === "video-song" || (type === "section" && parts[3] === "video");
     }
 
     if (sectionId === "goods") {

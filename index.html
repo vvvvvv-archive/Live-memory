@@ -101,14 +101,19 @@
         title: live.title,
         subtitle: `${group.name} / ${live.type} / ${live.year}`,
         href: `live.html?group=${group.id}&live=${live.id}`,
+        pageType: "live",
         searchText: `${group.name} ${live.type} ${live.year} ${live.title}`
       });
 
       live.sections.forEach(section => {
+        const href = section.id === "video"
+          ? `video.html?group=${group.id}&live=${live.id}`
+          : `section.html?group=${group.id}&live=${live.id}&section=${section.id}`;
         results.push({
           title: `${live.title} / ${section.label}`,
           subtitle: `${group.name} / ${section.description}`,
-          href: `section.html?group=${group.id}&live=${live.id}&section=${section.id}`,
+          href,
+          pageType: section.id,
           searchText: `${group.name} ${live.title} ${section.label} ${section.description}`
         });
       });
@@ -118,6 +123,7 @@
           title: `${performance.date} ${performance.time}`,
           subtitle: `${live.title} / [${performance.area}] ${performance.venue}`,
           href: `performance.html?group=${group.id}&live=${live.id}&performance=${performance.id}`,
+          pageType: "schedule",
           searchText: `${group.name} ${live.title} ${performance.date} ${performance.time} ${performance.area} ${performance.venue}`
         });
       });
@@ -128,7 +134,18 @@
           title: `${song.order}. ${song.title}`,
           subtitle: `${live.title} / ${song.artist}${song.note ? " / " + song.note : ""}`,
           href: `song.html?group=${group.id}&live=${live.id}&setlist=${setlist.id}&song=${index}&order=${song.order}`,
+          pageType: "general",
           searchText: `${group.name} ${live.title} ${song.order} ${song.title} ${song.artist} ${song.note || ""}`
+        });
+      });
+
+      setlist.songs.forEach((song, index) => {
+        results.push({
+          title: `${song.order}. ${song.title}`,
+          subtitle: `${live.title} / 映像・円盤`,
+          href: `video-song.html?group=${group.id}&live=${live.id}&setlist=${setlist.id}&song=${index}&order=${song.order}`,
+          pageType: "video",
+          searchText: `${group.name} ${live.title} 映像 円盤 ${song.order} ${song.title} ${song.artist} ${song.note || ""}`
         });
       });
 
@@ -137,6 +154,7 @@
           title: goods.name,
           subtitle: `${live.title} / ${goods.price.toLocaleString()}円`,
           href: `goods.html?group=${group.id}&live=${live.id}&goods=${goods.id}`,
+          pageType: "goods",
           searchText: `${group.name} ${live.title} ${goods.name} ${goods.price}円 グッズ goods`
         });
       });
@@ -148,6 +166,7 @@
         title: group.name,
         subtitle: group.types.join(" / "),
         href: `group.html?id=${group.id}`,
+        pageType: "group",
         searchText: `${group.name} ${group.types.join(" ")}`
       }));
 
