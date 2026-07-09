@@ -1,2 +1,2 @@
-# V6-Live-memory
+# Live-memory
 archive of V6,20th Century,Coming Century

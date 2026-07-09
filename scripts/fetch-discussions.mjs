@@ -2,7 +2,7 @@ import fs from "node:fs/promises";
 import path from "node:path";
 
 const token = process.env.GITHUB_TOKEN;
-const repository = process.env.GITHUB_REPOSITORY || "ibitsu10/V6-Live-memory";
+const repository = process.env.GITHUB_REPOSITORY || "vvvvvv-archive/Live-memory";
 const [owner, repo] = repository.split("/");
 
 if (!token) {
@@ -17,7 +17,7 @@ async function graphql(query, variables = {}) {
     headers: {
       "Authorization": `Bearer ${token}`,
       "Content-Type": "application/json",
-      "User-Agent": "V6-Live-memory"
+      "User-Agent": "Live-memory"
     },
     body: JSON.stringify({ query, variables })
   });
