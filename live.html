@@ -44,6 +44,14 @@
       return response.json();
     }
 
+    function sectionHref(sectionId) {
+      if (sectionId === "video") {
+        return `video.html?group=${groupId}&live=${liveId}`;
+      }
+
+      return `section.html?group=${groupId}&live=${liveId}&section=${sectionId}`;
+    }
+
     async function init() {
       const groups = await loadJson("data/groups.json");
       const group = groups.find(g => g.id === groupId);
@@ -72,7 +80,7 @@
       live.sections.forEach(section => {
         const card = document.createElement("a");
         card.className = "archive-card";
-        card.href = `section.html?group=${groupId}&live=${liveId}&section=${section.id}`;
+        card.href = sectionHref(section.id);
 
         let subText = section.description;
 
@@ -106,7 +114,7 @@
         searchResults.push({
           title: section.label,
           subtitle: section.description,
-          href: `section.html?group=${groupId}&live=${liveId}&section=${section.id}`,
+          href: sectionHref(section.id),
           searchText: `${live.title} ${section.label} ${section.description}`
         });
       });

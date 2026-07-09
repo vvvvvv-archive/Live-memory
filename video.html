@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>V6 LIVE MEMORY</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+  <main>
+    <nav class="breadcrumb" id="breadcrumb"></nav>
+
+    <section class="lead-card">
+      <h1>映像・円盤</h1>
+      <p>ライブ映像、特典映像を観た思い出</p>
+    </section>
+
+    <section class="search-card">
+      <label for="video-search">このページの思い出を探す</label>
+      <input id="video-search" type="search" placeholder="曲名・メンバー名・言葉で探す">
+    </section>
+
+    <section class="section-block search-results" id="video-memory-search-results" hidden></section>
+
+    <section class="section-block" id="content"></section>
+  </main>
+
+  <footer>
+    V6 LIVE MEMORY
+  </footer>
+
+  <script src="js/search.js"></script>
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const groupId = params.get("group");
+    const liveId = params.get("live");
+
+    async function loadJson(path) {
+      const response = await fetch(path);
+      return response.json();
+    }
+
+    function createCard(title, subtitle, href) {
+      const a = document.createElement("a");
+      a.className = "archive-card";
+      a.href = href;
+      a.innerHTML = `
+        <h3>${title}</h3>
+        <p>${subtitle}</p>
+      `;
+      return a;
+    }
+
+    function videoSongHref(setlist, song, index) {
+      return `video-song.html?group=${groupId}&live=${liveId}&setlist=${setlist.id}&song=${index}&order=${song.order}`;
+    }
+
+    function appendSetlist(container, live, searchableCards) {
+      const setlist = live.setlists.find(s => s.id === "v2") || live.setlists[live.setlists.length - 1];
+
+      const heading = document.createElement("div");
+      heading.className = "section-heading";
+      heading.innerHTML = `
+        <h2>セットリスト</h2>
+      `;
+      container.appendChild(heading);
+
+      const grid = document.createElement("div");
+      grid.className = "archive-grid";
+
+      setlist.songs.forEach((song, index) => {
+        const title = `${song.order}. ${song.title}`;
+        const sectionLabel = song.section === "encore" ? "Encore" : "";
+        const note = song.note ? ` / ${song.note}` : "";
+        const artist = song.artist ? song.artist : "";
+        const subtitle = `${artist}${note}${sectionLabel ? " / " + sectionLabel : ""}`;
+        const href = videoSongHref(setlist, song, index);
+        const card = createCard(title, subtitle, href);
+        card.dataset.search = `${live.title} 映像 円盤 ${title} ${subtitle}`;
+        searchableCards.push(card);
+        grid.appendChild(card);
+      });
+
+      container.appendChild(grid);
+    }
+
+    async function init() {
+      const groups = await loadJson("data/groups.json");
+      const group = groups.find(g => g.id === groupId);
+      const live = await loadJson(`data/lives/${groupId}/${liveId}.json`);
+
+      sessionStorage.setItem("lastMemorySection", "video");
+
+      document.title = `映像・円盤 | ${live.title} | V6 LIVE MEMORY`;
+
+      document.getElementById("breadcrumb").innerHTML = `
+        <a href="index.html">HOME</a> &gt;
+        <a href="group.html?id=${group.id}">${group.name}</a> &gt;
+        <a href="live.html?group=${group.id}&live=${live.id}">${live.title}</a> &gt;
+        映像・円盤
+      `;
+
+      const content = document.getElementById("content");
+      const searchableCards = [];
+      appendSetlist(content, live, searchableCards);
+
+      const empty = document.createElement("p");
+      empty.className = "search-empty";
+      empty.textContent = "一致する思い出の入口は見つかりませんでした。";
+      empty.hidden = true;
+      content.appendChild(empty);
+
+      const input = document.getElementById("video-search");
+      const memoryResults = await MemorySearch.loadMemoryResults(item =>
+        MemorySearch.isMemoryInSection(item, groupId, liveId, "video")
+      );
+      const memoryResultsContainer = document.getElementById("video-memory-search-results");
+
+      MemorySearch.bindCardFilter(
+        input,
+        searchableCards,
+        { emptyElement: empty }
+      );
+      input.addEventListener("input", () => {
+        MemorySearch.renderResults(memoryResultsContainer, memoryResults, input.value);
+      });
+    }
+
+    init();
+  </script>
+</body>
+</html>

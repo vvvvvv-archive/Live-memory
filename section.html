@@ -38,6 +38,10 @@
     const liveId = params.get("live");
     const sectionId = params.get("section");
 
+    if (sectionId === "video") {
+      location.replace(`video.html?group=${groupId}&live=${liveId}`);
+    }
+
     async function loadJson(path) {
       const response = await fetch(path);
       return response.json();

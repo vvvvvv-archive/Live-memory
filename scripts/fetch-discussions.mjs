@@ -59,6 +59,9 @@ async function hrefForMemoryId(memoryId) {
 
   if (type === "section") {
     const [, groupId, liveId, sectionId] = parts;
+    if (sectionId === "video") {
+      return `video.html?group=${groupId}&live=${liveId}`;
+    }
     return `section.html?group=${groupId}&live=${liveId}&section=${sectionId}`;
   }
 
