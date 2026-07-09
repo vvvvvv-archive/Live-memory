@@ -47,6 +47,34 @@ const setlistId=params.get("setlist");
 const songIndexParam=params.get("song");
 const order=Number(params.get("order"));
 
+function redirectVideoSongReferrer(){
+
+if(!document.referrer){
+return false;
+}
+
+try{
+
+const referrer=new URL(document.referrer);
+
+const isVideoSection =
+referrer.origin===location.origin &&
+referrer.pathname.endsWith("/section.html") &&
+referrer.searchParams.get("section")==="video";
+
+if(isVideoSection){
+location.replace(`video-song.html${location.search}`);
+return true;
+}
+
+}catch(error){
+return false;
+}
+
+return false;
+
+}
+
 async function loadJson(path){
 
 const r=await fetch(path);
@@ -182,7 +210,9 @@ document.getElementById("giscus-container").appendChild(createMemoryGuidelines()
 }
   
 
+if(!redirectVideoSongReferrer()){
 init();
+}
 
 </script>
 
