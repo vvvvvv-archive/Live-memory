@@ -76,16 +76,20 @@
 
         let subText = section.description;
 
+        if (section.id === "general") {
+          subText = "ツアー全体の思い出や、曲ごとの思い出";
+        }
+
         if (section.id === "schedule") {
-          subText = `各公演の思い出　全${live.performances.length}公演`;
+          subText = "各公演ごとのMC、ファンサ、その他の思い出";
         }
 
         if (section.id === "goods") {
-          subText = `グッズの思い出　登録グッズ ${live.goods.length}件`;
+          subText = "グッズの思い出";
         }
 
         if (section.id === "video") {
-          subText = "映像作品の思い出";
+          subText = "ライブ映像、特典映像を観た思い出";
         }
 
         card.innerHTML = `
