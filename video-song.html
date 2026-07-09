@@ -37,6 +37,7 @@ V6 LIVE MEMORY
 </footer>
 
 <script src="js/comment-tools.js"></script>
+<script src="js/memory-ids.js"></script>
 <script>
 
 const params = new URLSearchParams(location.search);
@@ -157,7 +158,7 @@ ${next.title} →
 nav.innerHTML=html;
 
 const memoryId =
-`video-song:${groupId}:${liveId}:${setlist.id}:${index}`;
+videoSongMemoryId(groupId, liveId, setlist.id, song, index);
 
 const giscus = document.createElement("script");
 

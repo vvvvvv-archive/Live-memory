@@ -42,6 +42,33 @@ async function loadLive(groupId, liveId) {
   return liveCache.get(key);
 }
 
+function resolveSongFromMemoryParts(live, parts) {
+  const type = parts[0];
+  const isNewSongId = parts[4]?.startsWith("song-");
+  const isLegacyPerformanceSongId = !isNewSongId && parts.length >= 6;
+  const setlistId = isLegacyPerformanceSongId ? parts[4] : parts[3];
+  const songIndexOrOrder = isLegacyPerformanceSongId ? parts[5] : parts[4];
+  const setlist = live.setlists.find(item => item.id === setlistId);
+  let songIndex = -1;
+
+  if (isNewSongId) {
+    songIndex = Number(parts[4].replace("song-", ""));
+  } else if (isLegacyPerformanceSongId) {
+    songIndex = setlist?.songs.findIndex(song => song.order === Number(songIndexOrOrder)) ?? -1;
+  } else {
+    songIndex = Number(songIndexOrOrder);
+  }
+
+  const song = setlist?.songs[songIndex];
+
+  return {
+    type,
+    setlistId,
+    songIndex,
+    song
+  };
+}
+
 function stripMarkdown(value) {
   return String(value || "")
     .replace(/```[\s\S]*?```/g, " ")
@@ -68,15 +95,8 @@ async function hrefForMemoryId(memoryId) {
   if (type === "song" || type === "video-song") {
     const groupId = parts[1];
     const liveId = parts[2];
-    const isLegacySongId = parts.length >= 6;
-    const setlistId = isLegacySongId ? parts[4] : parts[3];
-    const songIndexOrOrder = isLegacySongId ? parts[5] : parts[4];
     const live = await loadLive(groupId, liveId);
-    const setlist = live.setlists.find(item => item.id === setlistId);
-    const songIndex = isLegacySongId
-      ? setlist?.songs.findIndex(song => song.order === Number(songIndexOrOrder))
-      : Number(songIndexOrOrder);
-    const song = setlist?.songs[songIndex];
+    const { setlistId, songIndex, song } = resolveSongFromMemoryParts(live, parts);
     const order = song?.order || "";
     const page = type === "video-song" ? "video-song.html" : "song.html";
     return `${page}?group=${groupId}&live=${liveId}&setlist=${setlistId}&song=${songIndex}&order=${order}`;
@@ -109,15 +129,8 @@ async function subtitleForMemoryId(memoryId) {
   if (type === "song" || type === "video-song") {
     const groupId = parts[1];
     const liveId = parts[2];
-    const isLegacySongId = parts.length >= 6;
-    const setlistId = isLegacySongId ? parts[4] : parts[3];
-    const songIndexOrOrder = isLegacySongId ? parts[5] : parts[4];
     const live = await loadLive(groupId, liveId);
-    const setlist = live.setlists.find(item => item.id === setlistId);
-    const songIndex = isLegacySongId
-      ? setlist?.songs.findIndex(song => song.order === Number(songIndexOrOrder))
-      : Number(songIndexOrOrder);
-    const song = setlist?.songs[songIndex];
+    const { song } = resolveSongFromMemoryParts(live, parts);
     if (type === "video-song") {
       return `${live.title} / 映像・円盤 / ${song ? `${song.order}. ${song.title}` : "song"}`;
     }
