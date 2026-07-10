@@ -11,6 +11,7 @@ if (!token) {
 
 const liveCache = new Map();
 let liveRegistryCache;
+let groupsCache;
 
 const MAX_GRAPHQL_ATTEMPTS = 4;
 const GRAPHQL_RETRY_DELAYS_MS = [2000, 4000, 8000];
@@ -94,6 +95,19 @@ async function loadLiveRegistry() {
   }
 
   return liveRegistryCache;
+}
+
+async function loadGroups() {
+  if (!groupsCache) {
+    groupsCache = JSON.parse(await fs.readFile(path.join("data", "groups.json"), "utf8"));
+  }
+
+  return groupsCache;
+}
+
+async function groupNameForId(groupId) {
+  const groups = await loadGroups();
+  return groups.find(group => group.id === groupId)?.name || groupId;
 }
 
 function resolveSongFromMemoryParts(live, parts) {
@@ -300,6 +314,9 @@ async function toSearchItem(discussion) {
     return null;
   }
 
+  const [, groupId, liveId] = memoryId.split(":");
+  const live = await loadLive(groupId, liveId);
+  const groupName = await groupNameForId(groupId);
   const comments = discussion.comments.nodes.map(comment => stripMarkdown(comment.bodyText));
   const bodyText = stripInternalText(stripMarkdown(discussion.bodyText), memoryId);
   const commentText = stripInternalText(comments.join(" "), memoryId);
@@ -319,6 +336,10 @@ async function toSearchItem(discussion) {
     updatedAt: discussion.updatedAt,
     memoryText,
     searchText: [
+      groupName,
+      live.type,
+      live.year,
+      live.title,
       pageTypeLabel,
       subtitle,
       memoryText

@@ -66,7 +66,18 @@
     return stripInternalText(text, item);
   }
 
-  function makeSnippet(text, query, maxLength = 82) {
+  function searchableText(result) {
+    return [
+      result.title,
+      result.subtitle,
+      result.pageTypeLabel,
+      PAGE_TYPES[result.pageType],
+      result.memoryText,
+      result.searchText
+    ].filter(Boolean).join(" ");
+  }
+
+  function makeSnippet(text, query, maxLength = 96) {
     const source = String(text || "").replace(/\s+/g, " ").trim();
 
     if (!source) {
@@ -75,24 +86,39 @@
 
     const words = queryWords(query);
     const normalizedSource = normalizeText(source);
-    const hitIndex = words
-      .map(word => normalizedSource.indexOf(word))
-      .filter(index => index >= 0)
-      .sort((a, b) => a - b)[0];
+    const hitIndexes = words
+      .map(word => ({
+        word,
+        index: normalizedSource.indexOf(word)
+      }))
+      .filter(hit => hit.index >= 0)
+      .sort((a, b) => a.index - b.index);
 
     let start = 0;
+    let end = maxLength;
 
-    if (hitIndex >= 0) {
-      start = Math.max(0, hitIndex - 28);
+    if (hitIndexes.length) {
+      const firstHit = hitIndexes[0];
+      const lastHit = hitIndexes[hitIndexes.length - 1];
+      const desiredStart = Math.max(0, firstHit.index - 24);
+      const desiredEnd = Math.min(source.length, lastHit.index + lastHit.word.length + 36);
+
+      if (desiredEnd - desiredStart <= maxLength) {
+        start = desiredStart;
+        end = desiredEnd;
+      } else {
+        start = Math.max(0, firstHit.index - 28);
+        end = start + maxLength;
+      }
     }
 
-    let snippet = source.slice(start, start + maxLength);
+    let snippet = source.slice(start, end);
 
     if (start > 0) {
       snippet = `…${snippet}`;
     }
 
-    if (start + maxLength < source.length) {
+    if (end < source.length) {
       snippet = `${snippet}…`;
     }
 
@@ -149,20 +175,20 @@
     return String(subtitle || "").split(" / ").filter(Boolean);
   }
 
-  function renderResultText(result) {
+  function renderResultText(result, query) {
     const parts = splitSubtitle(result.subtitle);
     const title = result.title || "";
 
     if (result.isMemoryResult && parts.length) {
       return `
-        <h3>${escapeHtml(parts[0])}</h3>
-        ${parts.slice(1).map(part => `<p class="search-result-context">${escapeHtml(part)}</p>`).join("")}
+        <h3>${highlightQuery(parts[0], query)}</h3>
+        ${parts.slice(1).map(part => `<p class="search-result-context">${highlightQuery(part, query)}</p>`).join("")}
       `;
     }
 
     return `
-      <h3>${escapeHtml(title || parts[0] || "")}</h3>
-      ${parts.length ? `<p class="search-result-context">${escapeHtml(parts.join(" / "))}</p>` : ""}
+      <h3>${highlightQuery(title || parts[0] || "", query)}</h3>
+      ${parts.length ? `<p class="search-result-context">${highlightQuery(parts.join(" / "), query)}</p>` : ""}
     `;
   }
 
@@ -225,7 +251,7 @@
       return;
     }
 
-    const matched = uniqueResults(results.filter(result => matchesQuery(result.searchText, query)));
+    const matched = uniqueResults(results.filter(result => matchesQuery(searchableText(result), query)));
     container.hidden = false;
 
     if (matched.length === 0) {
@@ -250,7 +276,7 @@
           return `
           <a class="archive-card search-result-card" href="${escapeHtml(result.href)}">
             <span class="search-result-type">【${escapeHtml(pageTypeLabel(result))}】</span>
-            ${renderResultText(result)}
+            ${renderResultText(result, query)}
             ${snippet ? `<p class="search-result-excerpt">「${highlightQuery(snippet, query)}」</p>` : ""}
           </a>
         `;
@@ -286,6 +312,7 @@
           memoryText,
           isMemoryResult: true,
           searchText: [
+            item.title,
             item.subtitle,
             item.pageTypeLabel || PAGE_TYPES[pageType],
             cleanSearchText,

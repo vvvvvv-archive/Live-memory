@@ -85,7 +85,7 @@
           subtitle: `${group.name} / ${section.description}`,
           href,
           pageType: section.id,
-          searchText: `${group.name} ${live.title} ${section.label} ${section.description}`
+          searchText: `${group.name} ${live.type} ${live.year} ${live.title} ${section.label} ${section.description}`
         });
       });
     }
@@ -96,7 +96,7 @@
         subtitle: `${live.title} / [${performance.area}] ${performance.venue}${performance.performanceType ? " / " + performance.performanceType : ""}`,
         href: `performance.html?group=${group.id}&live=${live.id}&performance=${performance.id}`,
         pageType: "schedule",
-        searchText: `${group.name} ${live.title} ${performance.date} ${performance.time} ${performance.area} ${performance.venue} ${performance.performanceType || ""}`
+        searchText: `${group.name} ${live.type} ${live.year} ${live.title} 公演日程 ${performance.date} ${performance.time} ${performance.area} ${performance.venue} ${performance.performanceType || ""}`
       });
     });
 
@@ -108,7 +108,7 @@
           subtitle: `${live.title} / ${setlistLabel ? setlistLabel + " / " : ""}${song.artist}${song.note ? " / " + song.note : ""}`,
           href: `song.html?group=${group.id}&live=${live.id}&setlist=${setlist.id}&song=${index}&order=${song.order}`,
           pageType: "general",
-          searchText: `${group.name} ${live.title} ${setlistLabel} ${song.order} ${song.title} ${song.artist} ${song.note || ""}`
+          searchText: `${group.name} ${live.type} ${live.year} ${live.title} 総合 ${setlistLabel} ${song.order} ${song.title} ${song.artist} ${song.note || ""}`
         });
       });
     });
@@ -120,7 +120,7 @@
         subtitle: `${live.title} / 映像・円盤`,
         href: `video-song.html?group=${group.id}&live=${live.id}&setlist=${videoSetlist.id}&song=${index}&order=${song.order}`,
         pageType: "video",
-        searchText: `${group.name} ${live.title} 映像 円盤 ${song.order} ${song.title} ${song.artist} ${song.note || ""}`
+        searchText: `${group.name} ${live.type} ${live.year} ${live.title} 映像 円盤 ${song.order} ${song.title} ${song.artist} ${song.note || ""}`
       });
     });
 
@@ -131,7 +131,7 @@
         subtitle: `${live.title} / ${priceText}`,
         href: `goods.html?group=${group.id}&live=${live.id}&goods=${goods.id}`,
         pageType: "goods",
-        searchText: `${group.name} ${live.title} ${goods.name} ${priceText} ${goods.price}円 グッズ goods`
+        searchText: `${group.name} ${live.type} ${live.year} ${live.title} ${goods.name} ${priceText} ${goods.price}円 グッズ goods`
       });
     });
 
