@@ -14,6 +14,7 @@
     <section class="lead-card">
       <h1>映像・円盤</h1>
       <p>ライブ映像、特典映像、配信などの思い出を残す場所です。</p>
+      <p id="video-official-link" class="official-link" hidden></p>
     </section>
 
     <section class="search-card">
@@ -125,6 +126,14 @@
         <a href="live.html?group=${group.id}&live=${live.id}">${live.title}</a> &gt;
         映像・円盤
       `;
+
+      const officialLink = document.getElementById("video-official-link");
+      if (live.video?.officialUrl) {
+        officialLink.hidden = false;
+        officialLink.innerHTML = `
+          <a href="${live.video.officialUrl}" target="_blank" rel="noopener noreferrer">公式サイトで確認する</a>
+        `;
+      }
 
       const content = document.getElementById("content");
       const searchableCards = [];
