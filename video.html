@@ -60,6 +60,7 @@
     function videoFeatureTitle(video) {
       const feature = video?.mainFeature;
       if (!feature) return "セットリスト";
+      if (!feature.useCustomHeading) return "セットリスト";
 
       const title = [feature.edition, feature.title].filter(Boolean).join(" ");
       const recording = [feature.recordedDate || feature.date, feature.venue].filter(Boolean).join("");

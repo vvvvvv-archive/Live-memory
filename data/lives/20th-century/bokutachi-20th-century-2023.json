@@ -410,6 +410,7 @@
   "video": {
     "officialUrl": "https://mentrecording.jp/20thcentury/discography/detail.php?id=1019754",
     "mainFeature": {
+      "useCustomHeading": true,
       "edition": "初回盤A",
       "title": "Hall Live 映像/",
       "recordedDate": "2023.02.02",
