@@ -1,22 +1,82 @@
-# 新しいライブの追加手順
+# 新しいライブの追加マニュアル
 
-このサイトでは、ライブごとの情報を JSON データとして追加すると、共通ページがそのデータを読み込んで表示します。
-2026年・2024年の既存ライブと同じURLやコメント欄の仕組みを保つため、HTMLをコピーして増やす必要はありません。
+このドキュメントは、新しいライブ・舞台・イベントを追加するときの作業手順です。
+HTMLをコピーして増やすのではなく、ライブデータを追加すると共通ページが自動で読み込む仕組みになっています。
 
-## 追加するファイル
+## まず全体の流れ
 
-1. `data/lives/{groupId}/{liveId}.json` を作成する
-2. `data/lives/index.json` に登録する
-3. 必要に応じて画像や補助データを追加する
-4. `node scripts/validate-live-data.mjs` でチェックする
-5. 表示確認後に commit / push する
+1. 追加したい公演情報を整理する
+2. `data/lives/_template.json` を参考にライブJSONを作る
+3. 作ったJSONを `data/lives/{groupId}/{liveId}.json` に置く
+4. `data/lives/index.json` に新しいライブを登録する
+5. `node scripts/validate-live-data.mjs` で入力漏れやID重複を確認する
+6. ブラウザで表示と検索を確認する
+7. commit / push する
+8. GitHub Pagesに反映されたら公開URLで確認する
 
-テンプレートは `data/lives/_template.json` にあります。
+## 必要なデータ
 
-## ライブ登録簿
+新しいライブを追加するときは、基本的に以下を用意します。
 
-`data/lives/index.json` は、サイトが読み込むライブ一覧です。
-新しいライブを追加するときは、以下の形式で1件追加してください。
+- 基本情報: グループ、ライブ名、年、LIVE/STAGE/EVENT、公式サイトURL
+- セットリスト: 曲順、曲名、アーティスト名、日替わり情報
+- 公演日程: 日付、時間、地域、会場
+- 映像・円盤情報: 映像用セットリスト、特典映像、公式サイトURL
+- グッズ一覧: 商品名、価格
+
+情報をChatGPTへ渡すときは、`docs/ADD_LIVE_TEMPLATE.md` の形式を使うと整理しやすいです。
+
+## 各ファイルの役割
+
+- `data/lives/{groupId}/{liveId}.json`
+  - 1つのライブの本体データです。
+  - セットリスト、公演日程、映像・円盤、グッズをここに入れます。
+
+- `data/lives/index.json`
+  - サイトが読み込むライブ一覧の登録簿です。
+  - ここに登録しないと、ライブ一覧や検索に出ません。
+
+- `data/lives/_template.json`
+  - 新しいライブJSONを作るためのテンプレートです。
+
+- `js/live-registry.js`
+  - 登録簿を読み、ライブ一覧や検索対象を自動生成する共通処理です。
+  - 通常は編集しません。
+
+- `scripts/validate-live-data.mjs`
+  - ID重複や必須項目漏れを確認するチェック用スクリプトです。
+
+- `data/memories.json`
+  - Giscusコメントを検索に使うための生成データです。
+  - 通常はGitHub Actionsが更新します。
+
+## JSONファイルの配置場所
+
+ライブJSONは以下に置きます。
+
+```text
+data/lives/{groupId}/{liveId}.json
+```
+
+例:
+
+```text
+data/lives/20th-century/chikyuwotobidasou-2024.json
+data/lives/20th-century/utauhito-odoruhito-2026.json
+```
+
+`groupId` は `data/groups.json` にあるIDを使います。
+
+現在使える主なID:
+
+- `v6`
+- `20th-century`
+- `coming-century`
+- `individual`
+
+## index.jsonへの登録方法
+
+ライブJSONを作ったら、`data/lives/index.json` に1件追加します。
 
 ```json
 {
@@ -27,33 +87,52 @@
 }
 ```
 
-`groupId` は `data/groups.json` にあるIDを使います。
-`liveId` はライブJSON内の `id` と必ず一致させます。
+注意点:
 
-## ライブデータの必須項目
+- `liveId` はライブJSON内の `id` と完全に一致させます。
+- `groupId` はライブJSON内の `groupId` と完全に一致させます。
+- `path` は作成したJSONファイルの場所です。
+- `displayOrder` は並び順の補助情報です。基本は年を入れます。
 
-ライブJSONには最低限以下を入れます。
+## ライブJSONの基本形
 
-- `id`: ライブID。URLとコメント識別子に使います。
-- `groupId`: グループID。
-- `type`: `LIVE` など。
-- `year`: 開催年。
-- `title`: 表示タイトル。
-- `officialUrl`: 公式リンク。ない場合は空文字でも可。
-- `sections`: 総合・公演日程・映像・円盤・グッズの説明。
-- `performances`: 公演日程。
-- `setlists`: 総合側で使うセットリスト。
-- `video`: 映像・円盤ページ用データ。
-- `goods`: グッズ一覧。
+```json
+{
+  "id": "new-live-id",
+  "groupId": "20th-century",
+  "type": "LIVE",
+  "year": 2026,
+  "title": "ライブタイトル",
+  "officialUrl": "https://example.com",
+  "sections": [],
+  "performances": [],
+  "setlists": [],
+  "video": {
+    "setlist": [],
+    "bonusSections": []
+  },
+  "goods": []
+}
+```
 
-## IDとslugの命名規則
+実際に作るときは `data/lives/_template.json` をコピーして使います。
 
-- `liveId`: 半角英数字とハイフンで、ライブを識別できる名前にします。
-- `performanceId`: `yyyymmdd-hhmm` 形式を推奨します。
-- `goodsId`: 半角英数字とハイフンで、グッズ名が分かる名前にします。
-- 曲は現在 `songId` を持たず、曲順・曲名・セットリストIDからページとコメント識別子を生成しています。
+## IDの付け方
 
-既存コメントとの互換性を守るため、既存ライブの `id`、セットリストID、曲順、グッズID、公演IDは不用意に変更しないでください。
+IDはコメント欄やURLに関係するため、公開後はできるだけ変更しないでください。
+
+- `liveId`: 半角英数字とハイフンで、ライブを識別できる名前
+- `performanceId`: `yyyymmdd-hhmm` 形式がおすすめ
+- `goodsId`: 半角英数字とハイフンで、グッズ名が分かる名前
+- セットリストID: 基本は `v1`。複数ある場合は `v2` など
+
+例:
+
+```text
+liveId: chikyuwotobidasou-2024
+performanceId: 20240604-1800
+goodsId: uchu-penlight
+```
 
 ## セットリストの書き方
 
@@ -72,9 +151,18 @@
 ```
 
 日替わり曲は、同じ `order` のカードを複数入れて構いません。
-`note`: `"日替わり"` を付けると、カード上にも表示されます。
 
-総合ページでは `v2` があれば `v2` を優先し、なければ最後のセットリストを使います。
+```json
+{
+  "order": 9,
+  "title": "日替わり曲A",
+  "artist": "20th Century",
+  "note": "日替わり"
+}
+```
+
+総合ページでは、`v2` がある場合は `v2` を優先して表示します。
+`v2` がない場合は最後のセットリストを使います。
 
 ## 公演日程の書き方
 
@@ -88,16 +176,31 @@
 }
 ```
 
-同じ日の昼夜公演は、時間を変えて別IDにしてください。
+同じ日に昼夜公演がある場合は、時間ごとに別データにします。
+
+```json
+{
+  "id": "20260701-1400",
+  "date": "2026-07-01",
+  "time": "14:00",
+  "area": "東京",
+  "venue": "会場名"
+}
+```
 
 ## 映像・円盤情報の書き方
 
-`video.setlist` に曲を入れると、映像・円盤ページ専用の曲ページとして表示されます。
-空配列の場合は、総合ページの優先セットリストが使われます。
+映像・円盤ページ専用のセットリストがある場合は、`video.setlist` に入れます。
 
 ```json
 "video": {
-  "setlist": [],
+  "setlist": [
+    {
+      "order": 1,
+      "title": "曲名",
+      "artist": "アーティスト名"
+    }
+  ],
   "bonusSections": [
     {
       "title": "初回盤 特典映像",
@@ -109,7 +212,7 @@
 }
 ```
 
-映像・円盤内の曲ページは `video-song.html` に遷移し、総合側の `song.html` とは別コメント欄になります。
+`video.setlist` が空の場合は、総合ページで使うセットリストが映像・円盤ページにも表示されます。
 
 ## グッズ情報の書き方
 
@@ -121,11 +224,15 @@
 }
 ```
 
-`goodsId` はコメント識別子にも使うため、公開後は変更しないでください。
+価格は数字だけで入力します。
+表示時に「円」が付きます。
 
-## コメント識別子の仕組み
+## コメント欄（Giscus）の生成
 
-現在のGiscus識別子は、既存コメントとの互換性を優先して以下の形式です。
+コメント欄は、ページごとの識別子によって自動的に分かれます。
+同じ識別子になるとコメントが混ざるため、ID重複に注意してください。
+
+現在の識別子:
 
 - 総合ページ: `section:{groupId}:{liveId}:general`
 - グッズ全体: `section:{groupId}:{liveId}:goods`
@@ -134,55 +241,77 @@
 - 公演内の思い出: `mc:{groupId}:{liveId}:{performanceId}` など
 - グッズ個別: `goods:{groupId}:{liveId}:{goodsId}`
 
-IDや曲順を変えると新しいコメント欄として扱われる場合があります。
+公開後に `liveId`、`performanceId`、`goodsId`、曲順、セットリストIDを変えると、別のコメント欄として扱われることがあります。
 
-## 検索反映の仕組み
+## 検索へ反映される仕組み
 
-トップページとグループページの検索は `data/lives/index.json` を読み、登録済みライブを自動で検索対象にします。
-検索対象には、グループ名、ライブ名、年、曲名、公演日、会場名、映像・円盤、グッズ名、Giscusから生成されたコメントデータが含まれます。
+トップページとグループページの検索は、`data/lives/index.json` に登録されたライブを読み込みます。
 
-コメント検索用の `data/memories.json` は GitHub Actions の Sync memories が更新します。
+検索対象:
 
-## バリデーション
+- グループ名
+- ライブ名
+- 年
+- 曲名
+- 公演日
+- 会場名
+- 映像・円盤
+- グッズ名
+- Giscusコメントから生成された `data/memories.json`
 
-追加後は以下を実行してください。
+コメント検索用の `data/memories.json` は、GitHub Actionsの `Sync memories` が更新します。
+
+## GitHub Pagesへ反映されるまでの流れ
+
+1. ローカルでデータを追加する
+2. バリデーションを実行する
+3. 表示確認する
+4. commitする
+5. GitHubへpushする
+6. GitHub Pagesが更新される
+7. 公開URLで確認する
+
+GitHub Pagesは反映に少し時間がかかることがあります。
+数十秒から数分待ってから再読み込みしてください。
+
+## commit / pushまでの手順
+
+確認用コマンド:
 
 ```bash
 node scripts/validate-live-data.mjs
 ```
 
-チェック内容:
+問題なければcommitしてpushします。
 
-- `liveId` の重複
-- `groupId` の存在
-- 必須項目の欠落
-- 公演IDの重複
-- セットリストIDの重複
-- 生成される曲キーの重複
-- グッズIDの重複
-- 生成URLの重複
-- 登録簿とライブJSONのID不一致
+```bash
+git status
+git add .
+git commit -m "Add new live data"
+git push origin main
+```
 
-## 動作確認チェックリスト
+push後、GitHub Pagesで公開URLを確認します。
 
-- グループページのLIVE一覧に追加ライブが出る
-- 年ごとに新しい順で表示される
-- コンサート詳細ページが開く
-- 総合ページが開く
-- 公演日程ページが開く
-- 各公演ページが開く
-- 映像・円盤ページが開く
-- 映像・円盤内の曲ページが `video-song.html` に進む
-- グッズ一覧が開く
-- グッズ個別ページが開く
-- Giscusが表示される
-- 検索にライブ名・曲名・会場名・グッズ名が出る
-- 同じページが検索で重複しない
+## ライブ追加時によくあるミス
 
-## よくあるミス
-
-- `data/lives/index.json` に追加し忘れる
+- `data/lives/index.json` に登録し忘れる
 - 登録簿の `liveId` とライブJSONの `id` が違う
-- 公演IDやグッズIDが重複している
-- 映像・円盤専用セットリストを入れ忘れ、総合セットリストと同じ内容になる
-- 公開後にIDや曲順を変更して、コメント欄が別扱いになる
+- 登録簿の `groupId` とライブJSONの `groupId` が違う
+- `liveId` が既存ライブと重複している
+- `performanceId` が同じライブ内で重複している
+- `goodsId` が同じライブ内で重複している
+- セットリストIDが重複している
+- 曲順や曲名を公開後に変えて、コメント欄が別扱いになる
+- 映像・円盤専用曲ページにしたいのに `video.setlist` を入れ忘れる
+- 公式サイトURLをライブJSONに入れ忘れる
+- JSONのカンマ抜けや引用符抜けで読み込めない
+- GitHub Pagesの反映待ちを不具合と勘違いする
+
+## 迷ったとき
+
+1. `docs/ADD_LIVE_TEMPLATE.md` に沿って情報を整理する
+2. ChatGPTに「この内容をライブJSONにしてください」と依頼する
+3. `data/lives/_template.json` と既存ライブJSONを参考にする
+4. `node scripts/validate-live-data.mjs` で確認する
+5. `docs/CHECKLIST.md` で公開前確認を行う
