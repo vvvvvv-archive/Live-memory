@@ -466,6 +466,10 @@ footer {
   margin-top: 22px;
 }
 
+.mobile-title-break {
+  display: none;
+}
+
 .lead-card h1{
     font-size:2rem;
     line-height:1.3;
@@ -501,6 +505,10 @@ font-weight:600;
     letter-spacing: 0;
     overflow-wrap: normal;
     word-break: keep-all;
+  }
+
+  .mobile-title-break {
+    display: block;
   }
 
   .live-title-link {
