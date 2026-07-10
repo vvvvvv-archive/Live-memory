@@ -69,11 +69,15 @@
       document.getElementById("live-year").textContent = live.year;
       document.getElementById("live-title").textContent = live.title;
 
-      document.getElementById("official-link").innerHTML = `
-        <a href="${live.officialUrl}" target="_blank" rel="noopener">
-          公式サイトで確認する
-        </a>
-      `;
+      const officialLink = document.getElementById("official-link");
+      officialLink.innerHTML = "";
+      if (live.officialUrl) {
+        officialLink.innerHTML = `
+          <a href="${live.officialUrl}" target="_blank" rel="noopener noreferrer">
+            公式サイトで確認する
+          </a>
+        `;
+      }
 
       const sectionLinks = document.getElementById("section-links");
 
