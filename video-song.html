@@ -84,7 +84,9 @@ const group=groups.find(g=>g.id===groupId);
 
 const live=await loadJson(`data/lives/${groupId}/${liveId}.json`);
 
-const setlist=live.setlists.find(s=>s.id===setlistId);
+const setlist=setlistId==="video"&&live.video?.setlist?.length
+? {id:"video",songs:live.video.setlist}
+: live.setlists.find(s=>s.id===setlistId);
 
 const songIndex=songIndexParam!==null
 ? Number(songIndexParam)

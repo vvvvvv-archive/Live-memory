@@ -57,7 +57,9 @@
     }
 
     function appendSetlist(container, live, searchableCards) {
-      const setlist = live.setlists.find(s => s.id === "v2") || live.setlists[live.setlists.length - 1];
+      const setlist = live.video?.setlist?.length
+        ? { id: "video", songs: live.video.setlist }
+        : live.setlists.find(s => s.id === "v2") || live.setlists[live.setlists.length - 1];
 
       const heading = document.createElement("div");
       heading.className = "section-heading";
@@ -85,6 +87,29 @@
       container.appendChild(grid);
     }
 
+    function appendBonusSections(container, live, searchableCards) {
+      const sections = live.video?.bonusSections || [];
+
+      sections.forEach(section => {
+        const heading = document.createElement("div");
+        heading.className = "section-heading";
+        heading.innerHTML = `<h2>${section.title}</h2>`;
+        container.appendChild(heading);
+
+        const grid = document.createElement("div");
+        grid.className = "archive-grid";
+
+        section.items.forEach(item => {
+          const card = createCard(item, "特典映像", `video.html?group=${groupId}&live=${liveId}`);
+          card.dataset.search = `${live.title} 映像 円盤 特典映像 ${section.title} ${item}`;
+          searchableCards.push(card);
+          grid.appendChild(card);
+        });
+
+        container.appendChild(grid);
+      });
+    }
+
     async function init() {
       const groups = await loadJson("data/groups.json");
       const group = groups.find(g => g.id === groupId);
@@ -104,6 +129,7 @@
       const content = document.getElementById("content");
       const searchableCards = [];
       appendSetlist(content, live, searchableCards);
+      appendBonusSections(content, live, searchableCards);
 
       const empty = document.createElement("p");
       empty.className = "search-empty";

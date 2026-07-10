@@ -61,6 +61,20 @@
       return response.json();
     }
 
+    const liveIdsByGroup = {
+      "20th-century": [
+        "utauhito-odoruhito-2026",
+        "chikyuwotobidasou-2024"
+      ]
+    };
+
+    async function loadGroupLives(groupId) {
+      const liveIds = liveIdsByGroup[groupId] || [];
+      return Promise.all(
+        liveIds.map(liveId => loadJson(`data/lives/${groupId}/${liveId}.json`))
+      );
+    }
+
     function renderEmpty(listElement) {
       const li = document.createElement("li");
       li.textContent = "準備中";
@@ -92,6 +106,7 @@
         title: live.title,
         subtitle: `${live.type} / ${live.year}`,
         href: `live.html?group=${group.id}&live=${live.id}`,
+        pageType: "live",
         searchText: `${group.name} ${live.type} ${live.year} ${live.title}`
       }];
 
@@ -100,6 +115,7 @@
           title: `${performance.date} ${performance.time}`,
           subtitle: `${live.title} / [${performance.area}] ${performance.venue}`,
           href: `performance.html?group=${group.id}&live=${live.id}&performance=${performance.id}`,
+          pageType: "schedule",
           searchText: `${group.name} ${live.title} ${performance.date} ${performance.time} ${performance.area} ${performance.venue}`
         });
       });
@@ -110,7 +126,21 @@
           title: `${song.order}. ${song.title}`,
           subtitle: `${live.title} / ${song.artist}${song.note ? " / " + song.note : ""}`,
           href: `song.html?group=${group.id}&live=${live.id}&setlist=${setlist.id}&song=${index}&order=${song.order}`,
+          pageType: "general",
           searchText: `${group.name} ${live.title} ${song.order} ${song.title} ${song.artist} ${song.note || ""}`
+        });
+      });
+
+      const videoSetlist = live.video?.setlist?.length
+        ? { id: "video", songs: live.video.setlist }
+        : setlist;
+      videoSetlist.songs.forEach((song, index) => {
+        results.push({
+          title: `${song.order}. ${song.title}`,
+          subtitle: `${live.title} / 映像・円盤`,
+          href: `video-song.html?group=${group.id}&live=${live.id}&setlist=${videoSetlist.id}&song=${index}&order=${song.order}`,
+          pageType: "video",
+          searchText: `${group.name} ${live.title} 映像 円盤 ${song.order} ${song.title} ${song.artist} ${song.note || ""}`
         });
       });
 
@@ -119,6 +149,7 @@
           title: goods.name,
           subtitle: `${live.title} / ${goods.price.toLocaleString()}円`,
           href: `goods.html?group=${group.id}&live=${live.id}&goods=${goods.id}`,
+          pageType: "goods",
           searchText: `${group.name} ${live.title} ${goods.name} ${goods.price}円 グッズ goods`
         });
       });
@@ -136,10 +167,7 @@
 
       let liveItems = [];
 
-      if (groupId === "20th-century") {
-        const live = await loadJson("data/lives/20th-century/utauhito-odoruhito-2026.json");
-        liveItems = [live];
-      }
+      liveItems = await loadGroupLives(groupId);
 
       const stageItems = [];
       const eventItems = [];

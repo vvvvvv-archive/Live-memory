@@ -48,7 +48,9 @@ function resolveSongFromMemoryParts(live, parts) {
   const isLegacyPerformanceSongId = !isNewSongId && parts.length >= 6;
   const setlistId = isLegacyPerformanceSongId ? parts[4] : parts[3];
   const songIndexOrOrder = isLegacyPerformanceSongId ? parts[5] : parts[4];
-  const setlist = live.setlists.find(item => item.id === setlistId);
+  const setlist = type === "video-song" && setlistId === "video" && live.video?.setlist?.length
+    ? { id: "video", songs: live.video.setlist }
+    : live.setlists.find(item => item.id === setlistId);
   let songIndex = -1;
 
   if (isNewSongId) {

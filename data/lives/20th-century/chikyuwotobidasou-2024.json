@@ -1,0 +1,182 @@
+{
+  "id": "chikyuwotobidasou-2024",
+  "groupId": "20th-century",
+  "type": "LIVE",
+  "year": 2024,
+  "title": "20th Century Live Tour 2024 ～地球をとびだそう!～",
+  "officialUrl": "",
+  "sections": [
+    {
+      "id": "general",
+      "label": "総合",
+      "description": "ツアー全体の思い出や、曲ごとの思い出を残す場所です。"
+    },
+    {
+      "id": "schedule",
+      "label": "公演日程",
+      "description": "各公演ごとのMC、ファンサ、その他の思い出を残す場所です。"
+    },
+    {
+      "id": "video",
+      "label": "映像・円盤",
+      "description": "ライブ映像、特典映像、配信などの思い出を残す場所です。"
+    },
+    {
+      "id": "goods",
+      "label": "グッズ",
+      "description": "販売されたグッズに関する思い出を残す場所です。"
+    }
+  ],
+  "performances": [
+    { "id": "20240604-1400", "date": "2024-06-04", "time": "14:00", "area": "宮城", "venue": "仙台サンプラザホール" },
+    { "id": "20240604-1800", "date": "2024-06-04", "time": "18:00", "area": "宮城", "venue": "仙台サンプラザホール" },
+    { "id": "20240610-1800", "date": "2024-06-10", "time": "18:00", "area": "京都", "venue": "ロームシアター京都 メインホール" },
+    { "id": "20240611-1400", "date": "2024-06-11", "time": "14:00", "area": "京都", "venue": "ロームシアター京都 メインホール" },
+    { "id": "20240611-1800", "date": "2024-06-11", "time": "18:00", "area": "京都", "venue": "ロームシアター京都 メインホール" },
+    { "id": "20240624-1800", "date": "2024-06-24", "time": "18:00", "area": "大阪", "venue": "大阪城ホール" },
+    { "id": "20240625-1400", "date": "2024-06-25", "time": "14:00", "area": "大阪", "venue": "大阪城ホール" },
+    { "id": "20240625-1800", "date": "2024-06-25", "time": "18:00", "area": "大阪", "venue": "大阪城ホール" },
+    { "id": "20240627-1730", "date": "2024-06-27", "time": "17:30", "area": "福岡", "venue": "福岡サンパレス" },
+    { "id": "20240701-1800", "date": "2024-07-01", "time": "18:00", "area": "埼玉", "venue": "ソニックシティ 大ホール" },
+    { "id": "20240702-1400", "date": "2024-07-02", "time": "14:00", "area": "埼玉", "venue": "ソニックシティ 大ホール" },
+    { "id": "20240702-1800", "date": "2024-07-02", "time": "18:00", "area": "埼玉", "venue": "ソニックシティ 大ホール" },
+    { "id": "20240704-1800", "date": "2024-07-04", "time": "18:00", "area": "東京", "venue": "LINE CUBE SHIBUYA（渋谷公会堂）" },
+    { "id": "20240705-1400", "date": "2024-07-05", "time": "14:00", "area": "東京", "venue": "LINE CUBE SHIBUYA（渋谷公会堂）" },
+    { "id": "20240705-1800", "date": "2024-07-05", "time": "18:00", "area": "東京", "venue": "LINE CUBE SHIBUYA（渋谷公会堂）" },
+    { "id": "20240708-1800", "date": "2024-07-08", "time": "18:00", "area": "愛知", "venue": "名古屋国際会議場 センチュリーホール" },
+    { "id": "20240709-1400", "date": "2024-07-09", "time": "14:00", "area": "愛知", "venue": "名古屋国際会議場 センチュリーホール" },
+    { "id": "20240709-1800", "date": "2024-07-09", "time": "18:00", "area": "愛知", "venue": "名古屋国際会議場 センチュリーホール" },
+    { "id": "20240711-1800", "date": "2024-07-11", "time": "18:00", "area": "兵庫", "venue": "神戸国際会館 こくさいホール" },
+    { "id": "20240712-1400", "date": "2024-07-12", "time": "14:00", "area": "兵庫", "venue": "神戸国際会館 こくさいホール" },
+    { "id": "20240712-1800", "date": "2024-07-12", "time": "18:00", "area": "兵庫", "venue": "神戸国際会館 こくさいホール" },
+    { "id": "20240718-1800", "date": "2024-07-18", "time": "18:00", "area": "神奈川", "venue": "神奈川県民ホール 大ホール" },
+    { "id": "20240719-1400", "date": "2024-07-19", "time": "14:00", "area": "神奈川", "venue": "神奈川県民ホール 大ホール" },
+    { "id": "20240719-1800", "date": "2024-07-19", "time": "18:00", "area": "神奈川", "venue": "神奈川県民ホール 大ホール" }
+  ],
+  "setlists": [
+    {
+      "id": "v1",
+      "name": "2024 tour setlist",
+      "performanceIds": [
+        "20240604-1400",
+        "20240604-1800",
+        "20240610-1800",
+        "20240611-1400",
+        "20240611-1800",
+        "20240624-1800",
+        "20240625-1400",
+        "20240625-1800",
+        "20240627-1730",
+        "20240701-1800",
+        "20240702-1400",
+        "20240702-1800",
+        "20240704-1800",
+        "20240705-1400",
+        "20240705-1800",
+        "20240708-1800",
+        "20240709-1400",
+        "20240709-1800",
+        "20240711-1800",
+        "20240712-1400",
+        "20240712-1800",
+        "20240718-1800",
+        "20240719-1400",
+        "20240719-1800"
+      ],
+      "songs": [
+        { "order": 1, "title": "トライアングル", "artist": "20th Century" },
+        { "order": 2, "title": "X.T.C.beat", "artist": "20th Century feat. 三宅健" },
+        { "order": 3, "title": "Over Drive", "artist": "長野博・森田剛" },
+        { "order": 4, "title": "大人Guyz", "artist": "V6" },
+        { "order": 5, "title": "Air", "artist": "V6" },
+        { "order": 6, "title": "夏のメモリー", "artist": "20th Century" },
+        { "order": 7, "title": "旅立ちの鐘", "artist": "20th Century" },
+        { "order": 8, "title": "回れよ地球", "artist": "20th Century" },
+        { "order": 9, "title": "夢の島セレナーデ", "artist": "20th Century", "note": "日替わり" },
+        { "order": 9, "title": "不惑", "artist": "20th Century", "note": "日替わり" },
+        { "order": 10, "title": "Hurry up ～今すぐに君の手を～", "artist": "20th Century" },
+        { "order": 11, "title": "ある日願いが叶ったんだ", "artist": "V6" },
+        { "order": 12, "title": "What's your name?", "artist": "少年隊" },
+        { "order": 13, "title": "ダイヤモンド・アイズ", "artist": "少年隊" },
+        { "order": 14, "title": "デカメロン伝説", "artist": "少年隊" },
+        { "order": 15, "title": "君だけに", "artist": "少年隊" },
+        { "order": 16, "title": "レイニー・エクスプレス", "artist": "少年隊" },
+        { "order": 17, "title": "まいったネ 今夜", "artist": "少年隊" },
+        { "order": 18, "title": "WAになっておどろう", "artist": "V6" },
+        { "order": 19, "title": "地球をふりだそう", "artist": "20th Century" },
+        { "order": 20, "title": "MUSIC FOR THE PEOPLE", "artist": "V6" },
+        { "order": 21, "title": "Believe Your Smile", "artist": "V6" },
+        { "order": 22, "title": "愛のMelody", "artist": "V6" },
+        { "order": 23, "title": "夏のかけら", "artist": "Coming Century" },
+        { "order": 24, "title": "Theme of Coming Century", "artist": "Coming Century" },
+        { "order": 25, "title": "カノトイハナサガモノラ", "artist": "20th Century" },
+        { "order": 26, "title": "ツラいチャプター", "artist": "20th Century" },
+        { "order": 27, "title": "あなたと", "artist": "20th Century" }
+      ]
+    }
+  ],
+  "video": {
+    "setlist": [
+      { "order": 1, "title": "トライアングル", "artist": "20th Century" },
+      { "order": 2, "title": "X.T.C.beat", "artist": "20th Century feat. 三宅健" },
+      { "order": 3, "title": "Over Drive", "artist": "長野博・森田剛" },
+      { "order": 4, "title": "大人Guyz", "artist": "V6" },
+      { "order": 5, "title": "Air", "artist": "V6" },
+      { "order": 6, "title": "夏のメモリー", "artist": "20th Century" },
+      { "order": 7, "title": "旅立ちの鐘", "artist": "20th Century" },
+      { "order": 8, "title": "回れよ地球", "artist": "20th Century" },
+      { "order": 9, "title": "夢の島セレナーデ", "artist": "20th Century" },
+      { "order": 10, "title": "Hurry up ～今すぐに君の手を～", "artist": "20th Century" },
+      { "order": 11, "title": "ある日願いが叶ったんだ", "artist": "V6" },
+      { "order": 12, "title": "What's your name?", "artist": "少年隊" },
+      { "order": 13, "title": "ダイヤモンド・アイズ", "artist": "少年隊" },
+      { "order": 14, "title": "デカメロン伝説", "artist": "少年隊" },
+      { "order": 15, "title": "君だけに", "artist": "少年隊" },
+      { "order": 16, "title": "レイニー・エクスプレス", "artist": "少年隊" },
+      { "order": 17, "title": "まいったネ 今夜", "artist": "少年隊" },
+      { "order": 18, "title": "WAになっておどろう", "artist": "V6" },
+      { "order": 19, "title": "地球をふりだそう", "artist": "20th Century" },
+      { "order": 20, "title": "MUSIC FOR THE PEOPLE", "artist": "V6" },
+      { "order": 21, "title": "Believe Your Smile", "artist": "V6" },
+      { "order": 22, "title": "愛のMelody", "artist": "V6" },
+      { "order": 23, "title": "夏のかけら", "artist": "Coming Century" },
+      { "order": 24, "title": "Theme of Coming Century", "artist": "Coming Century" },
+      { "order": 25, "title": "カノトイハナサガモノラ", "artist": "20th Century" },
+      { "order": 26, "title": "ツラいチャプター", "artist": "20th Century" },
+      { "order": 27, "title": "あなたと", "artist": "20th Century" }
+    ],
+    "bonusSections": [
+      {
+        "title": "初回盤 特典映像",
+        "items": [
+          "ちきゅとびツアー初日ダイジェスト @2024.6.4 仙台サンプラザホール",
+          "「イナズマロックフェス2024」Limited Edition（副音声付き）",
+          "「イナズマロックフェス2024」Behind The Scenes",
+          "「Masayuki Sakamoto Billboard Live 2024」Limited Edition（副音声付き）",
+          "「Masayuki Sakamoto Billboard Live 2024」Behind The Scenes"
+        ]
+      },
+      {
+        "title": "通常盤 特典映像",
+        "items": [
+          "ちきゅとびDocumentary ～UFOを見たことがありますか？～",
+          "ちきゅとびツアーファイナルダイジェスト @2024.7.19 神奈川県民ホール"
+        ]
+      }
+    ]
+  },
+  "goods": [
+    { "id": "uchu-pamphlet", "name": "宇宙パンフレット", "price": 2500 },
+    { "id": "mini-uchuwa-sakamoto", "name": "ミニうちゅわ（坂本昌行）", "price": 700 },
+    { "id": "mini-uchuwa-nagano", "name": "ミニうちゅわ（長野博）", "price": 700 },
+    { "id": "mini-uchuwa-inohara", "name": "ミニうちゅわ（井ノ原快彦）", "price": 700 },
+    { "id": "uchu-penlight", "name": "宇宙ペンライト", "price": 4000 },
+    { "id": "uchu-fes-tshirt", "name": "宇宙フェスTシャツ", "price": 4800 },
+    { "id": "parabo-room-light", "name": "PARABO（ルームライト）", "price": 5800 },
+    { "id": "uchu-tomo-maroro", "name": "うちゅ友（マロロ）", "price": 2500 },
+    { "id": "uchu-tomo-piroro", "name": "うちゅ友（ピロロ）", "price": 2500 },
+    { "id": "uchu-tomo-yororo", "name": "うちゅ友（ヨロロ）", "price": 2500 },
+    { "id": "onefoo-pouch", "name": "ワンフーポーチ", "price": 2200 },
+    { "id": "ordinary-sticker", "name": "普通のステッカー", "price": 900 }
+  ]
+}
