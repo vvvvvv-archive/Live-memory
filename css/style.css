@@ -414,8 +414,18 @@ footer {
   font-size: .9rem;
 }
 
-.footer-site-name {
+.footer-logo {
+  display: inline-block;
+  padding: 8px 12px;
   color: var(--sub);
+  text-decoration: none;
+  transition: opacity .2s;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .footer-logo:hover {
+    opacity: .75;
+  }
 }
 
 .text-page {

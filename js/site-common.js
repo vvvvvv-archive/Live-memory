@@ -11,7 +11,7 @@
           <a href="about.html">このサイトについて</a>
           <a href="contact.html">お問い合わせ・削除依頼</a>
         </nav>
-        <div class="footer-site-name">${SITE_NAME}</div>
+        <a href="index.html" class="footer-logo" aria-label="V6 LIVE MEMORY ホームへ戻る">${SITE_NAME}</a>
       `;
     });
   }
