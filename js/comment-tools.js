@@ -57,3 +57,12 @@ function createMemberTagTools() {
 
   return tools;
 }
+
+function createPostManagementLink() {
+  const wrapper = document.createElement("p");
+  wrapper.className = "post-management-link";
+  wrapper.innerHTML = `
+    <a href="contact.html">投稿の編集・削除について</a>
+  `;
+  return wrapper;
+}

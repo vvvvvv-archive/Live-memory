@@ -300,6 +300,32 @@ main {
   color: var(--accent);
 }
 
+.post-management-link {
+  margin: 14px 0 0;
+  font-size: .84rem;
+  text-align: right;
+}
+
+.post-management-link a,
+.footer-links a,
+.error-actions a,
+.text-page a {
+  color: var(--accent);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.post-management-link a:hover,
+.post-management-link a:focus,
+.footer-links a:hover,
+.footer-links a:focus,
+.error-actions a:hover,
+.error-actions a:focus,
+.text-page a:hover,
+.text-page a:focus {
+  text-decoration: underline;
+}
+
 .search-empty {
   padding: 18px 0;
   color: var(--sub);
@@ -377,6 +403,57 @@ footer {
   text-align: center;
   color: var(--sub);
   border-top: 1px solid var(--line);
+}
+
+.footer-links {
+  display: flex;
+  justify-content: center;
+  gap: 18px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+  font-size: .9rem;
+}
+
+.footer-site-name {
+  color: var(--sub);
+}
+
+.text-page {
+  line-height: 1.9;
+}
+
+.text-page h2 {
+  margin: 28px 0 10px;
+  color: var(--accent);
+  font-size: 1.25rem;
+}
+
+.text-page h2:first-child {
+  margin-top: 0;
+}
+
+.text-page p {
+  margin: 0 0 16px;
+}
+
+.text-page ul {
+  margin: 0 0 18px;
+  padding-left: 1.3em;
+}
+
+.text-page li {
+  margin: 6px 0;
+}
+
+.error-card {
+  margin-top: 48px;
+}
+
+.error-actions {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-top: 22px;
 }
 
 .lead-card h1{

@@ -21,6 +21,10 @@
       <input id="performance-search" type="search" placeholder="曲名・メンバー名・言葉で探す">
     </section>
 
+    <section class="section-block setlist-checking-notice" id="setlist-checking-notice" hidden>
+      <p>この公演のセットリストは確認中です。</p>
+    </section>
+
     <section class="section-block search-results" id="performance-memory-search-results" hidden></section>
 
     <section class="section-block">
@@ -43,7 +47,7 @@
   </main>
 
   <footer>ｖｖｖｖｖｖ　LIVE MEMORY</footer>
-
+  <script src="js/site-common.js"></script>
   <script src="js/search.js"></script>
   <script>
     const params = new URLSearchParams(window.location.search);
@@ -77,6 +81,13 @@
 
       document.getElementById("performance-venue").textContent =
         `[${performance.area}] ${performance.venue}${performance.performanceType ? " / " + performance.performanceType : ""}`;
+
+      const setlistNotice = document.getElementById("setlist-checking-notice");
+      setlistNotice.hidden = !(
+        performance.setlistStatus === "checking" ||
+        performance.setlistRegistered === false ||
+        performance.setlistId === null
+      );
 
       document.getElementById("mc-link").href =
         `memory.html?group=${groupId}&live=${liveId}&performance=${performanceId}&type=mc`;

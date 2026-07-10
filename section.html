@@ -29,7 +29,7 @@
   <footer>
     ｖｖｖｖｖｖ　LIVE MEMORY
   </footer>
-
+  <script src="js/site-common.js"></script>
   <script src="js/search.js"></script>
   <script src="js/comment-tools.js"></script>
   <script>
@@ -80,6 +80,7 @@
       container.appendChild(giscus);
       container.appendChild(createMemberTagTools());
       container.appendChild(createMemoryGuidelines());
+      container.appendChild(createPostManagementLink());
     }
 
     function createMemoryGuidelines() {

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>お問い合わせ・削除依頼 | ｖｖｖｖｖｖ　LIVE MEMORY</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+  <main>
+    <nav class="breadcrumb">
+      <a href="index.html">HOME</a> &gt; お問い合わせ・削除依頼
+    </nav>
+
+    <section class="lead-card">
+      <h1>お問い合わせ・削除依頼</h1>
+      <p>投稿の編集・削除、掲載情報の訂正、情報提供についての案内です。</p>
+    </section>
+
+    <section class="section-block text-page">
+      <h2>投稿者本人による編集・削除</h2>
+      <p>投稿者本人は、投稿右上の「…」メニューから編集・削除できます。GitHubにログインした状態で、ご自身の投稿を確認してください。</p>
+
+      <h2>管理人への削除依頼</h2>
+      <p>管理人への削除依頼はXのDMで受け付けます。依頼時は、確認のため以下を記載してください。</p>
+      <ul>
+        <li>対象ページURL</li>
+        <li>対象投稿が分かる内容</li>
+        <li>削除を希望する理由</li>
+      </ul>
+      <p id="x-dm-link" class="official-link"></p>
+
+      <h2>情報の訂正・提供</h2>
+      <p>セットリスト、グッズ、公演情報の訂正や追加情報も受け付けています。分かる範囲で、対象ページURLと情報の出典・確認内容を添えてご連絡ください。</p>
+    </section>
+  </main>
+
+  <footer>ｖｖｖｖｖｖ　LIVE MEMORY</footer>
+  <script src="js/site-common.js"></script>
+  <script>
+    const CONTACT_X_DM_URL = "REPLACE_WITH_X_DM_URL";
+    const dmLink = document.getElementById("x-dm-link");
+
+    if (CONTACT_X_DM_URL && CONTACT_X_DM_URL !== "REPLACE_WITH_X_DM_URL") {
+      dmLink.innerHTML = `
+        <a href="${CONTACT_X_DM_URL}" target="_blank" rel="noopener noreferrer">
+          XのDMを開く ↗
+        </a>
+      `;
+    } else {
+      dmLink.textContent = "XのDM URLは公開前に差し替え予定です。";
+    }
+  </script>
+</body>
+</html>
