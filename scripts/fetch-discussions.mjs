@@ -12,24 +12,67 @@ if (!token) {
 const liveCache = new Map();
 let liveRegistryCache;
 
-async function graphql(query, variables = {}) {
-  const response = await fetch("https://api.github.com/graphql", {
-    method: "POST",
-    headers: {
-      "Authorization": `Bearer ${token}`,
-      "Content-Type": "application/json",
-      "User-Agent": "Live-memory"
-    },
-    body: JSON.stringify({ query, variables })
-  });
+const MAX_GRAPHQL_ATTEMPTS = 4;
+const GRAPHQL_RETRY_DELAYS_MS = [2000, 4000, 8000];
 
-  const body = await response.json();
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
 
-  if (!response.ok || body.errors) {
-    throw new Error(JSON.stringify(body.errors || body));
+function isRetryableGraphqlError(error, status) {
+  if (status && [401, 403, 404].includes(status)) {
+    return false;
   }
 
-  return body.data;
+  if (status && status >= 500) {
+    return true;
+  }
+
+  const message = String(error?.message || error || "");
+  return /timeout|timed out|couldn't respond|try resubmitting|try again|temporarily|ETIMEDOUT|ECONNRESET|ECONNREFUSED|EAI_AGAIN|fetch failed/i
+    .test(message);
+}
+
+async function graphql(query, variables = {}) {
+  let lastError;
+
+  for (let attempt = 1; attempt <= MAX_GRAPHQL_ATTEMPTS; attempt += 1) {
+    try {
+      const response = await fetch("https://api.github.com/graphql", {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json",
+          "User-Agent": "Live-memory"
+        },
+        body: JSON.stringify({ query, variables })
+      });
+
+      const body = await response.json().catch(() => ({}));
+      const error = !response.ok || body.errors
+        ? new Error(JSON.stringify(body.errors || body))
+        : null;
+
+      if (!error) {
+        return body.data;
+      }
+
+      error.status = response.status;
+      throw error;
+    } catch (error) {
+      lastError = error;
+
+      if (attempt >= MAX_GRAPHQL_ATTEMPTS || !isRetryableGraphqlError(error, error.status)) {
+        throw error;
+      }
+
+      const delay = GRAPHQL_RETRY_DELAYS_MS[attempt - 1];
+      console.warn(`GitHub GraphQL request failed. Retry ${attempt}/${MAX_GRAPHQL_ATTEMPTS - 1} in ${delay / 1000}s: ${error.message}`);
+      await sleep(delay);
+    }
+  }
+
+  throw lastError;
 }
 
 async function loadLive(groupId, liveId) {
