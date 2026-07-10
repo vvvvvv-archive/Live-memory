@@ -126,19 +126,24 @@
       live.performances.forEach(performance => {
         searchResults.push({
           title: `${performance.date} ${performance.time}`,
-          subtitle: `[${performance.area}] ${performance.venue}`,
+          subtitle: `[${performance.area}] ${performance.venue}${performance.performanceType ? " / " + performance.performanceType : ""}`,
           href: `performance.html?group=${groupId}&live=${liveId}&performance=${performance.id}`,
-          searchText: `${live.title} ${performance.date} ${performance.time} ${performance.area} ${performance.venue}`
+          searchText: `${live.title} ${performance.date} ${performance.time} ${performance.area} ${performance.venue} ${performance.performanceType || ""}`
         });
       });
 
-      const setlist = live.setlists.find(s => s.id === "v2") || live.setlists[live.setlists.length - 1];
-      setlist.songs.forEach((song, index) => {
-        searchResults.push({
-          title: `${song.order}. ${song.title}`,
-          subtitle: `${song.artist}${song.note ? " / " + song.note : ""}`,
-          href: `song.html?group=${groupId}&live=${liveId}&setlist=${setlist.id}&song=${index}&order=${song.order}`,
-          searchText: `${live.title} ${song.order} ${song.title} ${song.artist} ${song.note || ""}`
+      const generalSetlists = Array.isArray(live.generalSetlistIds) && live.generalSetlistIds.length
+        ? live.generalSetlistIds.map(id => live.setlists.find(setlist => setlist.id === id)).filter(Boolean)
+        : [live.setlists.find(s => s.id === "v2") || live.setlists[live.setlists.length - 1]];
+      generalSetlists.forEach(setlist => {
+        setlist.songs.forEach((song, index) => {
+          const setlistLabel = setlist.label || setlist.name || "";
+          searchResults.push({
+            title: `${song.order}. ${song.title}`,
+            subtitle: `${setlistLabel ? setlistLabel + " / " : ""}${song.artist}${song.note ? " / " + song.note : ""}`,
+            href: `song.html?group=${groupId}&live=${liveId}&setlist=${setlist.id}&song=${index}&order=${song.order}`,
+            searchText: `${live.title} ${setlistLabel} ${song.order} ${song.title} ${song.artist} ${song.note || ""}`
+          });
         });
       });
 

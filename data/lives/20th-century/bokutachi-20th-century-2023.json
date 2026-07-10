@@ -409,6 +409,12 @@
   ],
   "video": {
     "officialUrl": "https://mentrecording.jp/20thcentury/discography/detail.php?id=1019754",
+    "mainFeature": {
+      "edition": "初回盤A",
+      "title": "20th Century Live tour 2023 〜僕たち20th Centuryです！～",
+      "recordedDate": "（2023.02.02",
+      "venue": "中野サンプラザ公演）"
+    },
     "setlist": [
       {
         "order": 1,

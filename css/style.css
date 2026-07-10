@@ -98,6 +98,10 @@ main {
   margin-top: 12px;
 }
 
+.official-link:empty {
+  display: none;
+}
+
 .official-link a {
   color: var(--accent);
   font-weight: bold;
@@ -119,6 +123,10 @@ main {
   margin-bottom: 16px;
 }
 
+.archive-grid + .section-heading {
+  margin-top: 52px;
+}
+
 .section-heading h2 {
   margin: 0;
   color: var(--accent);
@@ -129,10 +137,6 @@ main {
   margin: 4px 0 0;
   color: var(--sub);
   font-size: .95rem;
-}
-
-.video-section-heading--spaced {
-  margin-top: 52px;
 }
 
 .archive-grid {
@@ -183,6 +187,15 @@ main {
 
 .year-live-list li + li {
   margin-top: 8px;
+}
+
+.live-title-link {
+  display: inline;
+}
+
+.live-title-main,
+.live-title-sub {
+  display: inline;
 }
 
 .memory-card,
@@ -392,4 +405,16 @@ text-decoration:none;
 
 font-weight:600;
 
+}
+
+@media (max-width: 640px) {
+  .live-title-link {
+    display: inline-block;
+    line-height: 1.65;
+  }
+
+  .live-title-main,
+  .live-title-sub {
+    display: block;
+  }
 }

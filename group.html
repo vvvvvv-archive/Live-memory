@@ -63,6 +63,16 @@
       listElement.appendChild(li);
     }
 
+    function formatLiveTitle(title) {
+      const match = title.match(/^(.*?\b\d{4})(\s*[～〜].*)$/);
+      if (!match) return title;
+
+      return `
+        <span class="live-title-main">${match[1]}</span>
+        <span class="live-title-sub">${match[2].trim()}</span>
+      `;
+    }
+
     function renderLives(listElement, lives, groupId) {
       listElement.innerHTML = "";
 
@@ -97,7 +107,8 @@
           const a = document.createElement("a");
 
           a.href = `live.html?group=${groupId}&live=${live.id}`;
-          a.textContent = live.title;
+          a.className = "live-title-link";
+          a.innerHTML = formatLiveTitle(live.title);
 
           li.appendChild(a);
           yearList.appendChild(li);
