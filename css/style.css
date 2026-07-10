@@ -98,6 +98,12 @@ main {
   margin-top: 12px;
 }
 
+.about-lead-copy {
+  margin-bottom: 0;
+  font-size: clamp(.94rem, 2.9vw, 1rem);
+  line-height: 1.85;
+}
+
 .official-link:empty {
   display: none;
 }
