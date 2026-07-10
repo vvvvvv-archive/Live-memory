@@ -62,7 +62,7 @@
         : live.setlists.find(s => s.id === "v2") || live.setlists[live.setlists.length - 1];
 
       const heading = document.createElement("div");
-      heading.className = "section-heading";
+      heading.className = "section-heading video-section-heading";
       heading.innerHTML = `
         <h2>セットリスト</h2>
       `;
@@ -92,7 +92,7 @@
 
       sections.forEach(section => {
         const heading = document.createElement("div");
-        heading.className = "section-heading";
+        heading.className = "section-heading video-section-heading";
         heading.innerHTML = `<h2>${section.title}</h2>`;
         container.appendChild(heading);
 
