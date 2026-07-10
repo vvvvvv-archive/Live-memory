@@ -1,0 +1,70 @@
+{
+  "id": "new-live-id",
+  "groupId": "20th-century",
+  "type": "LIVE",
+  "year": 2026,
+  "title": "ライブタイトル",
+  "officialUrl": "",
+  "sections": [
+    {
+      "id": "general",
+      "label": "総合",
+      "description": "ツアー全体の思い出や、曲ごとの思い出"
+    },
+    {
+      "id": "schedule",
+      "label": "公演日程",
+      "description": "各公演ごとのMC、ファンサ、その他の思い出"
+    },
+    {
+      "id": "video",
+      "label": "映像・円盤",
+      "description": "ライブ映像、特典映像を観た思い出"
+    },
+    {
+      "id": "goods",
+      "label": "グッズ",
+      "description": "グッズの思い出"
+    }
+  ],
+  "performances": [
+    {
+      "id": "yyyymmdd-hhmm",
+      "date": "YYYY-MM-DD",
+      "time": "18:00",
+      "area": "東京",
+      "venue": "会場名"
+    }
+  ],
+  "setlists": [
+    {
+      "id": "v1",
+      "name": "main setlist",
+      "songs": [
+        {
+          "order": 1,
+          "title": "曲名",
+          "artist": "アーティスト名"
+        }
+      ]
+    }
+  ],
+  "video": {
+    "setlist": [],
+    "bonusSections": [
+      {
+        "title": "初回盤 特典映像",
+        "items": [
+          "特典映像タイトル"
+        ]
+      }
+    ]
+  },
+  "goods": [
+    {
+      "id": "goods-id",
+      "name": "グッズ名",
+      "price": 1000
+    }
+  ]
+}

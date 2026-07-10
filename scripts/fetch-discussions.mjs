@@ -10,6 +10,7 @@ if (!token) {
 }
 
 const liveCache = new Map();
+let liveRegistryCache;
 
 async function graphql(query, variables = {}) {
   const response = await fetch("https://api.github.com/graphql", {
@@ -35,11 +36,21 @@ async function loadLive(groupId, liveId) {
   const key = `${groupId}:${liveId}`;
 
   if (!liveCache.has(key)) {
-    const file = path.join("data", "lives", groupId, `${liveId}.json`);
+    const registry = await loadLiveRegistry();
+    const entry = registry.find(item => item.groupId === groupId && item.liveId === liveId);
+    const file = entry?.path || path.join("data", "lives", groupId, `${liveId}.json`);
     liveCache.set(key, JSON.parse(await fs.readFile(file, "utf8")));
   }
 
   return liveCache.get(key);
+}
+
+async function loadLiveRegistry() {
+  if (!liveRegistryCache) {
+    liveRegistryCache = JSON.parse(await fs.readFile(path.join("data", "lives", "index.json"), "utf8"));
+  }
+
+  return liveRegistryCache;
 }
 
 function resolveSongFromMemoryParts(live, parts) {

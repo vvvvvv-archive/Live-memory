@@ -51,29 +51,11 @@
     ｖｖｖｖｖｖ　LIVE MEMORY
   </footer>
 
+  <script src="js/live-registry.js"></script>
   <script src="js/search.js"></script>
   <script>
     const params = new URLSearchParams(window.location.search);
     const groupId = params.get("id");
-
-    async function loadJson(path) {
-      const response = await fetch(path);
-      return response.json();
-    }
-
-    const liveIdsByGroup = {
-      "20th-century": [
-        "utauhito-odoruhito-2026",
-        "chikyuwotobidasou-2024"
-      ]
-    };
-
-    async function loadGroupLives(groupId) {
-      const liveIds = liveIdsByGroup[groupId] || [];
-      return Promise.all(
-        liveIds.map(liveId => loadJson(`data/lives/${groupId}/${liveId}.json`))
-      );
-    }
 
     function renderEmpty(listElement) {
       const li = document.createElement("li");
@@ -126,73 +108,14 @@
       });
     }
 
-    function buildLiveResults(group, live) {
-      const results = [{
-        title: live.title,
-        subtitle: `${live.type} / ${live.year}`,
-        href: `live.html?group=${group.id}&live=${live.id}`,
-        pageType: "live",
-        searchText: `${group.name} ${live.type} ${live.year} ${live.title}`
-      }];
-
-      live.performances.forEach(performance => {
-        results.push({
-          title: `${performance.date} ${performance.time}`,
-          subtitle: `${live.title} / [${performance.area}] ${performance.venue}`,
-          href: `performance.html?group=${group.id}&live=${live.id}&performance=${performance.id}`,
-          pageType: "schedule",
-          searchText: `${group.name} ${live.title} ${performance.date} ${performance.time} ${performance.area} ${performance.venue}`
-        });
-      });
-
-      const setlist = live.setlists.find(s => s.id === "v2") || live.setlists[live.setlists.length - 1];
-      setlist.songs.forEach((song, index) => {
-        results.push({
-          title: `${song.order}. ${song.title}`,
-          subtitle: `${live.title} / ${song.artist}${song.note ? " / " + song.note : ""}`,
-          href: `song.html?group=${group.id}&live=${live.id}&setlist=${setlist.id}&song=${index}&order=${song.order}`,
-          pageType: "general",
-          searchText: `${group.name} ${live.title} ${song.order} ${song.title} ${song.artist} ${song.note || ""}`
-        });
-      });
-
-      const videoSetlist = live.video?.setlist?.length
-        ? { id: "video", songs: live.video.setlist }
-        : setlist;
-      videoSetlist.songs.forEach((song, index) => {
-        results.push({
-          title: `${song.order}. ${song.title}`,
-          subtitle: `${live.title} / 映像・円盤`,
-          href: `video-song.html?group=${group.id}&live=${live.id}&setlist=${videoSetlist.id}&song=${index}&order=${song.order}`,
-          pageType: "video",
-          searchText: `${group.name} ${live.title} 映像 円盤 ${song.order} ${song.title} ${song.artist} ${song.note || ""}`
-        });
-      });
-
-      live.goods.forEach(goods => {
-        results.push({
-          title: goods.name,
-          subtitle: `${live.title} / ${goods.price.toLocaleString()}円`,
-          href: `goods.html?group=${group.id}&live=${live.id}&goods=${goods.id}`,
-          pageType: "goods",
-          searchText: `${group.name} ${live.title} ${goods.name} ${goods.price}円 グッズ goods`
-        });
-      });
-
-      return results;
-    }
-
     async function init() {
-      const groups = await loadJson("data/groups.json");
-      const group = groups.find(g => g.id === groupId);
+      const { group, lives } = await LiveRegistry.loadGroupLives(groupId);
 
       document.title = `${group.name} | ｖｖｖｖｖｖ　LIVE MEMORY`;
       document.getElementById("group-name").textContent = group.name;
       document.getElementById("group-name-breadcrumb").textContent = group.name;
 
-      let liveItems = [];
-
-      liveItems = await loadGroupLives(groupId);
+      const liveItems = lives;
 
       const stageItems = [];
       const eventItems = [];
@@ -205,7 +128,7 @@
       renderLives(document.getElementById("stage-list"), stageItems, groupId);
       renderLives(document.getElementById("event-list"), eventItems, groupId);
 
-      const searchResults = liveItems.flatMap(live => buildLiveResults(group, live));
+      const searchResults = liveItems.flatMap(live => LiveRegistry.buildLiveSearchResults(group, live));
       searchResults.push(
         ...await MemorySearch.loadMemoryResults(item =>
           MemorySearch.isMemoryInGroup(item, groupId)
