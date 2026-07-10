@@ -10,5 +10,11 @@
     "liveId": "chikyuwotobidasou-2024",
     "path": "data/lives/20th-century/chikyuwotobidasou-2024.json",
     "displayOrder": 2024
+  },
+  {
+    "groupId": "20th-century",
+    "liveId": "bokutachi-20th-century-2023",
+    "path": "data/lives/20th-century/bokutachi-20th-century-2023.json",
+    "displayOrder": 2023
   }
 ]

@@ -76,7 +76,7 @@
         `${performance.date} ${performance.time}`;
 
       document.getElementById("performance-venue").textContent =
-        `[${performance.area}] ${performance.venue}`;
+        `[${performance.area}] ${performance.venue}${performance.performanceType ? " / " + performance.performanceType : ""}`;
 
       document.getElementById("mc-link").href =
         `memory.html?group=${groupId}&live=${liveId}&performance=${performanceId}&type=mc`;
@@ -93,9 +93,9 @@
         document.getElementById("other-link")
       ];
 
-      cards[0].dataset.search = `${live.title} ${performance.date} ${performance.time} ${performance.area} ${performance.venue} MC`;
-      cards[1].dataset.search = `${live.title} ${performance.date} ${performance.time} ${performance.area} ${performance.venue} ファンサ fanservice`;
-      cards[2].dataset.search = `${live.title} ${performance.date} ${performance.time} ${performance.area} ${performance.venue} その他 other`;
+      cards[0].dataset.search = `${live.title} ${performance.date} ${performance.time} ${performance.area} ${performance.venue} ${performance.performanceType || ""} MC`;
+      cards[1].dataset.search = `${live.title} ${performance.date} ${performance.time} ${performance.area} ${performance.venue} ${performance.performanceType || ""} ファンサ fanservice`;
+      cards[2].dataset.search = `${live.title} ${performance.date} ${performance.time} ${performance.area} ${performance.venue} ${performance.performanceType || ""} その他 other`;
 
       const input = document.getElementById("performance-search");
       const memoryResults = await MemorySearch.loadMemoryResults(item =>

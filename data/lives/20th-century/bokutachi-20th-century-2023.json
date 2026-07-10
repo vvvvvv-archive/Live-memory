@@ -1,0 +1,590 @@
+{
+  "id": "bokutachi-20th-century-2023",
+  "groupId": "20th-century",
+  "type": "LIVE",
+  "year": 2023,
+  "title": "20th Century Live tour 2023 ～僕たち20th Centuryです！～",
+  "officialUrl": "https://mentrecording.jp/20thcentury/live/tour.php?id=1002233&fdate=2023-01-16&ldate=2023-03-16",
+  "sections": [
+    {
+      "id": "general",
+      "label": "総合",
+      "description": "ツアー全体の思い出や、曲ごとの思い出を残す場所です。"
+    },
+    {
+      "id": "schedule",
+      "label": "公演日程",
+      "description": "各公演ごとのMC、ファンサ、その他の思い出を残す場所です。"
+    },
+    {
+      "id": "video",
+      "label": "映像・円盤",
+      "description": "ライブ映像、特典映像、配信などの思い出を残す場所です。"
+    },
+    {
+      "id": "goods",
+      "label": "グッズ",
+      "description": "販売されたグッズに関する思い出を残す場所です。"
+    }
+  ],
+  "performances": [
+    {
+      "id": "20230116-1900",
+      "date": "2023-01-16",
+      "time": "19:00",
+      "area": "東京",
+      "venue": "Billboard Live TOKYO",
+      "performanceType": "Billboard公演"
+    },
+    {
+      "id": "20230117-1530",
+      "date": "2023-01-17",
+      "time": "15:30",
+      "area": "東京",
+      "venue": "Billboard Live TOKYO",
+      "performanceType": "Billboard公演"
+    },
+    {
+      "id": "20230117-1900",
+      "date": "2023-01-17",
+      "time": "19:00",
+      "area": "東京",
+      "venue": "Billboard Live TOKYO",
+      "performanceType": "Billboard公演"
+    },
+    {
+      "id": "20230123-1900",
+      "date": "2023-01-23",
+      "time": "19:00",
+      "area": "大阪",
+      "venue": "Billboard Live OSAKA",
+      "performanceType": "Billboard公演"
+    },
+    {
+      "id": "20230124-1530",
+      "date": "2023-01-24",
+      "time": "15:30",
+      "area": "大阪",
+      "venue": "Billboard Live OSAKA",
+      "performanceType": "Billboard公演"
+    },
+    {
+      "id": "20230124-1900",
+      "date": "2023-01-24",
+      "time": "19:00",
+      "area": "大阪",
+      "venue": "Billboard Live OSAKA",
+      "performanceType": "Billboard公演"
+    },
+    {
+      "id": "20230202-1400",
+      "date": "2023-02-02",
+      "time": "14:00",
+      "area": "東京",
+      "venue": "中野サンプラザ",
+      "performanceType": "ホール公演"
+    },
+    {
+      "id": "20230202-1800",
+      "date": "2023-02-02",
+      "time": "18:00",
+      "area": "東京",
+      "venue": "中野サンプラザ",
+      "performanceType": "ホール公演"
+    },
+    {
+      "id": "20230206-1800",
+      "date": "2023-02-06",
+      "time": "18:00",
+      "area": "大阪",
+      "venue": "フェスティバルホール",
+      "performanceType": "ホール公演"
+    },
+    {
+      "id": "20230207-1400",
+      "date": "2023-02-07",
+      "time": "14:00",
+      "area": "大阪",
+      "venue": "フェスティバルホール",
+      "performanceType": "ホール公演"
+    },
+    {
+      "id": "20230207-1800",
+      "date": "2023-02-07",
+      "time": "18:00",
+      "area": "大阪",
+      "venue": "フェスティバルホール",
+      "performanceType": "ホール公演"
+    },
+    {
+      "id": "20230209-1800",
+      "date": "2023-02-09",
+      "time": "18:00",
+      "area": "静岡",
+      "venue": "アクトシティ浜松 大ホール",
+      "performanceType": "ホール公演"
+    },
+    {
+      "id": "20230213-1800",
+      "date": "2023-02-13",
+      "time": "18:00",
+      "area": "福岡",
+      "venue": "福岡サンパレス",
+      "performanceType": "ホール公演"
+    },
+    {
+      "id": "20230219-1800",
+      "date": "2023-02-19",
+      "time": "18:00",
+      "area": "兵庫",
+      "venue": "神戸国際会館 こくさいホール",
+      "performanceType": "ホール公演"
+    },
+    {
+      "id": "20230220-1800",
+      "date": "2023-02-20",
+      "time": "18:00",
+      "area": "兵庫",
+      "venue": "神戸国際会館 こくさいホール",
+      "performanceType": "ホール公演"
+    },
+    {
+      "id": "20230223-1800",
+      "date": "2023-02-23",
+      "time": "18:00",
+      "area": "神奈川",
+      "venue": "神奈川県民ホール 大ホール",
+      "performanceType": "ホール公演"
+    },
+    {
+      "id": "20230224-1400",
+      "date": "2023-02-24",
+      "time": "14:00",
+      "area": "神奈川",
+      "venue": "神奈川県民ホール 大ホール",
+      "performanceType": "ホール公演"
+    },
+    {
+      "id": "20230224-1800",
+      "date": "2023-02-24",
+      "time": "18:00",
+      "area": "神奈川",
+      "venue": "神奈川県民ホール 大ホール",
+      "performanceType": "ホール公演"
+    },
+    {
+      "id": "20230227-1900",
+      "date": "2023-02-27",
+      "time": "19:00",
+      "area": "神奈川",
+      "venue": "Billboard Live YOKOHAMA",
+      "performanceType": "Billboard公演"
+    },
+    {
+      "id": "20230228-1530",
+      "date": "2023-02-28",
+      "time": "15:30",
+      "area": "神奈川",
+      "venue": "Billboard Live YOKOHAMA",
+      "performanceType": "Billboard公演"
+    },
+    {
+      "id": "20230228-1900",
+      "date": "2023-02-28",
+      "time": "19:00",
+      "area": "神奈川",
+      "venue": "Billboard Live YOKOHAMA",
+      "performanceType": "Billboard公演"
+    }
+  ],
+  "generalSetlistIds": [
+    "hall",
+    "billboard"
+  ],
+  "setlists": [
+    {
+      "id": "hall",
+      "name": "hall setlist",
+      "label": "ホール公演",
+      "songs": [
+        {
+          "order": 1,
+          "title": "Running to the top",
+          "artist": "20th Century"
+        },
+        {
+          "order": 2,
+          "title": "Honey",
+          "artist": "20th Century"
+        },
+        {
+          "order": 3,
+          "title": "Shelter",
+          "artist": "坂本昌行"
+        },
+        {
+          "order": 4,
+          "title": "20th Century デス",
+          "artist": "20th Century"
+        },
+        {
+          "order": 5,
+          "title": "風に預けて",
+          "artist": "20th Century"
+        },
+        {
+          "order": 6,
+          "title": "Flowing day",
+          "artist": "20th Century"
+        },
+        {
+          "order": 7,
+          "title": "夕焼けドロップ",
+          "artist": "長野博・井ノ原快彦"
+        },
+        {
+          "order": 8,
+          "title": "Talk about you",
+          "artist": "20th Century"
+        },
+        {
+          "order": 9,
+          "title": "ときどきしてる",
+          "artist": "20th Century"
+        },
+        {
+          "order": 10,
+          "title": "雨の夜と月曜日には",
+          "artist": "V6"
+        },
+        {
+          "order": 11,
+          "title": "水曜日",
+          "artist": "20th Century"
+        },
+        {
+          "order": 12,
+          "title": "翼の設計図",
+          "artist": "V6"
+        },
+        {
+          "order": 13,
+          "title": "素敵な夜",
+          "artist": "V6"
+        },
+        {
+          "order": 14,
+          "title": "red",
+          "artist": "20th Century"
+        },
+        {
+          "order": 15,
+          "title": "MIRACLE STARTER ～未来でスノウ・フレークス～ -V626 ver",
+          "artist": "V6"
+        },
+        {
+          "order": 16,
+          "title": "LADY, LADY, LADY",
+          "artist": "20th Century"
+        },
+        {
+          "order": 17,
+          "title": "Precious Love",
+          "artist": "20th Century"
+        },
+        {
+          "order": 18,
+          "title": "Best Choice",
+          "artist": "V6"
+        },
+        {
+          "order": 19,
+          "title": "オレじゃなきゃ、キミじゃなきゃ",
+          "artist": "20th Century"
+        },
+        {
+          "order": 20,
+          "title": "ツラいチャプター",
+          "artist": "20th Century"
+        },
+        {
+          "order": 21,
+          "title": "恋はこれから",
+          "artist": "20th Century"
+        },
+        {
+          "order": 22,
+          "title": "Can do! Can go!",
+          "artist": "V6"
+        },
+        {
+          "order": 23,
+          "title": "夢の島セレナーデ",
+          "artist": "20th Century"
+        },
+        {
+          "order": 24,
+          "title": "君の笑顔につられて",
+          "artist": "20th Century"
+        }
+      ]
+    },
+    {
+      "id": "billboard",
+      "name": "billboard setlist",
+      "label": "Billboard公演",
+      "songs": [
+        {
+          "order": 1,
+          "title": "会って話を",
+          "artist": "20th Century"
+        },
+        {
+          "order": 2,
+          "title": "季節",
+          "artist": "20th Century"
+        },
+        {
+          "order": 3,
+          "title": "LOVE SONG",
+          "artist": "20th Century"
+        },
+        {
+          "order": 4,
+          "title": "Talk about you",
+          "artist": "20th Century"
+        },
+        {
+          "order": 5,
+          "title": "LADY, LADY, LADY",
+          "artist": "20th Century"
+        },
+        {
+          "order": 6,
+          "title": "red",
+          "artist": "20th Century"
+        },
+        {
+          "order": 7,
+          "title": "SUNDAY, SUNNYDAY",
+          "artist": "20th Century"
+        },
+        {
+          "order": 8,
+          "title": "MIRACLE STARTER ～未来でスノウ・フレークス～ -V626 ver",
+          "artist": "V6"
+        },
+        {
+          "order": 9,
+          "title": "Precious Love",
+          "artist": "20th Century"
+        },
+        {
+          "order": 10,
+          "title": "素敵な夜",
+          "artist": "V6"
+        },
+        {
+          "order": 11,
+          "title": "オレじゃなきゃ、キミじゃなきゃ",
+          "artist": "20th Century"
+        },
+        {
+          "order": 12,
+          "title": "君の笑顔につられて",
+          "artist": "20th Century"
+        },
+        {
+          "order": 13,
+          "title": "夢の島セレナーデ",
+          "artist": "20th Century"
+        },
+        {
+          "order": 14,
+          "title": "Shelter",
+          "artist": "坂本昌行"
+        }
+      ]
+    }
+  ],
+  "video": {
+    "officialUrl": "https://mentrecording.jp/20thcentury/discography/detail.php?id=1019754",
+    "setlist": [
+      {
+        "order": 1,
+        "title": "Running to the top",
+        "artist": "20th Century"
+      },
+      {
+        "order": 2,
+        "title": "Honey",
+        "artist": "20th Century"
+      },
+      {
+        "order": 3,
+        "title": "Shelter",
+        "artist": "坂本昌行"
+      },
+      {
+        "order": 4,
+        "title": "20th Century デス",
+        "artist": "20th Century"
+      },
+      {
+        "order": 5,
+        "title": "風に預けて",
+        "artist": "20th Century"
+      },
+      {
+        "order": 6,
+        "title": "Flowing day",
+        "artist": "20th Century"
+      },
+      {
+        "order": 7,
+        "title": "夕焼けドロップ",
+        "artist": "長野博・井ノ原快彦"
+      },
+      {
+        "order": 8,
+        "title": "Talk about you",
+        "artist": "20th Century"
+      },
+      {
+        "order": 9,
+        "title": "ときどきしてる",
+        "artist": "20th Century"
+      },
+      {
+        "order": 10,
+        "title": "雨の夜と月曜日には",
+        "artist": "V6"
+      },
+      {
+        "order": 11,
+        "title": "水曜日",
+        "artist": "20th Century"
+      },
+      {
+        "order": 12,
+        "title": "翼の設計図",
+        "artist": "V6"
+      },
+      {
+        "order": 13,
+        "title": "素敵な夜",
+        "artist": "V6"
+      },
+      {
+        "order": 14,
+        "title": "red",
+        "artist": "20th Century"
+      },
+      {
+        "order": 15,
+        "title": "MIRACLE STARTER ～未来でスノウ・フレークス～ -V626 ver",
+        "artist": "V6"
+      },
+      {
+        "order": 16,
+        "title": "LADY, LADY, LADY",
+        "artist": "20th Century"
+      },
+      {
+        "order": 17,
+        "title": "Precious Love",
+        "artist": "20th Century"
+      },
+      {
+        "order": 18,
+        "title": "Best Choice",
+        "artist": "V6"
+      },
+      {
+        "order": 19,
+        "title": "オレじゃなきゃ、キミじゃなきゃ",
+        "artist": "20th Century"
+      },
+      {
+        "order": 20,
+        "title": "ツラいチャプター",
+        "artist": "20th Century"
+      },
+      {
+        "order": 21,
+        "title": "恋はこれから",
+        "artist": "20th Century"
+      },
+      {
+        "order": 22,
+        "title": "Can do! Can go!",
+        "artist": "V6"
+      },
+      {
+        "order": 23,
+        "title": "夢の島セレナーデ",
+        "artist": "20th Century"
+      },
+      {
+        "order": 24,
+        "title": "君の笑顔につられて",
+        "artist": "20th Century"
+      }
+    ],
+    "bonusSections": [
+      {
+        "title": "初回盤A 特典映像",
+        "items": [
+          "20th Century Live tour 2023 ～僕たち20th Centuryです！～（2023/2/2 中野サンプラザ公演）",
+          "LIVE TOUR Behind The Scenes"
+        ]
+      },
+      {
+        "title": "初回盤B Music Video・MVメイキング集",
+        "items": [
+          "夢の島セレナーデ",
+          "水曜日",
+          "あなたと"
+        ]
+      },
+      {
+        "title": "初回盤B Billboard Live Digest映像 / Billboard Live OSAKA",
+        "items": [
+          "Behind The Scenes",
+          "会って話を",
+          "季節",
+          "MC",
+          "Talk about you",
+          "君の笑顔につられて"
+        ]
+      },
+      {
+        "title": "初回盤B Billboard Live Digest映像 / Billboard Live TOKYO",
+        "items": [
+          "Behind The Scenes",
+          "red",
+          "Precious Love",
+          "MC",
+          "素敵な夜",
+          "夢の島セレナーデ",
+          "Shelter"
+        ]
+      },
+      {
+        "title": "初回盤B バンドセッション映像",
+        "items": [
+          "恋はこれから",
+          "君の笑顔につられて",
+          "夢の島セレナーデ"
+        ]
+      },
+      {
+        "title": "三形態同時購入特典",
+        "items": [
+          "ホール公演MC集DVD"
+        ]
+      }
+    ]
+  },
+  "goods": []
+}

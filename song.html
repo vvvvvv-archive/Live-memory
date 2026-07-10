@@ -127,6 +127,10 @@ const songIndex=songIndexParam!==null
 : setlist.songs.findIndex(s=>s.order===order);
 
 const song=setlist.songs[songIndex];
+const setlistLabel = setlist.label || setlist.name || "";
+const showSetlistInBreadcrumb = Array.isArray(live.generalSetlistIds)
+&& live.generalSetlistIds.length > 1
+&& setlistLabel;
 
 document.title=`${song.title} | ｖｖｖｖｖｖ　LIVE MEMORY`;
 
@@ -143,6 +147,7 @@ ${live.title}
 総合
 </a>
 &gt;
+${showSetlistInBreadcrumb ? `${setlistLabel} &gt;` : ""}
 ${song.title}
 `;
 

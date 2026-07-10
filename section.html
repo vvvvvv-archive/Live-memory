@@ -130,13 +130,11 @@
       return descriptions[sectionId] || fallback;
     }
 
-    function appendSetlist(container, live, searchableCards, songHrefBuilder) {
-      const setlist = live.setlists.find(s => s.id === "v2") || live.setlists[live.setlists.length - 1];
-
+    function appendSetlist(container, live, searchableCards, songHrefBuilder, setlist) {
       const heading = document.createElement("div");
       heading.className = "section-heading";
       heading.innerHTML = `
-        <h2>セットリスト</h2>
+        <h2>${setlist.label || "セットリスト"}</h2>
       `;
       container.appendChild(heading);
 
@@ -157,6 +155,18 @@
       });
 
       container.appendChild(grid);
+    }
+
+    function generalSetlists(live) {
+      if (Array.isArray(live.generalSetlistIds) && live.generalSetlistIds.length) {
+        return live.generalSetlistIds
+          .map(id => live.setlists.find(setlist => setlist.id === id))
+          .filter(Boolean);
+      }
+
+      return [
+        live.setlists.find(s => s.id === "v2") || live.setlists[live.setlists.length - 1]
+      ];
     }
 
     async function init() {
@@ -200,7 +210,7 @@
 
         live.performances.forEach(performance => {
           const title = `${performance.date} ${performance.time}`;
-          const subtitle = `[${performance.area}] ${performance.venue}`;
+          const subtitle = `[${performance.area}] ${performance.venue}${performance.performanceType ? " / " + performance.performanceType : ""}`;
           const href = `performance.html?group=${groupId}&live=${liveId}&performance=${performance.id}`;
           const card = createCard(title, subtitle, href);
           card.dataset.search = `${live.title} ${title} ${subtitle}`;
@@ -212,7 +222,9 @@
       }
 
       if (sectionId === "general") {
-        appendSetlist(content, live, searchableCards, generalSongHref);
+        generalSetlists(live).forEach(setlist => {
+          appendSetlist(content, live, searchableCards, generalSongHref, setlist);
+        });
 
         const memoryBlock = appendMemoryBlock(
           content,
@@ -225,7 +237,10 @@
       }
 
       if (sectionId === "video") {
-        appendSetlist(content, live, searchableCards, videoSongHref);
+        const setlist = live.video?.setlist?.length
+          ? { id: "video", label: "セットリスト", songs: live.video.setlist }
+          : live.setlists.find(s => s.id === "v2") || live.setlists[live.setlists.length - 1];
+        appendSetlist(content, live, searchableCards, videoSongHref, setlist);
       }
 
       if (sectionId === "goods") {
@@ -240,15 +255,27 @@
         const grid = document.createElement("div");
         grid.className = "archive-grid";
 
-        live.goods.forEach(goods => {
-          const title = goods.name;
-          const subtitle = `${goods.price.toLocaleString()}円`;
-          const href = `goods.html?group=${groupId}&live=${liveId}&goods=${goods.id}`;
-          const card = createCard(title, subtitle, href);
-          card.dataset.search = `${live.title} ${goods.name} ${goods.price}円 グッズ goods`;
+        if (live.goods.length === 0) {
+          const card = document.createElement("div");
+          card.className = "archive-card";
+          card.innerHTML = `
+            <h3>準備中</h3>
+            <p>グッズ情報は確認中です。</p>
+          `;
+          card.dataset.search = `${live.title} グッズ goods 準備中`;
           searchableCards.push(card);
           grid.appendChild(card);
-        });
+        } else {
+          live.goods.forEach(goods => {
+            const title = goods.name;
+            const subtitle = `${goods.price.toLocaleString()}円`;
+            const href = `goods.html?group=${groupId}&live=${liveId}&goods=${goods.id}`;
+            const card = createCard(title, subtitle, href);
+            card.dataset.search = `${live.title} ${goods.name} ${goods.price}円 グッズ goods`;
+            searchableCards.push(card);
+            grid.appendChild(card);
+          });
+        }
 
         content.appendChild(grid);
 

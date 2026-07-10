@@ -48,6 +48,16 @@
       || live.setlists[live.setlists.length - 1];
   }
 
+  function generalSetlists(live) {
+    if (Array.isArray(live.generalSetlistIds) && live.generalSetlistIds.length) {
+      return live.generalSetlistIds
+        .map(id => live.setlists.find(setlist => setlist.id === id))
+        .filter(Boolean);
+    }
+
+    return [preferredGeneralSetlist(live)];
+  }
+
   function preferredVideoSetlist(live) {
     const generalSetlist = preferredGeneralSetlist(live);
     return live.video?.setlist?.length
@@ -83,21 +93,23 @@
     live.performances.forEach(performance => {
       results.push({
         title: `${performance.date} ${performance.time}`,
-        subtitle: `${live.title} / [${performance.area}] ${performance.venue}`,
+        subtitle: `${live.title} / [${performance.area}] ${performance.venue}${performance.performanceType ? " / " + performance.performanceType : ""}`,
         href: `performance.html?group=${group.id}&live=${live.id}&performance=${performance.id}`,
         pageType: "schedule",
-        searchText: `${group.name} ${live.title} ${performance.date} ${performance.time} ${performance.area} ${performance.venue}`
+        searchText: `${group.name} ${live.title} ${performance.date} ${performance.time} ${performance.area} ${performance.venue} ${performance.performanceType || ""}`
       });
     });
 
-    const setlist = preferredGeneralSetlist(live);
-    setlist.songs.forEach((song, index) => {
-      results.push({
-        title: `${song.order}. ${song.title}`,
-        subtitle: `${live.title} / ${song.artist}${song.note ? " / " + song.note : ""}`,
-        href: `song.html?group=${group.id}&live=${live.id}&setlist=${setlist.id}&song=${index}&order=${song.order}`,
-        pageType: "general",
-        searchText: `${group.name} ${live.title} ${song.order} ${song.title} ${song.artist} ${song.note || ""}`
+    generalSetlists(live).forEach(setlist => {
+      setlist.songs.forEach((song, index) => {
+        const setlistLabel = setlist.label || setlist.name || "";
+        results.push({
+          title: `${song.order}. ${song.title}`,
+          subtitle: `${live.title} / ${setlistLabel ? setlistLabel + " / " : ""}${song.artist}${song.note ? " / " + song.note : ""}`,
+          href: `song.html?group=${group.id}&live=${live.id}&setlist=${setlist.id}&song=${index}&order=${song.order}`,
+          pageType: "general",
+          searchText: `${group.name} ${live.title} ${setlistLabel} ${song.order} ${song.title} ${song.artist} ${song.note || ""}`
+        });
       });
     });
 
@@ -133,6 +145,7 @@
     loadGroupLives,
     buildLiveSearchResults,
     preferredGeneralSetlist,
+    generalSetlists,
     preferredVideoSetlist
   };
 })();
