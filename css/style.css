@@ -118,8 +118,8 @@ main {
   font-size: .95rem;
 }
 
-.video-section-heading:not(:first-child) {
-  margin-top: 48px;
+.video-section-heading--spaced {
+  margin-top: 52px;
 }
 
 .archive-grid {
