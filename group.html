@@ -82,23 +82,48 @@
     }
 
     function renderLives(listElement, lives, groupId) {
+      listElement.innerHTML = "";
+
       if (lives.length === 0) {
         renderEmpty(listElement);
         return;
       }
 
-      lives
-        .sort((a, b) => b.year - a.year)
-        .forEach(live => {
+      const livesByYear = lives
+        .slice()
+        .sort((a, b) => {
+          if (b.year !== a.year) return b.year - a.year;
+          return String(b.id).localeCompare(String(a.id));
+        })
+        .reduce((groups, live) => {
+          const year = String(live.year);
+          if (!groups.has(year)) groups.set(year, []);
+          groups.get(year).push(live);
+          return groups;
+        }, new Map());
+
+      livesByYear.forEach((yearLives, year) => {
+        const yearItem = document.createElement("li");
+        yearItem.className = "year-group";
+        yearItem.innerHTML = `<h3 class="year-heading">${year}</h3>`;
+
+        const yearList = document.createElement("ul");
+        yearList.className = "year-live-list";
+
+        yearLives.forEach(live => {
           const li = document.createElement("li");
           const a = document.createElement("a");
 
           a.href = `live.html?group=${groupId}&live=${live.id}`;
-          a.textContent = `${live.year} ${live.title}`;
+          a.textContent = live.title;
 
           li.appendChild(a);
-          listElement.appendChild(li);
+          yearList.appendChild(li);
         });
+
+        yearItem.appendChild(yearList);
+        listElement.appendChild(yearItem);
+      });
     }
 
     function buildLiveResults(group, live) {
