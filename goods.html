@@ -75,7 +75,7 @@
       `;
 
       document.getElementById("goods-title").textContent = goods.name;
-      document.getElementById("goods-price").textContent = `${goods.price.toLocaleString()}円`;
+      document.getElementById("goods-price").textContent = goods.priceLabel || `${goods.price.toLocaleString()}円`;
       document.getElementById("back-link").href =
         `section.html?group=${groupId}&live=${liveId}&section=goods`;
 

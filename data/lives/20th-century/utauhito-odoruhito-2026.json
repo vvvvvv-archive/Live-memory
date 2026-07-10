@@ -28,25 +28,127 @@
     }
   ],
   "performances": [
-    { "id": "20260605-1730", "date": "2026-06-05", "time": "17:30", "area": "福岡", "venue": "福岡サンパレス" },
-    { "id": "20260613-1800", "date": "2026-06-13", "time": "18:00", "area": "宮城", "venue": "仙台サンプラザホール" },
-    { "id": "20260618-1800", "date": "2026-06-18", "time": "18:00", "area": "神奈川", "venue": "カルッツかわさき（川崎市スポーツ・文化総合センター）" },
-    { "id": "20260619-1300", "date": "2026-06-19", "time": "13:00", "area": "神奈川", "venue": "カルッツかわさき（川崎市スポーツ・文化総合センター）" },
-    { "id": "20260619-1700", "date": "2026-06-19", "time": "17:00", "area": "神奈川", "venue": "カルッツかわさき（川崎市スポーツ・文化総合センター）" },
-    { "id": "20260627-1800", "date": "2026-06-27", "time": "18:00", "area": "東京", "venue": "LINE CUBE SHIBUYA（渋谷公会堂）" },
-    { "id": "20260628-1400", "date": "2026-06-28", "time": "14:00", "area": "東京", "venue": "LINE CUBE SHIBUYA（渋谷公会堂）" },
-    { "id": "20260628-1800", "date": "2026-06-28", "time": "18:00", "area": "東京", "venue": "LINE CUBE SHIBUYA（渋谷公会堂）" },
-    { "id": "20260630-1800", "date": "2026-06-30", "time": "18:00", "area": "愛知", "venue": "Niterra日本特殊陶業市民会館 フォレストホール" },
-    { "id": "20260702-1800", "date": "2026-07-02", "time": "18:00", "area": "兵庫", "venue": "神戸国際会館 こくさいホール" },
-    { "id": "20260703-1700", "date": "2026-07-03", "time": "17:00", "area": "兵庫", "venue": "神戸国際会館 こくさいホール" },
-    { "id": "20260713-1800", "date": "2026-07-13", "time": "18:00", "area": "埼玉", "venue": "ソニックシティ 大ホール" },
-    { "id": "20260714-1400", "date": "2026-07-14", "time": "14:00", "area": "埼玉", "venue": "ソニックシティ 大ホール" },
-    { "id": "20260714-1800", "date": "2026-07-14", "time": "18:00", "area": "埼玉", "venue": "ソニックシティ 大ホール" },
-    { "id": "20260720-1800", "date": "2026-07-20", "time": "18:00", "area": "大阪", "venue": "オリックス劇場" },
-    { "id": "20260721-1400", "date": "2026-07-21", "time": "14:00", "area": "大阪", "venue": "オリックス劇場" },
-    { "id": "20260721-1800", "date": "2026-07-21", "time": "18:00", "area": "大阪", "venue": "オリックス劇場" }
+    {
+      "id": "20260605-1730",
+      "date": "2026-06-05",
+      "time": "17:30",
+      "area": "福岡",
+      "venue": "福岡サンパレス"
+    },
+    {
+      "id": "20260613-1800",
+      "date": "2026-06-13",
+      "time": "18:00",
+      "area": "宮城",
+      "venue": "仙台サンプラザホール"
+    },
+    {
+      "id": "20260618-1800",
+      "date": "2026-06-18",
+      "time": "18:00",
+      "area": "神奈川",
+      "venue": "カルッツかわさき（川崎市スポーツ・文化総合センター）"
+    },
+    {
+      "id": "20260619-1300",
+      "date": "2026-06-19",
+      "time": "13:00",
+      "area": "神奈川",
+      "venue": "カルッツかわさき（川崎市スポーツ・文化総合センター）"
+    },
+    {
+      "id": "20260619-1700",
+      "date": "2026-06-19",
+      "time": "17:00",
+      "area": "神奈川",
+      "venue": "カルッツかわさき（川崎市スポーツ・文化総合センター）"
+    },
+    {
+      "id": "20260627-1800",
+      "date": "2026-06-27",
+      "time": "18:00",
+      "area": "東京",
+      "venue": "LINE CUBE SHIBUYA（渋谷公会堂）"
+    },
+    {
+      "id": "20260628-1400",
+      "date": "2026-06-28",
+      "time": "14:00",
+      "area": "東京",
+      "venue": "LINE CUBE SHIBUYA（渋谷公会堂）"
+    },
+    {
+      "id": "20260628-1800",
+      "date": "2026-06-28",
+      "time": "18:00",
+      "area": "東京",
+      "venue": "LINE CUBE SHIBUYA（渋谷公会堂）"
+    },
+    {
+      "id": "20260630-1800",
+      "date": "2026-06-30",
+      "time": "18:00",
+      "area": "愛知",
+      "venue": "Niterra日本特殊陶業市民会館 フォレストホール"
+    },
+    {
+      "id": "20260702-1800",
+      "date": "2026-07-02",
+      "time": "18:00",
+      "area": "兵庫",
+      "venue": "神戸国際会館 こくさいホール"
+    },
+    {
+      "id": "20260703-1700",
+      "date": "2026-07-03",
+      "time": "17:00",
+      "area": "兵庫",
+      "venue": "神戸国際会館 こくさいホール"
+    },
+    {
+      "id": "20260713-1800",
+      "date": "2026-07-13",
+      "time": "18:00",
+      "area": "埼玉",
+      "venue": "ソニックシティ 大ホール"
+    },
+    {
+      "id": "20260714-1400",
+      "date": "2026-07-14",
+      "time": "14:00",
+      "area": "埼玉",
+      "venue": "ソニックシティ 大ホール"
+    },
+    {
+      "id": "20260714-1800",
+      "date": "2026-07-14",
+      "time": "18:00",
+      "area": "埼玉",
+      "venue": "ソニックシティ 大ホール"
+    },
+    {
+      "id": "20260720-1800",
+      "date": "2026-07-20",
+      "time": "18:00",
+      "area": "大阪",
+      "venue": "オリックス劇場"
+    },
+    {
+      "id": "20260721-1400",
+      "date": "2026-07-21",
+      "time": "14:00",
+      "area": "大阪",
+      "venue": "オリックス劇場"
+    },
+    {
+      "id": "20260721-1800",
+      "date": "2026-07-21",
+      "time": "18:00",
+      "area": "大阪",
+      "venue": "オリックス劇場"
+    }
   ],
-    "setlists": [
+  "setlists": [
     {
       "id": "v1",
       "name": "2026/06/05〜2026/06/27",
@@ -59,30 +161,130 @@
         "20260627-1800"
       ],
       "songs": [
-        { "order": 1, "title": "Supernova", "artist": "V6" },
-        { "order": 2, "title": "TAKE ME HIGHER", "artist": "V6" },
-        { "order": 3, "title": "Swing!", "artist": "V6" },
-        { "order": 4, "title": "Sexy Honey Bunny!", "artist": "V6" },
-        { "order": 5, "title": "君が思い出す僕は君を愛しているだろうか", "artist": "V6" },
-        { "order": 6, "title": "way of life / Feelin' Alone", "artist": "V6", "note": "日替わり" },
-        { "order": 7, "title": "バラードのように眠れ", "artist": "少年隊" },
-        { "order": 8, "title": "STRIPE BLUE", "artist": "少年隊" },
-        { "order": 9, "title": "ガラスの十代", "artist": "光GENJI" },
-        { "order": 10, "title": "雪が降ってきた", "artist": "SMAP" },
-        { "order": 11, "title": "うわさのキッス", "artist": "TOKIO" },
-        { "order": 12, "title": "明日が聴こえる", "artist": "J-FRIENDS" },
-        { "order": 13, "title": "Air", "artist": "V6" },
-        { "order": 14, "title": "ネバギバ ～Never Give Up!～", "artist": "20th Century" },
-        { "order": 15, "title": "夏のかけら", "artist": "Coming Century" },
-        { "order": 16, "title": "HONEY BEAT", "artist": "V6" },
-        { "order": 17, "title": "Darling", "artist": "V6" },
-        { "order": 18, "title": "本気がいっぱい", "artist": "V6" },
-        { "order": 19, "title": "Can do! Can go!", "artist": "V6" },
-        { "order": 20, "title": "サンキュー！ミュージック！", "artist": "V6" },
-        { "order": 21, "title": "きみは何者", "artist": "20th Century" },
-        { "order": 22, "title": "俺たちの長野博", "artist": "ながのーず", "section": "encore" },
-        { "order": 23, "title": "Shelter", "artist": "坂本昌行", "section": "encore" },
-        { "order": 24, "title": "トビラ", "artist": "V6", "section": "encore" }
+        {
+          "order": 1,
+          "title": "Supernova",
+          "artist": "V6"
+        },
+        {
+          "order": 2,
+          "title": "TAKE ME HIGHER",
+          "artist": "V6"
+        },
+        {
+          "order": 3,
+          "title": "Swing!",
+          "artist": "V6"
+        },
+        {
+          "order": 4,
+          "title": "Sexy Honey Bunny!",
+          "artist": "V6"
+        },
+        {
+          "order": 5,
+          "title": "君が思い出す僕は君を愛しているだろうか",
+          "artist": "V6"
+        },
+        {
+          "order": 6,
+          "title": "way of life / Feelin' Alone",
+          "artist": "V6",
+          "note": "日替わり"
+        },
+        {
+          "order": 7,
+          "title": "バラードのように眠れ",
+          "artist": "少年隊"
+        },
+        {
+          "order": 8,
+          "title": "STRIPE BLUE",
+          "artist": "少年隊"
+        },
+        {
+          "order": 9,
+          "title": "ガラスの十代",
+          "artist": "光GENJI"
+        },
+        {
+          "order": 10,
+          "title": "雪が降ってきた",
+          "artist": "SMAP"
+        },
+        {
+          "order": 11,
+          "title": "うわさのキッス",
+          "artist": "TOKIO"
+        },
+        {
+          "order": 12,
+          "title": "明日が聴こえる",
+          "artist": "J-FRIENDS"
+        },
+        {
+          "order": 13,
+          "title": "Air",
+          "artist": "V6"
+        },
+        {
+          "order": 14,
+          "title": "ネバギバ ～Never Give Up!～",
+          "artist": "20th Century"
+        },
+        {
+          "order": 15,
+          "title": "夏のかけら",
+          "artist": "Coming Century"
+        },
+        {
+          "order": 16,
+          "title": "HONEY BEAT",
+          "artist": "V6"
+        },
+        {
+          "order": 17,
+          "title": "Darling",
+          "artist": "V6"
+        },
+        {
+          "order": 18,
+          "title": "本気がいっぱい",
+          "artist": "V6"
+        },
+        {
+          "order": 19,
+          "title": "Can do! Can go!",
+          "artist": "V6"
+        },
+        {
+          "order": 20,
+          "title": "サンキュー！ミュージック！",
+          "artist": "V6"
+        },
+        {
+          "order": 21,
+          "title": "きみは何者",
+          "artist": "20th Century"
+        },
+        {
+          "order": 22,
+          "title": "俺たちの長野博",
+          "artist": "ながのーず",
+          "section": "encore"
+        },
+        {
+          "order": 23,
+          "title": "Shelter",
+          "artist": "坂本昌行",
+          "section": "encore"
+        },
+        {
+          "order": 24,
+          "title": "トビラ",
+          "artist": "V6",
+          "section": "encore"
+        }
       ]
     },
     {
@@ -96,32 +298,141 @@
         "20260703-1700"
       ],
       "songs": [
-        { "order": 1, "title": "Supernova", "artist": "V6" },
-        { "order": 2, "title": "TAKE ME HIGHER", "artist": "V6" },
-        { "order": 3, "title": "Swing!", "artist": "V6" },
-        { "order": 4, "title": "Sexy Honey Bunny!", "artist": "V6" },
-        { "order": 5, "title": "君が思い出す僕は君を愛しているだろうか", "artist": "V6" },
-        { "order": 6, "title": "way of life", "artist": "V6", "note": "日替わり" },
-        { "order": 6, "title": "Feelin' Alone", "artist": "V6", "note": "日替わり" },
-        { "order": 7, "title": "バラードのように眠れ", "artist": "少年隊" },
-        { "order": 8, "title": "STRIPE BLUE", "artist": "少年隊" },
-        { "order": 9, "title": "ガラスの十代", "artist": "光GENJI" },
-        { "order": 10, "title": "雪が降ってきた", "artist": "SMAP" },
-        { "order": 11, "title": "うわさのキッス", "artist": "TOKIO" },
-        { "order": 12, "title": "明日が聴こえる", "artist": "J-FRIENDS" },
-        { "order": 13, "title": "僕らが上書きする世界", "artist": "20th Century" },
-        { "order": 14, "title": "Air", "artist": "V6" },
-        { "order": 15, "title": "ネバギバ ～Never Give Up!～", "artist": "20th Century" },
-        { "order": 16, "title": "夏のかけら", "artist": "Coming Century" },
-        { "order": 17, "title": "HONEY BEAT", "artist": "V6" },
-        { "order": 18, "title": "Darling", "artist": "V6" },
-        { "order": 19, "title": "本気がいっぱい", "artist": "V6" },
-        { "order": 20, "title": "Can do! Can go!", "artist": "V6" },
-        { "order": 21, "title": "サンキュー！ミュージック！", "artist": "V6" },
-        { "order": 22, "title": "きみは何者", "artist": "20th Century" },
-        { "order": 23, "title": "俺たちの長野博", "artist": "ながのーず", "section": "encore" },
-        { "order": 24, "title": "Shelter", "artist": "坂本昌行", "section": "encore" },
-        { "order": 25, "title": "トビラ", "artist": "V6", "section": "encore" }
+        {
+          "order": 1,
+          "title": "Supernova",
+          "artist": "V6"
+        },
+        {
+          "order": 2,
+          "title": "TAKE ME HIGHER",
+          "artist": "V6"
+        },
+        {
+          "order": 3,
+          "title": "Swing!",
+          "artist": "V6"
+        },
+        {
+          "order": 4,
+          "title": "Sexy Honey Bunny!",
+          "artist": "V6"
+        },
+        {
+          "order": 5,
+          "title": "君が思い出す僕は君を愛しているだろうか",
+          "artist": "V6"
+        },
+        {
+          "order": 6,
+          "title": "way of life",
+          "artist": "V6",
+          "note": "日替わり"
+        },
+        {
+          "order": 6,
+          "title": "Feelin' Alone",
+          "artist": "V6",
+          "note": "日替わり"
+        },
+        {
+          "order": 7,
+          "title": "バラードのように眠れ",
+          "artist": "少年隊"
+        },
+        {
+          "order": 8,
+          "title": "STRIPE BLUE",
+          "artist": "少年隊"
+        },
+        {
+          "order": 9,
+          "title": "ガラスの十代",
+          "artist": "光GENJI"
+        },
+        {
+          "order": 10,
+          "title": "雪が降ってきた",
+          "artist": "SMAP"
+        },
+        {
+          "order": 11,
+          "title": "うわさのキッス",
+          "artist": "TOKIO"
+        },
+        {
+          "order": 12,
+          "title": "明日が聴こえる",
+          "artist": "J-FRIENDS"
+        },
+        {
+          "order": 13,
+          "title": "僕らが上書きする世界",
+          "artist": "20th Century"
+        },
+        {
+          "order": 14,
+          "title": "Air",
+          "artist": "V6"
+        },
+        {
+          "order": 15,
+          "title": "ネバギバ ～Never Give Up!～",
+          "artist": "20th Century"
+        },
+        {
+          "order": 16,
+          "title": "夏のかけら",
+          "artist": "Coming Century"
+        },
+        {
+          "order": 17,
+          "title": "HONEY BEAT",
+          "artist": "V6"
+        },
+        {
+          "order": 18,
+          "title": "Darling",
+          "artist": "V6"
+        },
+        {
+          "order": 19,
+          "title": "本気がいっぱい",
+          "artist": "V6"
+        },
+        {
+          "order": 20,
+          "title": "Can do! Can go!",
+          "artist": "V6"
+        },
+        {
+          "order": 21,
+          "title": "サンキュー！ミュージック！",
+          "artist": "V6"
+        },
+        {
+          "order": 22,
+          "title": "きみは何者",
+          "artist": "20th Century"
+        },
+        {
+          "order": 23,
+          "title": "俺たちの長野博",
+          "artist": "ながのーず",
+          "section": "encore"
+        },
+        {
+          "order": 24,
+          "title": "Shelter",
+          "artist": "坂本昌行",
+          "section": "encore"
+        },
+        {
+          "order": 25,
+          "title": "トビラ",
+          "artist": "V6",
+          "section": "encore"
+        }
       ]
     }
   ],
@@ -129,20 +440,57 @@
     "setlist": []
   },
   "goods": [
-    { "id": "tonimori-set", "name": "トニもりセット", "price": 2500 },
-    { "id": "sakamoto-mini-uchiwa", "name": "【坂本昌行】ちびうちわ", "price": 700 },
-    { "id": "nagano-mini-uchiwa", "name": "【長野博】ちびうちわ", "price": 700 },
-    { "id": "inohara-mini-uchiwa", "name": "【井ノ原快彦】ちびうちわ", "price": 700 },
-    { "id": "mawaruhito-penlight", "name": "まわる人ペンライト", "price": 5400 },
-    { "id": "tonitee", "name": "トニティー", "price": 4800 },
-    { "id": "pipipi-hand-towel", "name": "ピピピのハンドタオル", "price": 1000 },
-    { "id": "tenimotsuhito-katanikakeruhito", "name": "てにもつ人 かたにかける人", "price": 4000 },
-    { "id": "penlight-parts-group", "name": "【集合】まわる人ペンライトパーツ", "price": 1200 },
-    { "id": "penlight-parts-sakamoto", "name": "【坂本昌行】まわる人ペンライトパーツ", "price": 1200 },
-    { "id": "penlight-parts-nagano", "name": "【長野博】まわる人ペンライトパーツ", "price": 1200 },
-    { "id": "penlight-parts-inohara", "name": "【井ノ原快彦】まわる人ペンライトパーツ", "price": 1200 },
-    { "id": "mapit-blue-keyholder", "name": "【マピット（青）】マスコットキーホルダー", "price": 3500 },
-    { "id": "pipit-purple-keyholder", "name": "【ピピット（紫）】マスコットキーホルダー", "price": 3500 },
-    { "id": "yopit-green-keyholder", "name": "【ヨピット（緑）】マスコットキーホルダー", "price": 3500 }
+    {
+      "id": "tonimori-set",
+      "name": "トニもりセット",
+      "price": 2500
+    },
+    {
+      "id": "chibi-uchiwa-personal-3types",
+      "name": "ちびうちわ（個人3種）",
+      "price": 700,
+      "priceLabel": "各700円"
+    },
+    {
+      "id": "mawaruhito-penlight",
+      "name": "まわる人ペンライト",
+      "price": 5400
+    },
+    {
+      "id": "tonitee",
+      "name": "トニティー",
+      "price": 4800
+    },
+    {
+      "id": "pipipi-hand-towel",
+      "name": "ピピピのハンドタオル",
+      "price": 1000
+    },
+    {
+      "id": "tenimotsuhito-katanikakeruhito",
+      "name": "てにもつ人 かたにかける人",
+      "price": 4000
+    },
+    {
+      "id": "mawaruhito-penlight-parts-group-personal",
+      "name": "まわる人ペンライトパーツ（集合1種・個人3種）",
+      "price": 1200,
+      "priceLabel": "各1200円"
+    },
+    {
+      "id": "mapit-blue-keyholder",
+      "name": "【マピット（青）】マスコットキーホルダー",
+      "price": 3500
+    },
+    {
+      "id": "pipit-purple-keyholder",
+      "name": "【ピピット（紫）】マスコットキーホルダー",
+      "price": 3500
+    },
+    {
+      "id": "yopit-green-keyholder",
+      "name": "【ヨピット（緑）】マスコットキーホルダー",
+      "price": 3500
+    }
   ]
 }

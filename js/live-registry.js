@@ -125,12 +125,13 @@
     });
 
     live.goods.forEach(goods => {
+      const priceText = goods.priceLabel || `${goods.price.toLocaleString()}円`;
       results.push({
         title: goods.name,
-        subtitle: `${live.title} / ${goods.price.toLocaleString()}円`,
+        subtitle: `${live.title} / ${priceText}`,
         href: `goods.html?group=${group.id}&live=${live.id}&goods=${goods.id}`,
         pageType: "goods",
-        searchText: `${group.name} ${live.title} ${goods.name} ${goods.price}円 グッズ goods`
+        searchText: `${group.name} ${live.title} ${goods.name} ${priceText} ${goods.price}円 グッズ goods`
       });
     });
 

@@ -592,5 +592,73 @@
       }
     ]
   },
-  "goods": []
+  "goods": [
+    {
+      "id": "pamphlet-lamp",
+      "name": "パンフレットランプ",
+      "price": 3000
+    },
+    {
+      "id": "jumbo-uchiwa-personal-3types",
+      "name": "ジャンボうちわ（個人3種）",
+      "price": 800,
+      "priceLabel": "各800円"
+    },
+    {
+      "id": "seal",
+      "name": "シール",
+      "price": 900
+    },
+    {
+      "id": "original-photo-set",
+      "name": "オリジナルフォトセット（集合1種・個人3種）",
+      "price": 900,
+      "priceLabel": "各900円"
+    },
+    {
+      "id": "tonisen-beam-penlight",
+      "name": "トニセンビーム（ペンライト）",
+      "price": 3000
+    },
+    {
+      "id": "smartphone-shoulder",
+      "name": "スマホショルダー",
+      "price": 2500
+    },
+    {
+      "id": "tshirt",
+      "name": "Tシャツ",
+      "price": 3200
+    },
+    {
+      "id": "sports-towel",
+      "name": "スポーツタオル",
+      "price": 2600
+    },
+    {
+      "id": "playing-cards",
+      "name": "トランプ",
+      "price": 1500
+    },
+    {
+      "id": "pick-strap",
+      "name": "ピックストラップ",
+      "price": 1200
+    },
+    {
+      "id": "mini-triangle",
+      "name": "ミニトライアングル",
+      "price": 2000
+    },
+    {
+      "id": "ikemen-finger-puppet",
+      "name": "イケメン指人形",
+      "price": 3000
+    },
+    {
+      "id": "replacement-penlight-parts-2types",
+      "name": "付け替えペンライトパーツ（2種セット）",
+      "price": 1600
+    }
+  ]
 }
