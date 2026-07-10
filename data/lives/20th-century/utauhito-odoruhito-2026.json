@@ -276,14 +276,12 @@
         {
           "order": 23,
           "title": "Shelter",
-          "artist": "坂本昌行",
-          "section": "encore"
+          "artist": "坂本昌行"
         },
         {
           "order": 24,
           "title": "トビラ",
-          "artist": "V6",
-          "section": "encore"
+          "artist": "V6"
         }
       ]
     },
@@ -418,20 +416,17 @@
         {
           "order": 23,
           "title": "俺たちの長野博",
-          "artist": "ながのーず",
-          "section": "encore"
+          "artist": "ながのーず"
         },
         {
           "order": 24,
           "title": "Shelter",
-          "artist": "坂本昌行",
-          "section": "encore"
+          "artist": "坂本昌行"
         },
         {
           "order": 25,
           "title": "トビラ",
-          "artist": "V6",
-          "section": "encore"
+          "artist": "V6"
         }
       ]
     }

@@ -485,6 +485,14 @@ font-weight:600;
 }
 
 @media (max-width: 640px) {
+  .page-title {
+    font-size: clamp(1.55rem, 6.2vw, 2.35rem);
+    line-height: 1.25;
+    letter-spacing: 0;
+    overflow-wrap: normal;
+    word-break: keep-all;
+  }
+
   .live-title-link {
     display: inline-block;
     line-height: 1.65;
