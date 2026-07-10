@@ -52,7 +52,7 @@
     const performanceId = params.get("performance");
 
     async function loadJson(path) {
-      const response = await fetch(path);
+      const response = await fetch(path, { cache: "no-store" });
       return response.json();
     }
 

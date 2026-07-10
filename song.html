@@ -86,7 +86,7 @@ return false;
 
 async function loadJson(path){
 
-const r=await fetch(path);
+const r=await fetch(path, { cache: "no-store" });
 
 return await r.json();
 
