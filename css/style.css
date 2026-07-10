@@ -98,6 +98,19 @@ main {
   margin-top: 12px;
 }
 
+.official-link a {
+  color: var(--accent);
+  font-weight: bold;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: .22em;
+  cursor: pointer;
+}
+
+.official-link a:hover {
+  color: #4f5f7a;
+}
+
 .section-block {
   margin-top: 38px;
 }
