@@ -1,0 +1,395 @@
+{
+  "id": "v6-groove-2021",
+  "groupId": "v6",
+  "type": "LIVE",
+  "year": 2021,
+  "title": "LIVE TOUR V6 groove",
+  "officialUrl": "https://mentrecording.jp/v6/discography/detail.php?id=1018893",
+  "sections": [
+    {
+      "id": "general",
+      "label": "総合",
+      "description": "ツアー全体の思い出や、曲ごとの思い出を残す場所です。"
+    },
+    {
+      "id": "schedule",
+      "label": "公演日程",
+      "description": "各公演ごとのMC、ファンサ、その他の思い出を残す場所です。"
+    },
+    {
+      "id": "video",
+      "label": "映像・円盤",
+      "description": "ライブ映像、特典映像、配信などの思い出を残す場所です。"
+    },
+    {
+      "id": "goods",
+      "label": "グッズ",
+      "description": "販売されたグッズに関する思い出を残す場所です。"
+    }
+  ],
+  "performances": [
+    {
+      "id": "20210904-1730",
+      "date": "2021-09-04",
+      "time": "17:30",
+      "area": "福岡",
+      "venue": "マリンメッセ福岡"
+    },
+    {
+      "id": "20210905-1700",
+      "date": "2021-09-05",
+      "time": "17:00",
+      "area": "福岡",
+      "venue": "マリンメッセ福岡"
+    },
+    {
+      "id": "20210911-1730",
+      "date": "2021-09-11",
+      "time": "17:30",
+      "area": "大阪",
+      "venue": "大阪城ホール"
+    },
+    {
+      "id": "20210912-1700",
+      "date": "2021-09-12",
+      "time": "17:00",
+      "area": "大阪",
+      "venue": "大阪城ホール"
+    },
+    {
+      "id": "20210917-1730",
+      "date": "2021-09-17",
+      "time": "17:30",
+      "area": "愛知",
+      "venue": "日本ガイシスポーツプラザ ガイシホール"
+    },
+    {
+      "id": "20210918-1700",
+      "date": "2021-09-18",
+      "time": "17:00",
+      "area": "愛知",
+      "venue": "日本ガイシスポーツプラザ ガイシホール"
+    },
+    {
+      "id": "20210925-1700",
+      "date": "2021-09-25",
+      "time": "17:00",
+      "area": "福井",
+      "venue": "サンドーム福井"
+    },
+    {
+      "id": "20210926-1500",
+      "date": "2021-09-26",
+      "time": "15:00",
+      "area": "福井",
+      "venue": "サンドーム福井"
+    },
+    {
+      "id": "20211002-1730",
+      "date": "2021-10-02",
+      "time": "17:30",
+      "area": "宮城",
+      "venue": "セキスイハイムスーパーアリーナ"
+    },
+    {
+      "id": "20211003-1700",
+      "date": "2021-10-03",
+      "time": "17:00",
+      "area": "宮城",
+      "venue": "セキスイハイムスーパーアリーナ"
+    },
+    {
+      "id": "20211009-1500",
+      "date": "2021-10-09",
+      "time": "15:00",
+      "area": "北海道",
+      "venue": "真駒内セキスイハイムアイスアリーナ"
+    },
+    {
+      "id": "20211010-1630",
+      "date": "2021-10-10",
+      "time": "16:30",
+      "area": "北海道",
+      "venue": "真駒内セキスイハイムアイスアリーナ"
+    },
+    {
+      "id": "20211023-1730",
+      "date": "2021-10-23",
+      "time": "17:30",
+      "area": "埼玉",
+      "venue": "さいたまスーパーアリーナ"
+    },
+    {
+      "id": "20211024-1700",
+      "date": "2021-10-24",
+      "time": "17:00",
+      "area": "埼玉",
+      "venue": "さいたまスーパーアリーナ"
+    },
+    {
+      "id": "20211027-1900",
+      "date": "2021-10-27",
+      "time": "19:00",
+      "area": "神奈川",
+      "venue": "横浜アリーナ"
+    },
+    {
+      "id": "20211028-1700",
+      "date": "2021-10-28",
+      "time": "17:00",
+      "area": "神奈川",
+      "venue": "横浜アリーナ"
+    },
+    {
+      "id": "20211031-1730",
+      "date": "2021-10-31",
+      "time": "17:30",
+      "area": "千葉",
+      "venue": "幕張イベントホール"
+    },
+    {
+      "id": "20211101-1800",
+      "date": "2021-11-01",
+      "time": "18:00",
+      "area": "千葉",
+      "venue": "幕張イベントホール"
+    }
+  ],
+  "setlists": [
+    {
+      "id": "v1",
+      "name": "main setlist",
+      "songs": [
+        {
+          "order": 1,
+          "title": "雨",
+          "artist": "V6"
+        },
+        {
+          "order": 2,
+          "title": "TL",
+          "artist": "V6"
+        },
+        {
+          "order": 3,
+          "title": "Heart Beat Groovin'",
+          "artist": "V6"
+        },
+        {
+          "order": 4,
+          "title": "太陽のあたる場所",
+          "artist": "V6"
+        },
+        {
+          "order": 5,
+          "title": "over",
+          "artist": "V6"
+        },
+        {
+          "order": 6,
+          "title": "UTAO-UTAO",
+          "artist": "V6"
+        },
+        {
+          "order": 7,
+          "title": "Ash to Ash",
+          "artist": "Coming Century"
+        },
+        {
+          "order": 8,
+          "title": "ジンクス",
+          "artist": "20th Century"
+        },
+        {
+          "order": 9,
+          "title": "HAVE A SUPER GOOD TIME",
+          "artist": "Coming Century"
+        },
+        {
+          "order": 10,
+          "title": "Knock Me Real",
+          "artist": "20th Century"
+        },
+        {
+          "order": 11,
+          "title": "Born to run",
+          "artist": "Coming Century"
+        },
+        {
+          "order": 12,
+          "title": "オレじゃなきゃ、キミじゃなきゃ",
+          "artist": "20th Century"
+        },
+        {
+          "order": 13,
+          "title": "silver bells",
+          "artist": "Coming Century"
+        },
+        {
+          "order": 14,
+          "title": "Dahlia",
+          "artist": "20th Century"
+        },
+        {
+          "order": 15,
+          "title": "分からないだらけ",
+          "artist": "V6"
+        },
+        {
+          "order": 16,
+          "title": "MAGIC CARPET RIDE",
+          "artist": "V6"
+        },
+        {
+          "order": 17,
+          "title": "blue",
+          "artist": "V6"
+        },
+        {
+          "order": 18,
+          "title": "Let Me",
+          "artist": "V6"
+        },
+        {
+          "order": 19,
+          "title": "MUSIC FOR THE PEOPLE",
+          "artist": "V6"
+        },
+        {
+          "order": 20,
+          "title": "BEAT YOUR HEART",
+          "artist": "V6"
+        },
+        {
+          "order": 21,
+          "title": "MADE IN JAPAN",
+          "artist": "V6"
+        },
+        {
+          "order": 22,
+          "title": "TAKE ME HIGHER",
+          "artist": "V6"
+        },
+        {
+          "order": 23,
+          "title": "High Hopes",
+          "artist": "Coming Century"
+        },
+        {
+          "order": 24,
+          "title": "グッドラックベイビー",
+          "artist": "20th Century"
+        },
+        {
+          "order": 25,
+          "title": "素敵な夜",
+          "artist": "V6"
+        },
+        {
+          "order": 26,
+          "title": "Best Choice",
+          "artist": "V6"
+        },
+        {
+          "order": 27,
+          "title": "PINEAPPLE",
+          "artist": "V6"
+        },
+        {
+          "order": 28,
+          "title": "家族",
+          "artist": "V6"
+        },
+        {
+          "order": 29,
+          "title": "Full Circle",
+          "artist": "V6"
+        },
+        {
+          "order": 30,
+          "title": "Sweet Days",
+          "artist": "V6"
+        },
+        {
+          "order": 31,
+          "title": "Believe Your Smile",
+          "artist": "V6"
+        },
+        {
+          "order": 32,
+          "title": "愛のMelody",
+          "artist": "V6"
+        },
+        {
+          "order": 33,
+          "title": "本気がいっぱい",
+          "artist": "V6"
+        },
+        {
+          "order": 34,
+          "title": "Darling",
+          "artist": "V6"
+        },
+        {
+          "order": 35,
+          "title": "グッデイ!!",
+          "artist": "V6"
+        },
+        {
+          "order": 36,
+          "title": "HONEY BEAT",
+          "artist": "V6"
+        },
+        {
+          "order": 37,
+          "title": "CHANGE THE WORLD",
+          "artist": "V6"
+        },
+        {
+          "order": 38,
+          "title": "WAになっておどろう",
+          "artist": "V6"
+        },
+        {
+          "order": 39,
+          "title": "愛なんだ",
+          "artist": "V6"
+        },
+        {
+          "order": 40,
+          "title": "目を閉じれば",
+          "artist": "V6"
+        },
+        {
+          "order": 41,
+          "title": "95 groove",
+          "artist": "V6"
+        }
+      ]
+    }
+  ],
+  "video": {
+    "officialUrl": "https://mentrecording.jp/v6/discography/detail.php?id=1018893",
+    "mainFeature": {
+      "title": "LIVE TOUR V6 groove"
+    },
+    "setlist": [],
+    "bonusSections": [
+      {
+        "title": "初回盤A 特典映像",
+        "items": [
+          "全国ツアーMC集",
+          "V6 GROOVE LIVE TOUR Document Video"
+        ]
+      },
+      {
+        "title": "初回盤B 特典映像",
+        "items": [
+          "V-Land WANDERER",
+          "未公開ライブ映像セレクト集"
+        ]
+      }
+    ]
+  },
+  "goods": []
+}

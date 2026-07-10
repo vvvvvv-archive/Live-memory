@@ -16,5 +16,11 @@
     "liveId": "bokutachi-20th-century-2023",
     "path": "data/lives/20th-century/bokutachi-20th-century-2023.json",
     "displayOrder": 2023
+  },
+  {
+    "groupId": "v6",
+    "liveId": "v6-groove-2021",
+    "path": "data/lives/v6/v6-groove-2021.json",
+    "displayOrder": 2021
   }
 ]
