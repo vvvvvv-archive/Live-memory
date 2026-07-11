@@ -11,6 +11,10 @@
     return loadJson("data/groups.json");
   }
 
+  async function loadMembers() {
+    return loadJson("data/members.json");
+  }
+
   async function loadEntries() {
     return loadJson("data/lives/index.json");
   }
@@ -185,6 +189,7 @@
   window.LiveRegistry = {
     loadJson,
     loadGroups,
+    loadMembers,
     loadEntries,
     loadAllLives,
     loadGroupLives,

@@ -4,10 +4,13 @@ import path from "node:path";
 const root = process.cwd();
 const registryPath = path.join(root, "data/lives/index.json");
 const groupsPath = path.join(root, "data/groups.json");
+const membersPath = path.join(root, "data/members.json");
 
 const registry = readJson(registryPath);
 const groups = readJson(groupsPath);
+const members = readJson(membersPath);
 const groupIds = new Set(groups.map(group => group.id));
+const memberIds = new Set(members.map(member => member.id));
 const errors = [];
 const warnings = [];
 const liveKeys = new Set();
@@ -80,6 +83,14 @@ function validateLive(entry) {
   if (entry.liveId !== live.id) addError(`${label}: registry liveId does not match live.id (${live.id})`);
   if (entry.groupId !== live.groupId) addError(`${label}: registry groupId does not match live.groupId (${live.groupId})`);
   if (!groupIds.has(live.groupId)) addError(`${label}: unknown groupId "${live.groupId}"`);
+  if (live.groupId === "individual") {
+    const memberId = live.memberId || entry.memberId;
+    if (!memberId) {
+      addError(`${label}: individual live requires memberId`);
+    } else if (!memberIds.has(memberId)) {
+      addError(`${label}: unknown memberId "${memberId}"`);
+    }
+  }
 
   const liveKey = `${live.groupId}:${live.id}`;
   if (liveKeys.has(liveKey)) addError(`${label}: duplicate live id`);

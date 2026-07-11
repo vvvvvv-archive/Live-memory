@@ -3,31 +3,26 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ｖｖｖｖｖｖ　LIVE MEMORY</title>
+  <title>MEMBER | v v v v v v LIVE MEMORY</title>
   <link rel="stylesheet" href="css/style.css">
 </head>
 
 <body>
   <main>
     <nav class="breadcrumb">
-      <a href="index.html">HOME</a> &gt; <span id="group-name-breadcrumb"></span>
+      <a href="index.html">HOME</a> &gt;
+      <a href="group.html?id=individual">Individual</a> &gt;
+      <span id="member-name-breadcrumb"></span>
     </nav>
 
-    <h1 id="group-name"></h1>
+    <h1 id="member-name"></h1>
 
     <section class="search-card">
-      <label for="group-search">このグループの思い出を探す</label>
-      <input id="group-search" type="search" placeholder="曲名・ライブ名・メンバー名・言葉で探す">
+      <label for="member-search">このメンバーの思い出を探す</label>
+      <input id="member-search" type="search" placeholder="曲名・ライブ名・言葉で探す">
     </section>
 
-    <section class="section-block search-results" id="group-search-results" hidden></section>
-
-    <section class="section-block member-directory" id="member-directory" hidden>
-      <div class="section-heading">
-        <h2>Member</h2>
-      </div>
-      <div class="member-card-grid" id="member-card-grid"></div>
-    </section>
+    <section class="section-block search-results" id="member-search-results" hidden></section>
 
     <section class="section-block">
       <div class="section-heading">
@@ -55,14 +50,14 @@
   </main>
 
   <footer>
-    ｖｖｖｖｖｖ　LIVE MEMORY
+    v v v v v v LIVE MEMORY
   </footer>
   <script src="js/site-common.js"></script>
   <script src="js/live-registry.js"></script>
   <script src="js/search.js"></script>
   <script>
     const params = new URLSearchParams(window.location.search);
-    const groupId = params.get("id");
+    const memberId = params.get("member");
 
     function renderEmpty(listElement) {
       const li = document.createElement("li");
@@ -80,7 +75,7 @@
       `;
     }
 
-    function renderLives(listElement, lives, groupId) {
+    function renderLives(listElement, lives) {
       listElement.innerHTML = "";
 
       if (lives.length === 0) {
@@ -91,13 +86,13 @@
       const livesByYear = lives
         .slice()
         .sort((a, b) => {
-          if (b.year !== a.year) return b.year - a.year;
-          return String(b.id).localeCompare(String(a.id));
+          if (b.live.year !== a.live.year) return b.live.year - a.live.year;
+          return String(b.live.id).localeCompare(String(a.live.id));
         })
-        .reduce((groups, live) => {
-          const year = String(live.year);
+        .reduce((groups, item) => {
+          const year = String(item.live.year);
           if (!groups.has(year)) groups.set(year, []);
-          groups.get(year).push(live);
+          groups.get(year).push(item);
           return groups;
         }, new Map());
 
@@ -109,11 +104,11 @@
         const yearList = document.createElement("ul");
         yearList.className = "year-live-list";
 
-        yearLives.forEach(live => {
+        yearLives.forEach(({ group, live }) => {
           const li = document.createElement("li");
           const a = document.createElement("a");
 
-          a.href = `live.html?group=${groupId}&live=${live.id}`;
+          a.href = `live.html?group=${group.id}&live=${live.id}`;
           a.className = "live-title-link";
           a.innerHTML = formatLiveTitle(live.title);
 
@@ -126,61 +121,56 @@
       });
     }
 
-    function renderMemberCards(members) {
-      const section = document.getElementById("member-directory");
-      const grid = document.getElementById("member-card-grid");
-
-      if (!section || !grid || !members.length) {
-        return;
-      }
-
-      grid.innerHTML = "";
-      members.forEach(member => {
-        const a = document.createElement("a");
-        a.className = "member-card";
-        a.href = `member.html?member=${member.id}`;
-        a.textContent = member.name;
-        grid.appendChild(a);
-      });
-
-      section.hidden = false;
-    }
-
-    function livesByType(lives, type) {
-      return lives.filter(live => String(live.type || "").toUpperCase() === type);
+    function byType(items, type) {
+      return items.filter(item => String(item.live.type || "").toUpperCase() === type);
     }
 
     async function init() {
-      const { group, lives } = await LiveRegistry.loadGroupLives(groupId);
+      const [members, allLives] = await Promise.all([
+        LiveRegistry.loadMembers(),
+        LiveRegistry.loadAllLives()
+      ]);
+      const member = members.find(item => item.id === memberId);
 
-      document.title = `${group.name} | ｖｖｖｖｖｖ　LIVE MEMORY`;
-      document.getElementById("group-name").textContent = group.name;
-      document.getElementById("group-name-breadcrumb").textContent = group.name;
-
-      if (groupId === "individual") {
-        renderMemberCards(await LiveRegistry.loadMembers());
+      if (!member) {
+        SiteCommon.showPageError("メンバーが見つかりません", "指定されたメンバー情報が見つかりませんでした。");
+        return;
       }
 
-      const liveItems = livesByType(lives, "LIVE");
-      const stageItems = livesByType(lives, "STAGE");
-      const eventItems = livesByType(lives, "EVENT");
+      const memberLives = allLives.filter(({ entry, group, live }) =>
+        group?.id === "individual"
+        && (entry.memberId === member.id || live.memberId === member.id)
+      );
+      const memberLiveIds = new Set(memberLives.map(({ live }) => live.id));
+
+      document.title = `${member.name} | v v v v v v LIVE MEMORY`;
+      document.getElementById("member-name").textContent = member.name;
+      document.getElementById("member-name-breadcrumb").textContent = member.name;
+
+      const liveItems = byType(memberLives, "LIVE");
+      const stageItems = byType(memberLives, "STAGE");
+      const eventItems = byType(memberLives, "EVENT");
 
       document.getElementById("live-count").textContent = `登録数：${liveItems.length}`;
       document.getElementById("stage-count").textContent = `登録数：${stageItems.length}`;
       document.getElementById("event-count").textContent = `登録数：${eventItems.length}`;
 
-      renderLives(document.getElementById("live-list"), liveItems, groupId);
-      renderLives(document.getElementById("stage-list"), stageItems, groupId);
-      renderLives(document.getElementById("event-list"), eventItems, groupId);
+      renderLives(document.getElementById("live-list"), liveItems);
+      renderLives(document.getElementById("stage-list"), stageItems);
+      renderLives(document.getElementById("event-list"), eventItems);
 
-      const searchResults = liveItems.flatMap(live => LiveRegistry.buildLiveSearchResults(group, live));
-      searchResults.push(
-        ...await MemorySearch.loadMemoryResults(item =>
-          MemorySearch.isMemoryInGroup(item, groupId)
-        )
+      const searchResults = memberLives.flatMap(({ group, live }) =>
+        LiveRegistry.buildLiveSearchResults(group, live)
       );
-      const input = document.getElementById("group-search");
-      const container = document.getElementById("group-search-results");
+      searchResults.push(
+        ...await MemorySearch.loadMemoryResults(item => {
+          const parts = String(item.memoryId || "").split(":");
+          return parts[1] === "individual" && memberLiveIds.has(parts[2]);
+        })
+      );
+
+      const input = document.getElementById("member-search");
+      const container = document.getElementById("member-search-results");
       input.addEventListener("input", () => {
         MemorySearch.renderResults(container, searchResults, input.value);
       });

@@ -74,6 +74,17 @@ data/lives/20th-century/utauhito-odoruhito-2026.json
 - `coming-century`
 - `individual`
 
+個人活動を追加する場合は、`groupId` を `individual` にし、ライブJSONと必要に応じて `index.json` に `memberId` を入れます。
+
+使える `memberId`:
+
+- `masayuki-sakamoto`
+- `hiroshi-nagano`
+- `yoshihiko-inohara`
+- `go-morita`
+- `ken-miyake`
+- `junichi-okada`
+
 ## index.jsonへの登録方法
 
 ライブJSONを作ったら、`data/lives/index.json` に1件追加します。
@@ -93,6 +104,7 @@ data/lives/20th-century/utauhito-odoruhito-2026.json
 - `groupId` はライブJSON内の `groupId` と完全に一致させます。
 - `path` は作成したJSONファイルの場所です。
 - `displayOrder` は並び順の補助情報です。基本は年を入れます。
+- 個人活動の場合は、必要に応じて `memberId` も登録できます。
 
 ## ライブJSONの基本形
 
@@ -100,6 +112,7 @@ data/lives/20th-century/utauhito-odoruhito-2026.json
 {
   "id": "new-live-id",
   "groupId": "20th-century",
+  "memberId": "",
   "type": "LIVE",
   "year": 2026,
   "title": "ライブタイトル",
