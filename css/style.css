@@ -285,7 +285,9 @@ main {
 }
 
 .member-tag-button {
-  padding: 6px 10px;
+  position: relative;
+  min-height: 36px;
+  padding: 7px 12px;
   color: var(--accent);
   font: inherit;
   font-size: .84rem;
@@ -293,11 +295,58 @@ main {
   border: 1px solid #d5dfeb;
   border-radius: 999px;
   cursor: pointer;
+  transition: background-color .18s ease, border-color .18s ease, transform .12s ease;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .member-tag-button:hover,
 .member-tag-button:focus {
   background: #e6edf5;
+  border-color: #b9c9dc;
+}
+
+.member-tag-button:active {
+  transform: translateY(1px);
+}
+
+.member-tag-button.is-copied {
+  color: #4f6b8f;
+  background: #eef5ee;
+  border-color: #b8d6bd;
+}
+
+.member-tag-button.is-copy-error {
+  background: #fff5ec;
+  border-color: #e3c2a5;
+}
+
+.member-tag-label {
+  display: inline-block;
+}
+
+.member-tag-feedback {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 6px);
+  z-index: 1;
+  width: max-content;
+  max-width: 180px;
+  padding: 4px 8px;
+  color: #ffffff;
+  font-size: .72rem;
+  line-height: 1.4;
+  background: rgba(64, 80, 104, .94);
+  border-radius: 999px;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(-50%) translateY(3px);
+  transition: opacity .16s ease, transform .16s ease;
+}
+
+.member-tag-button.is-copied .member-tag-feedback,
+.member-tag-button.is-copy-error .member-tag-feedback {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
 }
 
 .member-tag-status {
