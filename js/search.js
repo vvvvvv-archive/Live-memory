@@ -77,6 +77,166 @@
     ].filter(Boolean).join(" ");
   }
 
+  function fieldValues(result, key) {
+    const fields = result.searchFields || {};
+    const value = fields[key];
+
+    if (Array.isArray(value)) {
+      return value.filter(Boolean);
+    }
+
+    return value ? [value] : [];
+  }
+
+  function textIncludes(values, word) {
+    return values.some(value => normalizeText(value).includes(word));
+  }
+
+  function memberTagValues(result) {
+    const source = [result.memoryText, result.searchText].filter(Boolean).join(" ");
+    const memberNames = ["坂本昌行", "長野博", "井ノ原快彦", "森田剛", "三宅健", "岡田准一"];
+
+    return memberNames
+      .filter(name => source.includes(`#${name}`) || source.includes(`＃${name}`))
+      .map(name => `#${name}`);
+  }
+
+  function matchBuckets(result) {
+    const parts = splitSubtitle(result.subtitle);
+    const isSongPage = String(result.href || "").includes("song.html")
+      || String(result.href || "").includes("video-song.html")
+      || String(result.memoryId || "").startsWith("song:")
+      || String(result.memoryId || "").startsWith("video-song:");
+    const isGoodsPage = result.pageType === "goods";
+    const isLivePage = result.pageType === "live";
+    const isSchedulePage = result.pageType === "schedule";
+
+    return [
+      {
+        label: "コメント一致",
+        score: 500,
+        values: [result.memoryText, ...fieldValues(result, "comment")]
+      },
+      {
+        label: "曲名一致",
+        score: 360,
+        values: [
+          ...(isSongPage ? [result.title] : []),
+          ...fieldValues(result, "song"),
+          ...fieldValues(result, "artist")
+        ]
+      },
+      {
+        label: "グッズ名一致",
+        score: 340,
+        values: [
+          ...(isGoodsPage ? [result.title] : []),
+          ...fieldValues(result, "goods")
+        ]
+      },
+      {
+        label: "映像作品名一致",
+        score: 330,
+        values: [
+          ...fieldValues(result, "media"),
+          ...(result.pageType === "video" && !isSongPage ? [result.title, result.subtitle] : [])
+        ]
+      },
+      {
+        label: "ライブ名一致",
+        score: 320,
+        values: [
+          ...(isLivePage ? [result.title] : []),
+          ...(result.isMemoryResult && parts.length ? [parts[0]] : []),
+          ...fieldValues(result, "live")
+        ]
+      },
+      {
+        label: "メンバー名タグ一致",
+        score: 240,
+        values: [
+          ...memberTagValues(result),
+          ...fieldValues(result, "member")
+        ]
+      },
+      {
+        label: "公演日一致",
+        score: 80,
+        values: [
+          ...(isSchedulePage ? [result.title] : []),
+          ...fieldValues(result, "date"),
+          ...fieldValues(result, "time")
+        ]
+      },
+      {
+        label: "会場一致",
+        score: 40,
+        values: [
+          ...(isSchedulePage ? [result.subtitle] : []),
+          ...fieldValues(result, "venue"),
+          ...fieldValues(result, "area")
+        ]
+      },
+      {
+        label: "その他一致",
+        score: 5,
+        values: [result.searchText]
+      }
+    ];
+  }
+
+  function scoreSearchResult(result, query) {
+    const words = queryWords(query);
+
+    if (!words.length || !matchesQuery(searchableText(result), query)) {
+      return { matched: false, score: 0, label: "" };
+    }
+
+    const buckets = matchBuckets(result);
+    let total = 0;
+    let bestLabel = "";
+    let bestScore = 0;
+
+    words.forEach(word => {
+      const bucket = buckets.find(item => textIncludes(item.values, word));
+
+      if (!bucket) {
+        return;
+      }
+
+      const venuePenalty = word.length === 1 && (bucket.label === "会場一致" || bucket.label === "公演日一致");
+      const score = venuePenalty ? Math.floor(bucket.score * 0.25) : bucket.score;
+      total += score;
+
+      if (score > bestScore) {
+        bestScore = score;
+        bestLabel = bucket.label;
+      }
+    });
+
+    return {
+      matched: true,
+      score: total,
+      label: bestLabel || "その他一致"
+    };
+  }
+
+  function rankedResults(results, query) {
+    return uniqueResults(results)
+      .map(result => ({
+        ...result,
+        matchInfo: scoreSearchResult(result, query)
+      }))
+      .filter(result => result.matchInfo.matched)
+      .sort((a, b) => {
+        if (b.matchInfo.score !== a.matchInfo.score) {
+          return b.matchInfo.score - a.matchInfo.score;
+        }
+
+        return String(a.href || "").localeCompare(String(b.href || ""));
+      });
+  }
+
   function makeSnippet(text, query, maxLength = 96) {
     const source = String(text || "").replace(/\s+/g, " ").trim();
 
@@ -251,7 +411,7 @@
       return;
     }
 
-    const matched = uniqueResults(results.filter(result => matchesQuery(searchableText(result), query)));
+    const matched = rankedResults(results, query);
     container.hidden = false;
 
     if (matched.length === 0) {
@@ -276,6 +436,7 @@
           return `
           <a class="archive-card search-result-card" href="${escapeHtml(result.href)}">
             <span class="search-result-type">【${escapeHtml(pageTypeLabel(result))}】</span>
+            <span class="search-result-match">${escapeHtml(result.matchInfo.label)}</span>
             ${renderResultText(result, query)}
             ${snippet ? `<p class="search-result-excerpt">「${highlightQuery(snippet, query)}」</p>` : ""}
           </a>
@@ -311,6 +472,7 @@
           pageTypeLabel: item.pageTypeLabel,
           memoryText,
           isMemoryResult: true,
+          searchFields: item.searchFields,
           searchText: [
             item.title,
             item.subtitle,

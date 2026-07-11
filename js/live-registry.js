@@ -72,6 +72,12 @@
       subtitle: `${group.name} / ${live.type} / ${live.year}`,
       href: `live.html?group=${group.id}&live=${live.id}`,
       pageType: "live",
+      searchFields: {
+        group: [group.name],
+        live: [live.title],
+        year: [live.year],
+        pageType: [live.type]
+      },
       searchText: `${group.name} ${live.type} ${live.year} ${live.title}`
     }];
 
@@ -85,6 +91,11 @@
           subtitle: `${group.name} / ${section.description}`,
           href,
           pageType: section.id,
+          searchFields: {
+            group: [group.name],
+            live: [live.title],
+            pageType: [section.label, section.description]
+          },
           searchText: `${group.name} ${live.type} ${live.year} ${live.title} ${section.label} ${section.description}`
         });
       });
@@ -96,6 +107,16 @@
         subtitle: `${live.title} / [${performance.area}] ${performance.venue}${performance.performanceType ? " / " + performance.performanceType : ""}`,
         href: `performance.html?group=${group.id}&live=${live.id}&performance=${performance.id}`,
         pageType: "schedule",
+        searchFields: {
+          group: [group.name],
+          live: [live.title],
+          pageType: ["公演日程"],
+          date: [performance.date],
+          time: [performance.time],
+          area: [performance.area],
+          venue: [performance.venue],
+          performanceType: [performance.performanceType]
+        },
         searchText: `${group.name} ${live.type} ${live.year} ${live.title} 公演日程 ${performance.date} ${performance.time} ${performance.area} ${performance.venue} ${performance.performanceType || ""}`
       });
     });
@@ -108,6 +129,14 @@
           subtitle: `${live.title} / ${setlistLabel ? setlistLabel + " / " : ""}${song.artist}${song.note ? " / " + song.note : ""}`,
           href: `song.html?group=${group.id}&live=${live.id}&setlist=${setlist.id}&song=${index}&order=${song.order}`,
           pageType: "general",
+          searchFields: {
+            group: [group.name],
+            live: [live.title],
+            pageType: ["総合", setlistLabel],
+            song: [song.title],
+            artist: [song.artist],
+            note: [song.note]
+          },
           searchText: `${group.name} ${live.type} ${live.year} ${live.title} 総合 ${setlistLabel} ${song.order} ${song.title} ${song.artist} ${song.note || ""}`
         });
       });
@@ -120,6 +149,14 @@
         subtitle: `${live.title} / 映像・円盤`,
         href: `video-song.html?group=${group.id}&live=${live.id}&setlist=${videoSetlist.id}&song=${index}&order=${song.order}`,
         pageType: "video",
+        searchFields: {
+          group: [group.name],
+          live: [live.title],
+          pageType: ["映像・円盤"],
+          song: [song.title],
+          artist: [song.artist],
+          note: [song.note]
+        },
         searchText: `${group.name} ${live.type} ${live.year} ${live.title} 映像 円盤 ${song.order} ${song.title} ${song.artist} ${song.note || ""}`
       });
     });
@@ -131,6 +168,13 @@
         subtitle: `${live.title} / ${priceText}`,
         href: `goods.html?group=${group.id}&live=${live.id}&goods=${goods.id}`,
         pageType: "goods",
+        searchFields: {
+          group: [group.name],
+          live: [live.title],
+          pageType: ["グッズ", "goods"],
+          goods: [goods.name],
+          price: [priceText, `${goods.price}円`]
+        },
         searchText: `${group.name} ${live.type} ${live.year} ${live.title} ${goods.name} ${priceText} ${goods.price}円 グッズ goods`
       });
     });

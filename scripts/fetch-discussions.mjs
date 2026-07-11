@@ -307,6 +307,54 @@ async function subtitleForMemoryId(memoryId) {
   return "思い出";
 }
 
+async function searchFieldsForMemoryId(memoryId, groupName, memoryText, pageTypeLabel) {
+  const parts = memoryId.split(":");
+  const type = parts[0];
+  const groupId = parts[1];
+  const liveId = parts[2];
+  const live = await loadLive(groupId, liveId);
+  const base = {
+    comment: [memoryText],
+    group: [groupName],
+    live: [live.title],
+    year: [live.year],
+    pageType: [pageTypeLabel, live.type]
+  };
+
+  if (type === "song" || type === "video-song") {
+    const { song } = resolveSongFromMemoryParts(live, parts);
+    return {
+      ...base,
+      song: [song?.title, song?.order],
+      artist: [song?.artist],
+      note: [song?.note]
+    };
+  }
+
+  if (["mc", "fanservice", "other"].includes(type)) {
+    const performance = live.performances.find(item => item.id === parts[3]);
+    return {
+      ...base,
+      date: [performance?.date],
+      time: [performance?.time],
+      area: [performance?.area],
+      venue: [performance?.venue],
+      performanceType: [performance?.performanceType]
+    };
+  }
+
+  if (type === "goods") {
+    const goods = live.goods.find(item => item.id === parts[3]);
+    return {
+      ...base,
+      goods: [goods?.name],
+      price: [goods?.priceLabel, goods?.price ? `${goods.price}円` : ""]
+    };
+  }
+
+  return base;
+}
+
 async function toSearchItem(discussion) {
   const memoryId = discussion.title;
 
@@ -324,6 +372,7 @@ async function toSearchItem(discussion) {
   const subtitle = await subtitleForMemoryId(memoryId);
   const href = await hrefForMemoryId(memoryId);
   const { pageType, pageTypeLabel } = pageTypeForMemoryId(memoryId);
+  const searchFields = await searchFieldsForMemoryId(memoryId, groupName, memoryText, pageTypeLabel);
 
   return {
     memoryId,
@@ -332,6 +381,7 @@ async function toSearchItem(discussion) {
     href,
     pageType,
     pageTypeLabel,
+    searchFields,
     sourceUrl: discussion.url,
     updatedAt: discussion.updatedAt,
     memoryText,
@@ -411,6 +461,11 @@ function dedupeSearchItems(items) {
     if (item.memoryText && !existing.memoryText.includes(item.memoryText)) {
       existing.memoryText = [existing.memoryText, item.memoryText].filter(Boolean).join(" ");
     }
+
+    existing.searchFields = {
+      ...(existing.searchFields || {}),
+      comment: [existing.memoryText]
+    };
 
     existing.searchText = [
       existing.pageTypeLabel,
