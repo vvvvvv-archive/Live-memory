@@ -366,6 +366,7 @@ async function toSearchItem(discussion) {
   const live = await loadLive(groupId, liveId);
   const groupName = await groupNameForId(groupId);
   const comments = discussion.comments.nodes.map(comment => stripMarkdown(comment.bodyText));
+  const commentCount = comments.filter(comment => comment.trim()).length;
   const bodyText = stripInternalText(stripMarkdown(discussion.bodyText), memoryId);
   const commentText = stripInternalText(comments.join(" "), memoryId);
   const memoryText = (commentText || bodyText).replace(/\s+/g, " ").trim();
@@ -384,6 +385,7 @@ async function toSearchItem(discussion) {
     searchFields,
     sourceUrl: discussion.url,
     updatedAt: discussion.updatedAt,
+    commentCount,
     memoryText,
     searchText: [
       groupName,
@@ -466,6 +468,7 @@ function dedupeSearchItems(items) {
       ...(existing.searchFields || {}),
       comment: [existing.memoryText]
     };
+    existing.commentCount = (existing.commentCount || 0) + (item.commentCount || 0);
 
     existing.searchText = [
       existing.pageTypeLabel,

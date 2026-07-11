@@ -58,8 +58,8 @@
 
       <div class="memory-card">
         <p>いつかの誰かの思い出をランダムに表示できます</p>
-        <button class="button" type="button" disabled>思い出をめくる</button>
-        <p class="small-note">準備中。今後実装予定です。</p>
+        <button class="button random-memory-button" id="random-memory-button" type="button" disabled>思い出をめくる</button>
+        <p class="small-note random-memory-status" id="random-memory-status" hidden></p>
       </div>
     </section>
 
@@ -101,6 +101,7 @@
   <script src="js/site-common.js"></script>
   <script src="js/live-registry.js"></script>
   <script src="js/search.js"></script>
+  <script src="js/random-memory.js"></script>
   <script src="js/new-moments.js"></script>
   <script>
     async function initSearch() {
@@ -127,6 +128,7 @@
     }
 
     initSearch();
+    initRandomMemory();
     initNewMoments();
   </script>
 </body>
