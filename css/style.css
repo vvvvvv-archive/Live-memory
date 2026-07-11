@@ -227,6 +227,93 @@ main {
   font-size: .9rem;
 }
 
+.new-moments-list {
+  display: grid;
+  gap: 14px;
+}
+
+.new-moment-card {
+  position: relative;
+  display: block;
+  padding: 20px 22px 20px 54px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  transition: transform .15s ease, background .15s ease, border-color .15s ease;
+}
+
+.new-moment-card:hover,
+.new-moment-card:focus {
+  transform: translateY(-2px);
+  background: var(--accent-soft);
+  border-color: #d4deea;
+}
+
+.new-moment-card:active {
+  transform: translateY(0);
+}
+
+.new-moment-icon {
+  position: absolute;
+  top: 21px;
+  left: 22px;
+  line-height: 1;
+}
+
+.new-moment-quote {
+  margin: 0 0 12px;
+  color: var(--text);
+  font-weight: 700;
+  line-height: 1.75;
+}
+
+.new-moment-meta {
+  color: var(--sub);
+  font-size: .9rem;
+  line-height: 1.7;
+}
+
+.new-moment-meta p {
+  margin: 0;
+}
+
+.new-moment-live {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.new-moment-label {
+  display: inline-block;
+  margin-right: 6px;
+  color: var(--accent);
+  font-size: .82rem;
+  font-weight: 700;
+}
+
+.new-moment-context {
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+
+.new-moment-meta time {
+  display: inline-block;
+  margin-top: 6px;
+  font-size: .82rem;
+}
+
+.new-moments-empty {
+  padding: 22px 24px;
+  color: var(--sub);
+  background: rgba(255,255,255,.72);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+
+.new-moments-empty p {
+  margin: 0;
+}
+
 .memory-guidelines {
   margin-top: 16px;
   padding: 16px 18px;
