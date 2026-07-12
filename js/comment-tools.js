@@ -103,15 +103,37 @@ function createPostManagementLink() {
 }
 
 function appendPrototypeCommentsIfEnabled(container, groupId, liveId, memoryId) {
-  if (
-    groupId !== "v6"
-    || liveId !== "v6-groove-2021"
-    || !window.PrototypeComments
-  ) {
+  if (!window.PrototypeComments) {
     return;
   }
 
+  const pageKey = groupId === "v6" && liveId === "v6-groove-2021"
+    ? `v6-groove-2021:${memoryId}`
+    : memoryId;
+
   window.PrototypeComments.mount(container, {
-    pageKey: `v6-groove-2021:${memoryId}`
+    pageKey
   });
+}
+
+function createArchivedGiscusElement(memoryId) {
+  const giscus = document.createElement("script");
+
+  giscus.src = "https://giscus.app/client.js";
+  giscus.setAttribute("data-repo", "vvvvvv-archive/Live-memory");
+  giscus.setAttribute("data-repo-id", "R_kgDOTPl_LQ");
+  giscus.setAttribute("data-category", "Memory");
+  giscus.setAttribute("data-category-id", "DIC_kwDOTPl_Lc4DAsjk");
+  giscus.setAttribute("data-mapping", "specific");
+  giscus.setAttribute("data-term", memoryId);
+  giscus.setAttribute("data-strict", "0");
+  giscus.setAttribute("data-reactions-enabled", "1");
+  giscus.setAttribute("data-emit-metadata", "1");
+  giscus.setAttribute("data-input-position", "bottom");
+  giscus.setAttribute("data-theme", "light");
+  giscus.setAttribute("data-lang", "ja");
+  giscus.setAttribute("crossorigin", "anonymous");
+  giscus.async = true;
+
+  return giscus;
 }

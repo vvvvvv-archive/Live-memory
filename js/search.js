@@ -450,9 +450,15 @@
     if (!memoryResultsCache) {
       try {
         const response = await fetch("data/memories.json", { cache: "no-store" });
-        memoryResultsCache = await response.json();
+        const staticItems = await response.json();
+        const supabaseItems = window.CommentData
+          ? await window.CommentData.loadSupabaseMemoryItems()
+          : [];
+        memoryResultsCache = [...staticItems, ...supabaseItems];
       } catch (error) {
-        memoryResultsCache = [];
+        memoryResultsCache = window.CommentData
+          ? await window.CommentData.loadSupabaseMemoryItems()
+          : [];
       }
     }
 

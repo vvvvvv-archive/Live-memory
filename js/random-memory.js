@@ -59,7 +59,11 @@
         throw new Error("Failed to load memories");
       }
 
-      const items = await response.json();
+      const staticItems = await response.json();
+      const supabaseItems = window.CommentData
+        ? await window.CommentData.loadSupabaseMemoryItems()
+        : [];
+      const items = [...staticItems, ...supabaseItems];
       randomMemoryItems = items.filter(item => item.href && hasComment(item));
 
       if (!randomMemoryItems.length) {

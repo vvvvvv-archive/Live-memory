@@ -569,8 +569,8 @@
     return `
       <section class="section-block prototype-comment-embed">
         <div class="section-heading">
-          <h2>Prototype Comment</h2>
-          <p>V6 2021ページ限定で試している、ログイン不要のコメント欄です。</p>
+          <h2>思い出</h2>
+          <p>ログイン不要で気軽に思い出を残せます。</p>
           <p class="prototype-comment-mode" data-comment-mode></p>
         </div>
         <div class="prototype-comment-shell" data-comment-prototype data-page-key="${escapeHtml(pageKey)}">

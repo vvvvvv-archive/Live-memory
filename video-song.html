@@ -164,29 +164,10 @@ nav.innerHTML=html;
 const memoryId =
 videoSongMemoryId(groupId, liveId, setlist.id, song, index);
 
-const giscus = document.createElement("script");
-
-giscus.src = "https://giscus.app/client.js";
-giscus.setAttribute("data-repo", "vvvvvv-archive/Live-memory");
-giscus.setAttribute("data-repo-id", "R_kgDOTPl_LQ");
-giscus.setAttribute("data-category", "Memory");
-giscus.setAttribute("data-category-id", "DIC_kwDOTPl_Lc4DAsjk");
-giscus.setAttribute("data-mapping", "specific");
-giscus.setAttribute("data-term", memoryId);
-giscus.setAttribute("data-strict", "0");
-giscus.setAttribute("data-reactions-enabled", "1");
-giscus.setAttribute("data-emit-metadata", "1");
-giscus.setAttribute("data-input-position", "bottom");
-giscus.setAttribute("data-theme", "light");
-giscus.setAttribute("data-lang", "ja");
-giscus.setAttribute("crossorigin", "anonymous");
-giscus.async = true;
-
-document.getElementById("giscus-container").appendChild(giscus);
-document.getElementById("giscus-container").appendChild(createMemberTagTools());
-document.getElementById("giscus-container").appendChild(createMemoryGuidelines());
-document.getElementById("giscus-container").appendChild(createPostManagementLink());
-appendPrototypeCommentsIfEnabled(document.getElementById("giscus-container"), groupId, liveId, memoryId);
+const commentContainer = document.getElementById("giscus-container");
+commentContainer.appendChild(createMemoryGuidelines());
+commentContainer.appendChild(createPostManagementLink());
+appendPrototypeCommentsIfEnabled(commentContainer, groupId, liveId, memoryId);
 
 }
 

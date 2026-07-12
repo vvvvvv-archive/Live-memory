@@ -129,7 +129,11 @@
         throw new Error("Failed to load memories");
       }
 
-      const items = await response.json();
+      const staticItems = await response.json();
+      const supabaseItems = window.CommentData
+        ? await window.CommentData.loadSupabaseMemoryItems()
+        : [];
+      const items = [...staticItems, ...supabaseItems];
       const latest = items
         .filter(item => item.href && item.updatedAt && (item.memoryText || item.searchFields?.comment?.length))
         .sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt))
