@@ -32,6 +32,7 @@
   <footer>ｖｖｖｖｖｖ　LIVE MEMORY</footer>
   <script src="js/site-common.js"></script>
   <script src="js/comment-tools.js"></script>
+  <script src="js/prototype-comments.js"></script>
   <script>
     const params = new URLSearchParams(location.search);
     const groupId = params.get("group");
@@ -102,6 +103,7 @@
       document.getElementById("giscus-container").appendChild(createMemberTagTools());
       document.getElementById("giscus-container").appendChild(createMemoryGuidelines());
 document.getElementById("giscus-container").appendChild(createPostManagementLink());
+      appendPrototypeCommentsIfEnabled(document.getElementById("giscus-container"), groupId, liveId, memoryId);
     }
 
     init();

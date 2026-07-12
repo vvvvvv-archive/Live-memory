@@ -280,5 +280,55 @@
     renderList(root, comments, authorToken);
   }
 
+  function prototypeMarkup(pageKey) {
+    return `
+      <section class="section-block prototype-comment-embed">
+        <div class="section-heading">
+          <h2>Prototype Comment</h2>
+          <p>V6 2021ページ限定で試している、ログイン不要のコメント欄です。</p>
+        </div>
+        <div class="prototype-comment-shell" data-comment-prototype data-page-key="${escapeHtml(pageKey)}">
+          <form class="prototype-comment-form" data-comment-form>
+            <label>
+              <span>ニックネーム（任意）</span>
+              <input type="text" name="nickname" maxlength="24" placeholder="名無しさん">
+            </label>
+
+            <label>
+              <span>コメント本文</span>
+              <textarea name="body" maxlength="500" rows="5" placeholder="思い出を自分の言葉で残してください"></textarea>
+            </label>
+
+            <div class="prototype-comment-actions">
+              <p class="prototype-comment-note">500文字まで。URLは1件まで。短時間の連投はできません。</p>
+              <button class="button" type="submit">送信する</button>
+            </div>
+            <p class="prototype-comment-status" data-comment-status aria-live="polite"></p>
+          </form>
+
+          <div class="prototype-comment-list" data-comment-list></div>
+        </div>
+      </section>
+    `;
+  }
+
+  function mountPrototype(container, options = {}) {
+    if (!container || container.querySelector(".prototype-comment-embed")) {
+      return null;
+    }
+
+    const pageKey = options.pageKey || location.pathname;
+    const wrapper = document.createElement("div");
+    wrapper.innerHTML = prototypeMarkup(pageKey);
+    const section = wrapper.firstElementChild;
+    container.appendChild(section);
+    initPrototype(section.querySelector("[data-comment-prototype]"));
+    return section;
+  }
+
+  window.PrototypeComments = {
+    mount: mountPrototype
+  };
+
   document.querySelectorAll("[data-comment-prototype]").forEach(initPrototype);
 })();

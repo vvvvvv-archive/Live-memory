@@ -32,6 +32,7 @@
   <script src="js/site-common.js"></script>
   <script src="js/search.js"></script>
   <script src="js/comment-tools.js"></script>
+  <script src="js/prototype-comments.js"></script>
   <script>
     const params = new URLSearchParams(window.location.search);
     const groupId = params.get("group");
@@ -81,6 +82,7 @@
       container.appendChild(createMemberTagTools());
       container.appendChild(createMemoryGuidelines());
       container.appendChild(createPostManagementLink());
+      appendPrototypeCommentsIfEnabled(container, groupId, liveId, memoryId);
     }
 
     function createMemoryGuidelines() {

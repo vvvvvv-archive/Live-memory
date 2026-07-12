@@ -101,3 +101,17 @@ function createPostManagementLink() {
   `;
   return wrapper;
 }
+
+function appendPrototypeCommentsIfEnabled(container, groupId, liveId, memoryId) {
+  if (
+    groupId !== "v6"
+    || liveId !== "v6-groove-2021"
+    || !window.PrototypeComments
+  ) {
+    return;
+  }
+
+  window.PrototypeComments.mount(container, {
+    pageKey: `v6-groove-2021:${memoryId}`
+  });
+}
