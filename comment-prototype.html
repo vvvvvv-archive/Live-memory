@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>独自コメント試作 | v v v v v v LIVE MEMORY</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+  <main>
+    <nav class="breadcrumb">
+      <a href="index.html">HOME</a> &gt; <span>独自コメント試作</span>
+    </nav>
+
+    <section class="lead-card">
+      <h1 class="page-title">独自コメント試作</h1>
+      <p>Giscusを置き換えず、ログイン不要のコメント体験だけを検証するための独立ページです。</p>
+    </section>
+
+    <section class="section-block">
+      <div class="section-heading">
+        <h2>Prototype Comment</h2>
+        <p>このページ内だけで保存される試作用コメント欄</p>
+      </div>
+
+      <div class="prototype-comment-shell" data-comment-prototype data-page-key="prototype:standalone">
+        <form class="prototype-comment-form" data-comment-form>
+          <label>
+            <span>ニックネーム（任意）</span>
+            <input type="text" name="nickname" maxlength="24" placeholder="名無しさん">
+          </label>
+
+          <label>
+            <span>コメント本文</span>
+            <textarea name="body" maxlength="500" rows="5" placeholder="思い出を自分の言葉で残してください"></textarea>
+          </label>
+
+          <div class="prototype-comment-actions">
+            <p class="prototype-comment-note">500文字まで。URLは1件まで。短時間の連投はできません。</p>
+            <button class="button" type="submit">送信する</button>
+          </div>
+          <p class="prototype-comment-status" data-comment-status aria-live="polite"></p>
+        </form>
+
+        <div class="prototype-comment-list" data-comment-list></div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    v v v v v v LIVE MEMORY
+  </footer>
+  <script src="js/site-common.js"></script>
+  <script src="js/prototype-comments.js"></script>
+</body>
+</html>

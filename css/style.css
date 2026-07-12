@@ -378,6 +378,139 @@ main {
   margin: 0;
 }
 
+.prototype-comment-shell {
+  display: grid;
+  gap: 18px;
+}
+
+.prototype-comment-form,
+.prototype-comment,
+.prototype-comment-empty {
+  padding: 20px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+.prototype-comment-form {
+  display: grid;
+  gap: 14px;
+}
+
+.prototype-comment-form label {
+  display: grid;
+  gap: 6px;
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.prototype-comment-form input,
+.prototype-comment-form textarea {
+  width: 100%;
+  padding: 12px 14px;
+  color: var(--text);
+  font: inherit;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+}
+
+.prototype-comment-form textarea {
+  resize: vertical;
+}
+
+.prototype-comment-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.prototype-comment-note,
+.prototype-comment-status {
+  margin: 0;
+  color: var(--sub);
+  font-size: .84rem;
+}
+
+.prototype-comment-list {
+  display: grid;
+  gap: 14px;
+}
+
+.prototype-comment {
+  display: grid;
+  gap: 10px;
+}
+
+.prototype-comment.is-reply {
+  margin-top: 12px;
+  padding: 14px 16px;
+  background: rgba(238,242,247,.56);
+  box-shadow: none;
+}
+
+.prototype-comment-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.prototype-comment-header strong {
+  color: var(--accent);
+}
+
+.prototype-comment-header time {
+  color: var(--sub);
+  font-size: .82rem;
+}
+
+.prototype-comment-body {
+  margin: 0;
+  white-space: pre-wrap;
+}
+
+.prototype-comment-toolbar,
+.prototype-reactions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.prototype-comment-toolbar button,
+.prototype-reaction {
+  padding: 5px 9px;
+  color: var(--accent);
+  font: inherit;
+  font-size: .82rem;
+  background: var(--accent-soft);
+  border: 1px solid #d5dfeb;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.prototype-reaction {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.prototype-comment-toolbar button:hover,
+.prototype-comment-toolbar button:focus,
+.prototype-reaction:hover,
+.prototype-reaction:focus,
+.prototype-reaction.is-active {
+  background: #e6edf5;
+  border-color: #b9c9dc;
+}
+
+.prototype-comment-empty {
+  color: var(--sub);
+}
+
 .memory-guidelines {
   margin-top: 16px;
   padding: 16px 18px;
