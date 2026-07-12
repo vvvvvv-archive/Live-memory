@@ -278,7 +278,7 @@
     comments.forEach(comment => {
       if (comment.parentId && byId.has(comment.parentId)) {
         byId.get(comment.parentId).replies.push(comment);
-      } else {
+      } else if (!comment.parentId) {
         topLevel.push(comment);
       }
     });
@@ -335,8 +335,11 @@
       method: "PATCH",
       authorToken,
       body: {
+        page_key: `deleted:${comment.id}`,
+        body: "削除済み",
+        tags: [],
         author_token: authorToken,
-        deleted_at: nowIso()
+        updated_at: nowIso()
       }
     });
   }
