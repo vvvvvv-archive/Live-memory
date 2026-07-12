@@ -473,7 +473,8 @@ main {
   transform: translateY(1px);
 }
 
-.prototype-member-tag.is-inserted {
+.prototype-member-tag.is-selected {
+  color: #3f5f85;
   background: #eef5ee;
   border-color: #b8d6bd;
 }
@@ -521,6 +522,29 @@ main {
 .prototype-comment-body {
   margin: 0;
   white-space: pre-wrap;
+}
+
+.prototype-comment-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 9px 10px;
+  background: rgba(238,245,238,.72);
+  border: 1px solid #b8d6bd;
+  border-radius: 8px;
+}
+
+.prototype-comment-tags span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 26px;
+  padding: 4px 9px;
+  color: #3f5f85;
+  font-size: .82rem;
+  line-height: 1;
+  background: var(--paper);
+  border: 1px solid #c9dccb;
+  border-radius: 999px;
 }
 
 .prototype-comment-toolbar,

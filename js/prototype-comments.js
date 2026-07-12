@@ -134,6 +134,17 @@
     }).join("");
   }
 
+  function renderCommentTags(tags = []) {
+    const validTags = tags.filter(Boolean);
+    if (!validTags.length) return "";
+
+    return `
+      <div class="prototype-comment-tags" aria-label="メンバー名タグ">
+        ${validTags.map(tag => `<span>${escapeHtml(tag)}</span>`).join("")}
+      </div>
+    `;
+  }
+
   function renderComment(comment, authorToken, isReply = false) {
     const owned = comment.authorToken === authorToken;
     return `
@@ -143,6 +154,7 @@
           <time datetime="${escapeHtml(comment.createdAt)}">${escapeHtml(relativeTime(comment.createdAt))}</time>
         </div>
         <p class="prototype-comment-body">${escapeHtml(comment.body)}</p>
+        ${renderCommentTags(comment.tags)}
         <div class="prototype-comment-toolbar">
           ${!isReply ? `<button type="button" data-action="reply" data-id="${comment.id}">返信</button>` : ""}
           ${owned ? `<button type="button" data-action="edit" data-id="${comment.id}">編集</button>` : ""}
@@ -167,33 +179,19 @@
 
   function renderMemberTagButtons() {
     return MEMBER_TAGS.map(tag => `
-      <button type="button" class="prototype-member-tag" data-prototype-member-tag="${escapeHtml(tag)}">
+      <button type="button" class="prototype-member-tag" data-prototype-member-tag="${escapeHtml(tag)}" aria-pressed="false">
         ${escapeHtml(tag)}
       </button>
     `).join("");
   }
 
-  function insertAtCursor(textarea, value) {
-    const start = textarea.selectionStart ?? textarea.value.length;
-    const end = textarea.selectionEnd ?? textarea.value.length;
-    const before = textarea.value.slice(0, start);
-    const after = textarea.value.slice(end);
-    const needsLeadingSpace = before && !/\s$/.test(before);
-    const needsTrailingSpace = after && !/^\s/.test(after);
-    const insertion = `${needsLeadingSpace ? " " : ""}${value}${needsTrailingSpace ? " " : ""}`;
-
-    textarea.value = `${before}${insertion}${after}`;
-    const cursorPosition = before.length + insertion.length;
-    textarea.focus();
-    textarea.setSelectionRange(cursorPosition, cursorPosition);
-  }
-
-  function newComment({ nickname, body, authorToken, parentId = null }) {
+  function newComment({ nickname, body, authorToken, parentId = null, tags = [] }) {
     return {
       id: window.crypto?.randomUUID ? window.crypto.randomUUID() : `comment-${Date.now()}-${Math.random()}`,
       parentId,
       nickname: normalizeText(nickname).slice(0, MAX_NICKNAME_LENGTH) || "名無しさん",
       body: normalizeText(body),
+      tags,
       authorToken,
       createdAt: nowIso(),
       updatedAt: nowIso(),
@@ -210,7 +208,6 @@
     const pageKey = root.dataset.pageKey || location.pathname;
     const authorToken = getAuthorToken();
     const form = root.querySelector("[data-comment-form]");
-    const bodyTextarea = form.querySelector('textarea[name="body"]');
     const status = root.querySelector("[data-comment-status]");
     let comments = loadComments(pageKey);
 
@@ -221,6 +218,19 @@
     function persist() {
       saveComments(pageKey, comments);
       renderList(root, comments, authorToken);
+    }
+
+    function selectedTags() {
+      return [...root.querySelectorAll(".prototype-member-tag.is-selected")]
+        .map(button => button.dataset.prototypeMemberTag)
+        .filter(Boolean);
+    }
+
+    function clearSelectedTags() {
+      root.querySelectorAll(".prototype-member-tag.is-selected").forEach(button => {
+        button.classList.remove("is-selected");
+        button.setAttribute("aria-pressed", "false");
+      });
     }
 
     form.addEventListener("submit", event => {
@@ -237,10 +247,12 @@
       comments.unshift(newComment({
         nickname: formData.get("nickname"),
         body,
-        authorToken
+        authorToken,
+        tags: selectedTags()
       }));
       localStorage.setItem(LAST_POST_KEY, String(Date.now()));
       form.reset();
+      clearSelectedTags();
       setStatus("投稿しました。");
       persist();
     });
@@ -248,18 +260,13 @@
     root.addEventListener("click", event => {
       const memberTagButton = event.target.closest("[data-prototype-member-tag]");
       if (memberTagButton) {
-        insertAtCursor(bodyTextarea, memberTagButton.dataset.prototypeMemberTag);
-        root.querySelectorAll(".prototype-member-tag.is-inserted").forEach(item => {
-          item.classList.remove("is-inserted");
-          item.removeAttribute("aria-label");
-        });
-        memberTagButton.classList.add("is-inserted");
-        memberTagButton.setAttribute("aria-label", `${memberTagButton.dataset.prototypeMemberTag} を本文に追加しました`);
-        setStatus(`${memberTagButton.dataset.prototypeMemberTag} を本文に追加しました`);
-        window.setTimeout(() => {
-          memberTagButton.classList.remove("is-inserted");
-          memberTagButton.removeAttribute("aria-label");
-        }, 1400);
+        const isSelected = memberTagButton.classList.toggle("is-selected");
+        memberTagButton.setAttribute("aria-pressed", String(isSelected));
+        setStatus(
+          isSelected
+            ? `${memberTagButton.dataset.prototypeMemberTag} をタグに追加しました`
+            : `${memberTagButton.dataset.prototypeMemberTag} をタグから外しました`
+        );
         return;
       }
 
@@ -342,7 +349,7 @@
             </label>
 
             <div class="prototype-member-tags" aria-label="メンバー名タグ">
-              <p>メンバー名タグを押すと本文に追加できます。複数入れても大丈夫です。</p>
+              <p>該当するメンバー名タグを選ぶと、投稿後にコメント下部へ別枠で表示されます。複数選択できます。</p>
               <div class="prototype-member-tag-list">
                 ${renderMemberTagButtons()}
               </div>
