@@ -53,17 +53,9 @@
     setStatus("");
 
     try {
-      const response = await fetch("data/memories.json", { cache: "no-store" });
-
-      if (!response.ok) {
-        throw new Error("Failed to load memories");
-      }
-
-      const staticItems = await response.json();
-      const supabaseItems = window.CommentData
+      const items = window.CommentData
         ? await window.CommentData.loadSupabaseMemoryItems()
         : [];
-      const items = [...staticItems, ...supabaseItems];
       randomMemoryItems = items.filter(item => item.href && hasComment(item));
 
       if (!randomMemoryItems.length) {

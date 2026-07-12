@@ -448,18 +448,9 @@
 
   async function loadMemoryResults(filter = () => true) {
     if (!memoryResultsCache) {
-      try {
-        const response = await fetch("data/memories.json", { cache: "no-store" });
-        const staticItems = await response.json();
-        const supabaseItems = window.CommentData
-          ? await window.CommentData.loadSupabaseMemoryItems()
-          : [];
-        memoryResultsCache = [...staticItems, ...supabaseItems];
-      } catch (error) {
-        memoryResultsCache = window.CommentData
-          ? await window.CommentData.loadSupabaseMemoryItems()
-          : [];
-      }
+      memoryResultsCache = window.CommentData
+        ? await window.CommentData.loadSupabaseMemoryItems()
+        : [];
     }
 
     return uniqueResults(memoryResultsCache

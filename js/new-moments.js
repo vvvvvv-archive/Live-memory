@@ -123,17 +123,9 @@
     }
 
     try {
-      const response = await fetch("data/memories.json", { cache: "no-store" });
-
-      if (!response.ok) {
-        throw new Error("Failed to load memories");
-      }
-
-      const staticItems = await response.json();
-      const supabaseItems = window.CommentData
+      const items = window.CommentData
         ? await window.CommentData.loadSupabaseMemoryItems()
         : [];
-      const items = [...staticItems, ...supabaseItems];
       const latest = items
         .filter(item => item.href && item.updatedAt && (item.memoryText || item.searchFields?.comment?.length))
         .sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt))
