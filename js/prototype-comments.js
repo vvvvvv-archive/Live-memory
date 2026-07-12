@@ -324,6 +324,7 @@
       authorToken,
       body: {
         body: normalizeText(body),
+        author_token: authorToken,
         updated_at: nowIso()
       }
     });
@@ -334,6 +335,7 @@
       method: "PATCH",
       authorToken,
       body: {
+        author_token: authorToken,
         deleted_at: nowIso()
       }
     });

@@ -34,6 +34,22 @@ grant select, insert, update on public.prototype_comments to anon;
 grant select, insert, delete on public.prototype_comment_reactions to anon;
 ```
 
+編集・削除時に `new row violates row-level security policy` が出る場合は、SQL Editorで以下を追加実行してください。
+
+```sql
+drop policy if exists "prototype comments update own token" on public.prototype_comments;
+create policy "prototype comments update own token"
+on public.prototype_comments
+for update
+using (
+  author_token = coalesce(
+    nullif(current_setting('request.headers', true)::json ->> 'x-author-token', ''),
+    ''
+  )
+)
+with check (true);
+```
+
 ## 2. 保存される内容
 
 - ページID

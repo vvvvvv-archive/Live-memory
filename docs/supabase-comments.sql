@@ -56,12 +56,7 @@ using (
     ''
   )
 )
-with check (
-  author_token = coalesce(
-    nullif(current_setting('request.headers', true)::json ->> 'x-author-token', ''),
-    ''
-  )
-);
+with check (true);
 
 drop policy if exists "prototype reactions select visible" on public.prototype_comment_reactions;
 create policy "prototype reactions select visible"
