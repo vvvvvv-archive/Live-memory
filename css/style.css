@@ -428,6 +428,56 @@ main {
   flex-wrap: wrap;
 }
 
+.prototype-member-tags {
+  display: grid;
+  gap: 8px;
+  padding: 12px 14px;
+  background: rgba(238,242,247,.52);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+
+.prototype-member-tags p {
+  margin: 0;
+  color: var(--sub);
+  font-size: .84rem;
+}
+
+.prototype-member-tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.prototype-member-tag {
+  min-height: 36px;
+  padding: 7px 12px;
+  color: var(--accent);
+  font: inherit;
+  font-size: .9rem;
+  line-height: 1;
+  background: var(--paper);
+  border: 1px solid #d4deea;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background .18s ease, border-color .18s ease, transform .18s ease;
+}
+
+.prototype-member-tag:hover,
+.prototype-member-tag:focus {
+  background: #e6edf5;
+  border-color: #b9c9dc;
+}
+
+.prototype-member-tag:active {
+  transform: translateY(1px);
+}
+
+.prototype-member-tag.is-inserted {
+  background: #eef5ee;
+  border-color: #b8d6bd;
+}
+
 .prototype-comment-note,
 .prototype-comment-status {
   margin: 0;

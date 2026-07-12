@@ -3,6 +3,7 @@
   const AUTHOR_TOKEN_KEY = `${STORAGE_PREFIX}author-token`;
   const LAST_POST_KEY = `${STORAGE_PREFIX}last-post-at`;
   const REACTIONS = ["😊", "😍", "😭", "👏", "🔥"];
+  const MEMBER_TAGS = ["#坂本昌行", "#長野博", "#井ノ原快彦", "#森田剛", "#三宅健", "#岡田准一"];
   const MAX_BODY_LENGTH = 500;
   const MAX_NICKNAME_LENGTH = 24;
   const POST_COOLDOWN_MS = 15000;
@@ -164,6 +165,29 @@
     list.innerHTML = comments.map(comment => renderComment(comment, authorToken)).join("");
   }
 
+  function renderMemberTagButtons() {
+    return MEMBER_TAGS.map(tag => `
+      <button type="button" class="prototype-member-tag" data-prototype-member-tag="${escapeHtml(tag)}">
+        ${escapeHtml(tag)}
+      </button>
+    `).join("");
+  }
+
+  function insertAtCursor(textarea, value) {
+    const start = textarea.selectionStart ?? textarea.value.length;
+    const end = textarea.selectionEnd ?? textarea.value.length;
+    const before = textarea.value.slice(0, start);
+    const after = textarea.value.slice(end);
+    const needsLeadingSpace = before && !/\s$/.test(before);
+    const needsTrailingSpace = after && !/^\s/.test(after);
+    const insertion = `${needsLeadingSpace ? " " : ""}${value}${needsTrailingSpace ? " " : ""}`;
+
+    textarea.value = `${before}${insertion}${after}`;
+    const cursorPosition = before.length + insertion.length;
+    textarea.focus();
+    textarea.setSelectionRange(cursorPosition, cursorPosition);
+  }
+
   function newComment({ nickname, body, authorToken, parentId = null }) {
     return {
       id: window.crypto?.randomUUID ? window.crypto.randomUUID() : `comment-${Date.now()}-${Math.random()}`,
@@ -186,6 +210,7 @@
     const pageKey = root.dataset.pageKey || location.pathname;
     const authorToken = getAuthorToken();
     const form = root.querySelector("[data-comment-form]");
+    const bodyTextarea = form.querySelector('textarea[name="body"]');
     const status = root.querySelector("[data-comment-status]");
     let comments = loadComments(pageKey);
 
@@ -221,6 +246,23 @@
     });
 
     root.addEventListener("click", event => {
+      const memberTagButton = event.target.closest("[data-prototype-member-tag]");
+      if (memberTagButton) {
+        insertAtCursor(bodyTextarea, memberTagButton.dataset.prototypeMemberTag);
+        root.querySelectorAll(".prototype-member-tag.is-inserted").forEach(item => {
+          item.classList.remove("is-inserted");
+          item.removeAttribute("aria-label");
+        });
+        memberTagButton.classList.add("is-inserted");
+        memberTagButton.setAttribute("aria-label", `${memberTagButton.dataset.prototypeMemberTag} を本文に追加しました`);
+        setStatus(`${memberTagButton.dataset.prototypeMemberTag} を本文に追加しました`);
+        window.setTimeout(() => {
+          memberTagButton.classList.remove("is-inserted");
+          memberTagButton.removeAttribute("aria-label");
+        }, 1400);
+        return;
+      }
+
       const button = event.target.closest("button[data-action]");
       if (!button) return;
 
@@ -298,6 +340,13 @@
               <span>コメント本文</span>
               <textarea name="body" maxlength="500" rows="5" placeholder="思い出を自分の言葉で残してください"></textarea>
             </label>
+
+            <div class="prototype-member-tags" aria-label="メンバー名タグ">
+              <p>メンバー名タグを押すと本文に追加できます。複数入れても大丈夫です。</p>
+              <div class="prototype-member-tag-list">
+                ${renderMemberTagButtons()}
+              </div>
+            </div>
 
             <div class="prototype-comment-actions">
               <p class="prototype-comment-note">500文字まで。URLは1件まで。短時間の連投はできません。</p>
