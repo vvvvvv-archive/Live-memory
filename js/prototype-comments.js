@@ -55,18 +55,6 @@
     return `${Math.floor(diffSeconds / day)}日前`;
   }
 
-  function loadComments(pageKey) {
-    try {
-      return JSON.parse(localStorage.getItem(storageKey(pageKey)) || "[]");
-    } catch (error) {
-      return [];
-    }
-  }
-
-  function saveComments(pageKey, comments) {
-    localStorage.setItem(storageKey(pageKey), JSON.stringify(comments));
-  }
-
   function countUrls(text) {
     return (text.match(/https?:\/\/|www\./gi) || []).length;
   }
@@ -204,20 +192,219 @@
     return window.prompt(title, initialValue);
   }
 
-  function initPrototype(root) {
+  function getBackendConfig() {
+    return window.VVVVVV_COMMENT_BACKEND || {};
+  }
+
+  function remoteEnabled() {
+    const config = getBackendConfig();
+    return Boolean(
+      config.enabled
+      && config.provider === "supabase"
+      && config.supabaseUrl
+      && config.supabaseAnonKey
+    );
+  }
+
+  function supabaseBaseUrl() {
+    return getBackendConfig().supabaseUrl.replace(/\/$/, "");
+  }
+
+  async function supabaseRequest(path, { method = "GET", body = null, authorToken = "" } = {}) {
+    const config = getBackendConfig();
+    const response = await fetch(`${supabaseBaseUrl()}${path}`, {
+      method,
+      headers: {
+        apikey: config.supabaseAnonKey,
+        Authorization: `Bearer ${config.supabaseAnonKey}`,
+        "Content-Type": "application/json",
+        Prefer: "return=representation",
+        "x-author-token": authorToken
+      },
+      body: body ? JSON.stringify(body) : null
+    });
+
+    if (!response.ok) {
+      const message = await response.text();
+      throw new Error(message || `Supabase request failed: ${response.status}`);
+    }
+
+    if (response.status === 204) return null;
+    return response.json();
+  }
+
+  function loadLocalComments(pageKey) {
+    try {
+      return JSON.parse(localStorage.getItem(storageKey(pageKey)) || "[]");
+    } catch (error) {
+      return [];
+    }
+  }
+
+  function saveLocalComments(pageKey, comments) {
+    localStorage.setItem(storageKey(pageKey), JSON.stringify(comments));
+  }
+
+  function rowToComment(row, reactionMap) {
+    return {
+      id: row.id,
+      parentId: row.parent_id,
+      nickname: row.nickname,
+      body: row.body,
+      tags: row.tags || [],
+      authorToken: row.author_token,
+      createdAt: row.created_at,
+      updatedAt: row.updated_at,
+      reactions: reactionMap[row.id] || {},
+      replies: []
+    };
+  }
+
+  function buildReactionMap(rows) {
+    return rows.reduce((map, row) => {
+      map[row.comment_id] ||= {};
+      map[row.comment_id][row.emoji] ||= [];
+      map[row.comment_id][row.emoji].push(row.author_token);
+      return map;
+    }, {});
+  }
+
+  function buildCommentTree(rows, reactionRows) {
+    const reactionMap = buildReactionMap(reactionRows);
+    const comments = rows.map(row => rowToComment(row, reactionMap));
+    const byId = new Map(comments.map(comment => [comment.id, comment]));
+    const topLevel = [];
+
+    comments.forEach(comment => {
+      if (comment.parentId && byId.has(comment.parentId)) {
+        byId.get(comment.parentId).replies.push(comment);
+      } else {
+        topLevel.push(comment);
+      }
+    });
+
+    topLevel.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    topLevel.forEach(comment => {
+      comment.replies.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+    });
+    return topLevel;
+  }
+
+  async function loadRemoteComments(pageKey) {
+    const encodedPageKey = encodeURIComponent(pageKey);
+    const rows = await supabaseRequest(
+      `/rest/v1/prototype_comments?page_key=eq.${encodedPageKey}&deleted_at=is.null&select=*&order=created_at.desc`
+    );
+    const ids = rows.map(row => row.id);
+    const reactionRows = ids.length
+      ? await supabaseRequest(`/rest/v1/prototype_comment_reactions?comment_id=in.(${ids.join(",")})&select=*`)
+      : [];
+    return buildCommentTree(rows, reactionRows);
+  }
+
+  async function createRemoteComment(pageKey, comment) {
+    const rows = await supabaseRequest("/rest/v1/prototype_comments", {
+      method: "POST",
+      authorToken: comment.authorToken,
+      body: {
+        page_key: pageKey,
+        parent_id: comment.parentId,
+        nickname: comment.nickname,
+        body: comment.body,
+        tags: comment.tags,
+        author_token: comment.authorToken
+      }
+    });
+    return rows?.[0];
+  }
+
+  async function updateRemoteComment(comment, body, authorToken) {
+    await supabaseRequest(`/rest/v1/prototype_comments?id=eq.${comment.id}&author_token=eq.${encodeURIComponent(authorToken)}`, {
+      method: "PATCH",
+      authorToken,
+      body: {
+        body: normalizeText(body),
+        updated_at: nowIso()
+      }
+    });
+  }
+
+  async function deleteRemoteComment(comment, authorToken) {
+    await supabaseRequest(`/rest/v1/prototype_comments?id=eq.${comment.id}&author_token=eq.${encodeURIComponent(authorToken)}`, {
+      method: "PATCH",
+      authorToken,
+      body: {
+        deleted_at: nowIso()
+      }
+    });
+  }
+
+  async function toggleRemoteReaction(comment, emoji, authorToken) {
+    const active = (comment.reactions?.[emoji] || []).includes(authorToken);
+
+    if (active) {
+      await supabaseRequest(
+        `/rest/v1/prototype_comment_reactions?comment_id=eq.${comment.id}&emoji=eq.${encodeURIComponent(emoji)}&author_token=eq.${encodeURIComponent(authorToken)}`,
+        { method: "DELETE", authorToken }
+      );
+      return;
+    }
+
+    await supabaseRequest("/rest/v1/prototype_comment_reactions", {
+      method: "POST",
+      authorToken,
+      body: {
+        comment_id: comment.id,
+        emoji,
+        author_token: authorToken
+      }
+    });
+  }
+
+  function backendLabel() {
+    return remoteEnabled() ? "共有コメント試験中" : "端末内だけの試作中";
+  }
+
+  async function initPrototype(root) {
     const pageKey = root.dataset.pageKey || location.pathname;
     const authorToken = getAuthorToken();
     const form = root.querySelector("[data-comment-form]");
     const status = root.querySelector("[data-comment-status]");
-    let comments = loadComments(pageKey);
+    const mode = root.querySelector("[data-comment-mode]");
+    let comments = [];
 
     function setStatus(message) {
       status.textContent = message || "";
     }
 
-    function persist() {
-      saveComments(pageKey, comments);
+    function setMode() {
+      if (mode) mode.textContent = backendLabel();
+    }
+
+    async function refresh() {
+      try {
+        comments = remoteEnabled() ? await loadRemoteComments(pageKey) : loadLocalComments(pageKey);
+        renderList(root, comments, authorToken);
+        setMode();
+      } catch (error) {
+        console.error(error);
+        setStatus("共有コメントの読み込みに失敗しました。設定を確認してください。");
+        comments = loadLocalComments(pageKey);
+        renderList(root, comments, authorToken);
+      }
+    }
+
+    function persistLocal() {
+      saveLocalComments(pageKey, comments);
       renderList(root, comments, authorToken);
+    }
+
+    async function persistRemoteOrLocal() {
+      if (remoteEnabled()) {
+        await refresh();
+        return;
+      }
+      persistLocal();
     }
 
     function selectedTags() {
@@ -233,7 +420,7 @@
       });
     }
 
-    form.addEventListener("submit", event => {
+    form.addEventListener("submit", async event => {
       event.preventDefault();
       const formData = new FormData(form);
       const body = formData.get("body");
@@ -244,20 +431,31 @@
         return;
       }
 
-      comments.unshift(newComment({
+      const comment = newComment({
         nickname: formData.get("nickname"),
         body,
         authorToken,
         tags: selectedTags()
-      }));
-      localStorage.setItem(LAST_POST_KEY, String(Date.now()));
-      form.reset();
-      clearSelectedTags();
-      setStatus("投稿しました。");
-      persist();
+      });
+
+      try {
+        if (remoteEnabled()) {
+          await createRemoteComment(pageKey, comment);
+        } else {
+          comments.unshift(comment);
+        }
+        localStorage.setItem(LAST_POST_KEY, String(Date.now()));
+        form.reset();
+        clearSelectedTags();
+        setStatus("投稿しました。");
+        await persistRemoteOrLocal();
+      } catch (error) {
+        console.error(error);
+        setStatus("投稿に失敗しました。少し待ってからもう一度お試しください。");
+      }
     });
 
-    root.addEventListener("click", event => {
+    root.addEventListener("click", async event => {
       const memberTagButton = event.target.closest("[data-prototype-member-tag]");
       if (memberTagButton) {
         const isSelected = memberTagButton.classList.toggle("is-selected");
@@ -279,54 +477,86 @@
 
       if (!target) return;
 
-      if (action === "react") {
-        const emoji = button.dataset.emoji;
-        target.reactions ||= {};
-        target.reactions[emoji] ||= [];
-        target.reactions[emoji] = target.reactions[emoji].includes(authorToken)
-          ? target.reactions[emoji].filter(token => token !== authorToken)
-          : [...target.reactions[emoji], authorToken];
-        persist();
-      }
+      try {
+        if (action === "react") {
+          const emoji = button.dataset.emoji;
+          if (remoteEnabled()) {
+            await toggleRemoteReaction(target, emoji, authorToken);
+            await refresh();
+            return;
+          }
 
-      if (action === "reply") {
-        const body = promptForText("返信を入力してください", "");
-        if (body === null) return;
-        const error = validatePost({ body });
-        if (error) {
-          setStatus(error);
-          return;
+          target.reactions ||= {};
+          target.reactions[emoji] ||= [];
+          target.reactions[emoji] = target.reactions[emoji].includes(authorToken)
+            ? target.reactions[emoji].filter(token => token !== authorToken)
+            : [...target.reactions[emoji], authorToken];
+          persistLocal();
         }
-        target.replies ||= [];
-        target.replies.push(newComment({ nickname: "名無しさん", body, authorToken, parentId: target.id }));
-        localStorage.setItem(LAST_POST_KEY, String(Date.now()));
-        setStatus("返信しました。");
-        persist();
-      }
 
-      if (action === "edit" && target.authorToken === authorToken) {
-        const body = promptForText("コメントを編集してください", target.body);
-        if (body === null) return;
-        const error = validatePost({ body, skipCooldown: true });
-        if (error) {
-          setStatus(error);
-          return;
+        if (action === "reply") {
+          const body = promptForText("返信を入力してください", "");
+          if (body === null) return;
+          const error = validatePost({ body });
+          if (error) {
+            setStatus(error);
+            return;
+          }
+          const reply = newComment({ nickname: "名無しさん", body, authorToken, parentId: target.id });
+          if (remoteEnabled()) {
+            await createRemoteComment(pageKey, reply);
+            localStorage.setItem(LAST_POST_KEY, String(Date.now()));
+            setStatus("返信しました。");
+            await refresh();
+            return;
+          }
+          target.replies ||= [];
+          target.replies.push(reply);
+          localStorage.setItem(LAST_POST_KEY, String(Date.now()));
+          setStatus("返信しました。");
+          persistLocal();
         }
-        target.body = normalizeText(body);
-        target.updatedAt = nowIso();
-        setStatus("編集しました。");
-        persist();
-      }
 
-      if (action === "delete" && target.authorToken === authorToken) {
-        if (!window.confirm("このコメントを削除しますか？")) return;
-        comments = removeComment(comments, id);
-        setStatus("削除しました。");
-        persist();
+        if (action === "edit" && target.authorToken === authorToken) {
+          const body = promptForText("コメントを編集してください", target.body);
+          if (body === null) return;
+          const error = validatePost({ body, skipCooldown: true });
+          if (error) {
+            setStatus(error);
+            return;
+          }
+          if (remoteEnabled()) {
+            await updateRemoteComment(target, body, authorToken);
+            setStatus("編集しました。");
+            await refresh();
+            return;
+          }
+          target.body = normalizeText(body);
+          target.updatedAt = nowIso();
+          setStatus("編集しました。");
+          persistLocal();
+        }
+
+        if (action === "delete" && target.authorToken === authorToken) {
+          if (!window.confirm("このコメントを削除しますか？")) return;
+          if (remoteEnabled()) {
+            await deleteRemoteComment(target, authorToken);
+            setStatus("削除しました。");
+            await refresh();
+            return;
+          }
+          comments = removeComment(comments, id);
+          setStatus("削除しました。");
+          persistLocal();
+        }
+      } catch (error) {
+        console.error(error);
+        setStatus("処理に失敗しました。少し待ってからもう一度お試しください。");
       }
     });
 
-    renderList(root, comments, authorToken);
+    setMode();
+    await refresh();
   }
 
   function prototypeMarkup(pageKey) {
@@ -335,6 +565,7 @@
         <div class="section-heading">
           <h2>Prototype Comment</h2>
           <p>V6 2021ページ限定で試している、ログイン不要のコメント欄です。</p>
+          <p class="prototype-comment-mode" data-comment-mode></p>
         </div>
         <div class="prototype-comment-shell" data-comment-prototype data-page-key="${escapeHtml(pageKey)}">
           <form class="prototype-comment-form" data-comment-form>

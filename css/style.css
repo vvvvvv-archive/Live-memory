@@ -383,6 +383,18 @@ main {
   gap: 18px;
 }
 
+.prototype-comment-mode {
+  display: inline-block;
+  margin: 8px 0 0;
+  padding: 4px 9px;
+  color: var(--sub);
+  font-size: .78rem;
+  line-height: 1.2;
+  background: rgba(238,242,247,.72);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+}
+
 .prototype-comment-form,
 .prototype-comment,
 .prototype-comment-empty {
