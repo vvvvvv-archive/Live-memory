@@ -22,6 +22,10 @@ create table if not exists public.prototype_comment_reactions (
   unique (comment_id, emoji, author_token)
 );
 
+grant usage on schema public to anon;
+grant select, insert, update on public.prototype_comments to anon;
+grant select, insert, delete on public.prototype_comment_reactions to anon;
+
 alter table public.prototype_comments enable row level security;
 alter table public.prototype_comment_reactions enable row level security;
 

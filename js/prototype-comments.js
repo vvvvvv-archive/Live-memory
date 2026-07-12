@@ -389,6 +389,7 @@
       } catch (error) {
         console.error(error);
         setStatus("共有コメントの読み込みに失敗しました。設定を確認してください。");
+        if (mode) mode.textContent = "共有コメント未接続（端末内保存）";
         comments = loadLocalComments(pageKey);
         renderList(root, comments, authorToken);
       }

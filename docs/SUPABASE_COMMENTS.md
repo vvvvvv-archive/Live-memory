@@ -26,6 +26,14 @@ window.VVVVVV_COMMENT_BACKEND = {
 };
 ```
 
+すでにテーブルを作成済みで権限エラーが出る場合は、SQL Editorで以下だけ追加実行してください。
+
+```sql
+grant usage on schema public to anon;
+grant select, insert, update on public.prototype_comments to anon;
+grant select, insert, delete on public.prototype_comment_reactions to anon;
+```
+
 ## 2. 保存される内容
 
 - ページID
@@ -53,4 +61,3 @@ window.VVVVVV_COMMENT_BACKEND = {
 - `service_role` keyは絶対にサイトへ置かないでください。
 - SQLのRLSポリシーで、投稿者トークンが一致する場合のみ編集・削除できるようにしています。
 - 本格運用前に、スパム対策・NGワード・通報フローを追加検討してください。
-
