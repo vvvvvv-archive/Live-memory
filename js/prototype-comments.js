@@ -567,13 +567,12 @@
 
   function prototypeMarkup(pageKey) {
     return `
-      <section class="section-block prototype-comment-embed">
-        <div class="section-heading">
-          <h2>思い出</h2>
-          <p>ログイン不要で気軽に思い出を残せます。</p>
-          <p class="prototype-comment-mode" data-comment-mode></p>
-        </div>
+      <div class="prototype-comment-embed">
         <div class="prototype-comment-shell" data-comment-prototype data-page-key="${escapeHtml(pageKey)}">
+          <div class="prototype-comment-intro">
+            <p>ログイン不要で気軽に思い出を残せます。</p>
+            <p class="prototype-comment-mode" data-comment-mode></p>
+          </div>
           <form class="prototype-comment-form" data-comment-form>
             <label>
               <span>ニックネーム（任意）</span>
@@ -599,9 +598,10 @@
             <p class="prototype-comment-status" data-comment-status aria-live="polite"></p>
           </form>
 
+          <div class="prototype-comment-after-form" data-comment-after-form></div>
           <div class="prototype-comment-list" data-comment-list></div>
         </div>
-      </section>
+      </div>
     `;
   }
 
@@ -615,6 +615,10 @@
     wrapper.innerHTML = prototypeMarkup(pageKey);
     const section = wrapper.firstElementChild;
     container.appendChild(section);
+    const afterForm = section.querySelector("[data-comment-after-form]");
+    (options.afterForm || []).forEach(element => {
+      if (element) afterForm.appendChild(element);
+    });
     initPrototype(section.querySelector("[data-comment-prototype]"));
     return section;
   }

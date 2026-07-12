@@ -165,9 +165,9 @@ const memoryId =
 videoSongMemoryId(groupId, liveId, setlist.id, song, index);
 
 const commentContainer = document.getElementById("giscus-container");
-commentContainer.appendChild(createMemoryGuidelines());
-commentContainer.appendChild(createPostManagementLink());
-appendPrototypeCommentsIfEnabled(commentContainer, groupId, liveId, memoryId);
+appendPrototypeCommentsIfEnabled(commentContainer, groupId, liveId, memoryId, {
+  afterForm: [createMemoryGuidelines(), createPostManagementLink()]
+});
 
 }
 

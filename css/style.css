@@ -383,6 +383,17 @@ main {
   gap: 18px;
 }
 
+.prototype-comment-intro {
+  display: grid;
+  gap: 6px;
+}
+
+.prototype-comment-intro p {
+  margin: 0;
+  color: var(--sub);
+  font-size: .95rem;
+}
+
 .prototype-comment-mode {
   display: inline-block;
   margin: 8px 0 0;
@@ -393,6 +404,11 @@ main {
   background: rgba(238,242,247,.72);
   border: 1px solid var(--line);
   border-radius: 999px;
+}
+
+.prototype-comment-after-form {
+  display: grid;
+  gap: 12px;
 }
 
 .prototype-comment-form,

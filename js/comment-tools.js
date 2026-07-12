@@ -102,7 +102,7 @@ function createPostManagementLink() {
   return wrapper;
 }
 
-function appendPrototypeCommentsIfEnabled(container, groupId, liveId, memoryId) {
+function appendPrototypeCommentsIfEnabled(container, groupId, liveId, memoryId, options = {}) {
   if (!window.PrototypeComments) {
     return;
   }
@@ -112,7 +112,8 @@ function appendPrototypeCommentsIfEnabled(container, groupId, liveId, memoryId) 
     : memoryId;
 
   window.PrototypeComments.mount(container, {
-    pageKey
+    pageKey,
+    afterForm: options.afterForm || []
   });
 }
 

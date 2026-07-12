@@ -62,9 +62,9 @@
     }
 
     function appendGiscus(container, memoryId) {
-      container.appendChild(createMemoryGuidelines());
-      container.appendChild(createPostManagementLink());
-      appendPrototypeCommentsIfEnabled(container, groupId, liveId, memoryId);
+      appendPrototypeCommentsIfEnabled(container, groupId, liveId, memoryId, {
+        afterForm: [createMemoryGuidelines(), createPostManagementLink()]
+      });
     }
 
     function createMemoryGuidelines() {
