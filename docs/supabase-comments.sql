@@ -1,5 +1,15 @@
 create extension if not exists pgcrypto;
 
+-- Legacy initial table setup for the first Supabase prototype.
+--
+-- Do not run this file for the current production-style comment setup.
+-- Current operation uses the RPC scripts:
+-- - docs/supabase-comments-rpc-stage1.sql
+-- - docs/supabase-comments-rpc-stage3.sql
+--
+-- In the current setup, anon direct SELECT on the base tables is revoked and
+-- public comment access goes through RPCs that do not expose author_token.
+
 create table if not exists public.prototype_comments (
   id uuid primary key default gen_random_uuid(),
   page_key text not null,

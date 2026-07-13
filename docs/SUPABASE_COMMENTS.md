@@ -1,80 +1,67 @@
-# 独自コメント機能 Supabase設定メモ
+# Supabaseコメント機能 現在仕様
 
-V6 2021の独自コメント欄を、全ユーザー共通で保存するための準備メモです。
+この文書は、現在運用中のSupabaseコメント機能の概要です。
 
 ## 現在の状態
 
-- `js/comment-backend-config.js` の `enabled` は `false` です。
-- この状態では、今まで通りブラウザ内だけに保存されます。
-- Supabase設定後に `enabled: true` へ変更すると、共有コメント保存へ切り替わります。
+- コメント欄はSupabaseを使う独自コメント機能です。
+- `js/comment-backend-config.js` の `enabled` は `true` です。
+- 投稿・取得・返信・編集・削除・リアクションはRPC経由で行います。
+- `anon` は元テーブル `prototype_comments` / `prototype_comment_reactions` を直接SELECTできません。
+- `author_token` は公開レスポンスへ返しません。
+- Giscusは画面には表示していませんが、復帰用コードと識別子は残しています。
 
-## 1. Supabaseで用意するもの
+## 使用する主なRPC
 
-1. Supabaseで新しいProjectを作成
-2. SQL Editorで `docs/supabase-comments.sql` を実行
-3. Project Settings > API から以下を確認
-   - Project URL
-   - anon public key
-4. `js/comment-backend-config.js` に設定
+- `get_public_comments(target_page_key text)`
+- `create_public_comment(target_page_key text, target_parent_id uuid, input_nickname text, input_body text, input_tags text[])`
+- `update_own_comment(target_comment_id uuid, input_body text, input_tags text[])`
+- `delete_own_comment(target_comment_id uuid)`
+- `toggle_comment_reaction(target_comment_id uuid, input_emoji text)`
 
-```js
-window.VVVVVV_COMMENT_BACKEND = {
-  provider: "supabase",
-  enabled: true,
-  supabaseUrl: "https://xxxxxxxx.supabase.co",
-  supabaseAnonKey: "公開anon key"
-};
-```
+## 保存される内容
 
-すでにテーブルを作成済みで権限エラーが出る場合は、SQL Editorで以下だけ追加実行してください。
+- `page_key`: コメント欄を識別するページID
+- `parent_id`: 返信先コメントID
+- `nickname`: ニックネーム
+- `body`: コメント本文
+- `tags`: メンバー名タグ
+- `author_token`: 投稿者本人判定用トークン
+- `created_at`: 投稿日時
+- `updated_at`: 更新日時
+- `deleted_at`: 投稿者削除時刻
+- リアクション情報
 
-```sql
-grant usage on schema public to anon;
-grant select, insert, update on public.prototype_comments to anon;
-grant select, insert, delete on public.prototype_comment_reactions to anon;
-```
+## 本人編集・削除
 
-編集・削除時に `new row violates row-level security policy` が出る場合は、SQL Editorで以下を追加実行してください。
-
-```sql
-drop policy if exists "prototype comments update own token" on public.prototype_comments;
-create policy "prototype comments update own token"
-on public.prototype_comments
-for update
-using (
-  author_token = coalesce(
-    nullif(current_setting('request.headers', true)::json ->> 'x-author-token', ''),
-    ''
-  )
-)
-with check (true);
-```
-
-## 2. 保存される内容
-
-- ページID
-- 親コメントID
-- ニックネーム
-- コメント本文
-- メンバー名タグ
-- 投稿者本人判定用トークン
-- 投稿日時
-- 更新日時
-- 削除用の移動先ページID
-- リアクション
-
-## 3. 本人編集・削除について
-
-投稿者本人の判定は、ブラウザに保存された投稿者トークンで行います。
+投稿者本人の判定は、ブラウザに保存された投稿者トークンとDB内の `author_token` をRPC内で比較して行います。
 
 - 同じ端末・同じブラウザなら編集・削除できます。
-- 別端末やブラウザを変えた場合は本人判定できません。
-- 投稿者本人の削除は、対象コメントの `page_key` を `deleted:{commentId}` へ移動し、元ページから非表示にします。
-- 管理人削除は、Supabase管理画面から対象行の `page_key` を `deleted:{commentId}` へ変更する運用を想定しています。
+- 別端末や別ブラウザでは本人判定できません。
+- シークレット／プライベートブラウズ終了後は本人判定できなくなります。
+- ブラウザデータを削除した場合も本人判定できなくなります。
+- `author_token` 自体は画面や公開レスポンスへ返しません。
 
-## 4. 注意点
+## 削除仕様
 
-- anon keyは公開される前提のキーです。
+- 投稿者による削除は `deleted_at` を設定するソフトデリートです。
+- 削除時にも `page_key` は変更しません。
+- 削除済みコメントは通常表示、検索、最新コメント3件、ランダムコメントから除外します。
+- 削除済み親コメントに紐づく返信も通常表示から除外します。
+- 必要な場合のみ、管理人がUUIDを確認して完全削除します。
+- 完全削除時は `ON DELETE CASCADE` により関連返信・リアクションも削除されます。
+- 当面は自動定期削除を行わず、管理人による個別確認方式とします。
+- 将来自動削除する場合は、`deleted_at` から90日経過後を候補にします。
+
+## 旧方式について
+
+過去の試作段階では、削除時に `page_key = deleted:{commentId}` へ移動する方式を使っていました。
+
+現在この方式は使用していません。旧方式データは完全削除済みで、現在の確認結果では `page_key` が `deleted:` で始まるコメントは0件です。
+
+## 注意点
+
+- `anon` keyは公開される前提のキーです。
 - `service_role` keyは絶対にサイトへ置かないでください。
-- SQLのRLSポリシーで、投稿者トークンが一致する場合のみ編集・削除できるようにしています。
-- 本格運用前に、スパム対策・NGワード・通報フローを追加検討してください。
+- RLSは無効化しません。
+- コメントデータのバックアップCSVには `author_token` が含まれる可能性があるため、公開場所へ置かないでください。

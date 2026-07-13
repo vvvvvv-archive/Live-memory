@@ -46,6 +46,8 @@ select
 from public.prototype_comments;
 ```
 
+現在の削除方式は `deleted_at` を使うソフトデリートです。`page_key like 'deleted:%'` は旧方式データの残存確認用です。現在の運用では削除時に `page_key` を変更しません。
+
 ## CSV出力手順
 
 1. Supabaseの対象プロジェクトを開く。
@@ -135,3 +137,5 @@ where comment.id is null;
 ## 管理メモ
 
 CSVには `author_token` が含まれる可能性があります。これは投稿者本人判定に使う情報なので、第三者へ共有しないでください。
+
+投稿者削除済みコメントは、バックアップCSV内では `deleted_at` が入った行として保存されます。必要な場合のみ、管理人がUUIDを確認して完全削除します。完全削除時は `ON DELETE CASCADE` により関連返信・リアクションも削除されます。

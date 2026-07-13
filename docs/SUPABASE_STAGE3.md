@@ -2,7 +2,7 @@
 
 この手順は、コメント用テーブルに入っている `author_token` を一般利用者が直接取得できないようにするための最終権限変更です。
 
-まだ本番DBでは実行しないでください。管理人が内容を確認してから、Supabase SQL Editorで実行します。
+Stage3は実行済みです。この文書は、権限状態を再確認するための手順として残しています。
 
 ## 目的
 
@@ -26,9 +26,11 @@
 - 権限変更SQL: `docs/supabase-comments-rpc-stage3.sql`
 - ロールバックSQL: `docs/supabase-comments-rpc-stage3-rollback.sql`
 
-## 実行前チェックSQL
+現在はStage3適用後のため、通常運用では権限変更SQL・ロールバックSQLを再実行しません。
 
-Supabase SQL Editorで、Stage3実行前に以下を実行します。
+## 権限状態の確認SQL
+
+Supabase SQL Editorで、必要に応じて以下を実行します。
 
 ```sql
 select
@@ -52,13 +54,13 @@ from public.prototype_comment_reactions;
 
 期待値:
 
-- Stage3前は `anon_can_select_comments` と `anon_can_select_reactions` が `true` の可能性があります。
-- RPCのexecute権限はすべて `true` であること。
-- コメント件数・リアクション件数を控えておくこと。
+- `anon_can_select_comments` と `anon_can_select_reactions` は `false`。
+- RPCのexecute権限はすべて `true`。
+- コメント件数・リアクション件数が想定と一致すること。
 
 ## Stage3実行SQL
 
-SQL Editorで `docs/supabase-comments-rpc-stage3.sql` の内容を実行します。
+Stage3は適用済みです。通常運用では再実行しません。内容確認用としてSQLを残しています。
 
 ```sql
 revoke select on table public.prototype_comments from anon;
@@ -72,7 +74,7 @@ grant execute on function public.delete_own_comment(uuid) to anon;
 grant execute on function public.toggle_comment_reaction(uuid, text) to anon;
 ```
 
-## 実行後チェックSQL
+## 適用後チェックSQL
 
 ### 1. anonの直接SELECT権限が外れていること
 

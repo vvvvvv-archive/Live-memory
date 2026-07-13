@@ -5,6 +5,7 @@
 - 画面に表示するコメント欄は、Supabaseを使う独自コメント欄です。
 - Giscusはページ上には表示しません。
 - ただし、復帰できるようにGiscus生成処理は `js/comment-tools.js` の `createArchivedGiscusElement(memoryId)` に残しています。
+- Giscusの既存識別子や設定は削除していません。
 
 ## 復帰が必要になった場合
 
@@ -26,14 +27,19 @@ container.appendChild(createArchivedGiscusElement(memoryId));
 
 ## 検索・最新コメント・ランダム表示
 
-現在は以下を合流して扱います。
+現在はSupabase RPC `get_public_comments()` から取得したコメントを、`js/comment-data.js` で検索用データへ変換しています。
 
-- 既存の `data/memories.json`
-- Supabaseの `prototype_comments`
-
-新しい独自コメントは `js/comment-data.js` で検索用データへ変換されます。
+- 検索: RPC経由のコメント本文を対象にします。
+- 最新コメント3件: `created_at` 降順で表示します。
+- ランダムコメント: コメントが1件以上あるページだけを対象にします。
+- 削除済みコメントや削除済み親コメントの返信はRPC側で除外されます。
 
 ## 削除方式
 
-投稿者本人の削除は、行を物理削除せず、`page_key` を `deleted:{commentId}` へ移動して元ページから非表示にします。
+現在の投稿者削除は、`deleted_at` を設定するソフトデリートです。
 
+- `page_key` は削除時にも変更しません。
+- 削除済みコメントは通常表示、検索、最新コメント、ランダムコメントから除外します。
+- 削除済み親コメントの返信も通常表示から除外します。
+
+過去の試作段階では `page_key = deleted:{commentId}` 方式を使っていましたが、現在は使用していません。
