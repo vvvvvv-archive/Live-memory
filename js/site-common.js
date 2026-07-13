@@ -1,5 +1,34 @@
 (function () {
   const SITE_NAME = "ｖｖｖｖｖｖ　LIVE MEMORY";
+  const DEFAULT_DESCRIPTION = "V6、20th Century、Coming Century、そして6人それぞれの活動に関する記憶を未来へ残すための非公式ファンアーカイブ";
+  const DEFAULT_OGP_IMAGE = "https://vvvvvv-archive.github.io/Live-memory/assets/images/ogp.png";
+
+  function setMeta(selector, attribute, value) {
+    const element = document.head.querySelector(selector);
+    if (element) {
+      element.setAttribute(attribute, value);
+    }
+  }
+
+  function setPageMeta({ title, description, url } = {}) {
+    const pageTitle = title || document.title || SITE_NAME;
+    const pageDescription = description || DEFAULT_DESCRIPTION;
+    const pageUrl = url || location.href;
+
+    setMeta('meta[name="description"]', "content", pageDescription);
+    setMeta('meta[property="og:title"]', "content", pageTitle);
+    setMeta('meta[property="og:description"]', "content", pageDescription);
+    setMeta('meta[property="og:url"]', "content", pageUrl);
+    setMeta('meta[property="og:image"]', "content", DEFAULT_OGP_IMAGE);
+    setMeta('meta[name="twitter:title"]', "content", pageTitle);
+    setMeta('meta[name="twitter:description"]', "content", pageDescription);
+    setMeta('meta[name="twitter:image"]', "content", DEFAULT_OGP_IMAGE);
+  }
+
+  function setDocumentTitle(title) {
+    document.title = title;
+    setPageMeta({ title });
+  }
 
   function enhanceFooter() {
     document.querySelectorAll("footer").forEach(footer => {
@@ -21,7 +50,7 @@
     const safeTitle = title || "ページを表示できませんでした";
     const safeMessage = message || "指定されたページ情報が見つからないか、読み込みに失敗しました。";
 
-    document.title = `${safeTitle} | ${SITE_NAME}`;
+    setDocumentTitle(`${safeTitle} | ${SITE_NAME}`);
     main.innerHTML = `
       <section class="lead-card error-card">
         <h1>${safeTitle}</h1>
@@ -44,6 +73,8 @@
 
   window.SiteCommon = {
     enhanceFooter,
+    setPageMeta,
+    setDocumentTitle,
     showPageError,
     handleError
   };
@@ -53,6 +84,7 @@
   } else {
     enhanceFooter();
   }
+  setPageMeta();
 
   window.addEventListener("unhandledrejection", event => {
     event.preventDefault();
