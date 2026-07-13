@@ -395,6 +395,22 @@
   function uniqueResults(results) {
     const byHref = new Map();
 
+    function mergeSearchFields(target = {}, source = {}) {
+      const merged = { ...target };
+
+      Object.entries(source || {}).forEach(([key, value]) => {
+        const currentValues = Array.isArray(merged[key])
+          ? merged[key]
+          : (merged[key] ? [merged[key]] : []);
+        const nextValues = Array.isArray(value)
+          ? value
+          : (value ? [value] : []);
+        merged[key] = [...new Set([...currentValues, ...nextValues].filter(Boolean))];
+      });
+
+      return merged;
+    }
+
     results.forEach(result => {
       const key = result.href || `${result.title}:${result.subtitle}`;
       const existing = byHref.get(key);
@@ -411,11 +427,13 @@
       if (preferNext) {
         byHref.set(key, {
           ...result,
-          memoryText: [nextText, existingText].filter(Boolean).join(" ")
+          memoryText: [nextText, existingText].filter(Boolean).join(" "),
+          searchFields: mergeSearchFields(result.searchFields, existing.searchFields)
         });
       } else if (nextText && !existingText.includes(nextText)) {
         existing.memoryText = [existingText, nextText].filter(Boolean).join(" ");
         existing.searchText = [existing.searchText, result.searchText].filter(Boolean).join(" ");
+        existing.searchFields = mergeSearchFields(existing.searchFields, result.searchFields);
       }
     });
 
@@ -649,11 +667,80 @@
     };
   }
 
+  function ensureMemberFilterContainer(input) {
+    const searchCard = input?.closest(".search-card");
+
+    if (!searchCard) {
+      return null;
+    }
+
+    let container = searchCard.querySelector("[data-search-member-filter]");
+
+    if (!container) {
+      container = document.createElement("div");
+      container.dataset.searchMemberFilter = "true";
+      input.insertAdjacentElement("afterend", container);
+    }
+
+    return container;
+  }
+
+  function syncSearchUrl(input, memberFilter) {
+    const url = new URL(location.href);
+    const query = input.value.trim();
+    const memberIds = memberFilter.selectedIds();
+
+    if (query) {
+      url.searchParams.set("q", query);
+    } else {
+      url.searchParams.delete("q");
+    }
+
+    if (memberIds.length) {
+      url.searchParams.set("members", memberIds.join(","));
+    } else {
+      url.searchParams.delete("members");
+    }
+
+    history.replaceState(null, "", `${url.pathname}${url.search}${url.hash}`);
+  }
+
+  function bindMemberFilteredResults(input, container, results, options = {}) {
+    const memberFilter = createMemberFilter(options.filterContainer || ensureMemberFilterContainer(input));
+    const params = new URLSearchParams(location.search);
+
+    if (options.restoreFromUrl !== false) {
+      input.value = params.get("q") || input.value || "";
+      memberFilter.setSelectedIds((params.get("members") || "").split(",").filter(Boolean));
+    }
+
+    function render() {
+      if (options.syncUrl !== false) {
+        syncSearchUrl(input, memberFilter);
+      }
+
+      MemorySearch.renderResults(container, results, input.value, {
+        selectedMemberIds: memberFilter.selectedIds()
+      });
+    }
+
+    input.addEventListener("input", render);
+    memberFilter.onChange(render);
+    render();
+    input.dispatchEvent(new Event("input"));
+
+    return {
+      memberFilter,
+      render
+    };
+  }
+
   window.MemorySearch = {
     bindCardFilter,
     renderResults,
     loadMemoryResults,
     createMemberFilter,
+    bindMemberFilteredResults,
     isMemoryInGroup,
     isMemoryInLive,
     isMemoryInSection,

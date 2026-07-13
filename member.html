@@ -16,7 +16,7 @@
   <meta name="twitter:title" content="MEMBER | v v v v v v LIVE MEMORY">
   <meta name="twitter:description" content="V6、20th Century、Coming Century、そして6人それぞれの活動に関する記憶を未来へ残すための非公式ファンアーカイブ">
   <meta name="twitter:image" content="https://vvvvvv-archive.github.io/Live-memory/assets/images/ogp.png">
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/style.css?v=20260713-member-filter-all">
 </head>
 
 <body>
@@ -68,7 +68,7 @@
   <script src="js/live-registry.js"></script>
   <script src="js/comment-backend-config.js"></script>
   <script src="js/comment-data.js?v=20260713-rpc-stage2"></script>
-  <script src="js/search.js"></script>
+  <script src="js/search.js?v=20260713-member-filter-all"></script>
   <script>
     const params = new URLSearchParams(window.location.search);
     const memberId = params.get("member");
@@ -185,9 +185,7 @@
 
       const input = document.getElementById("member-search");
       const container = document.getElementById("member-search-results");
-      input.addEventListener("input", () => {
-        MemorySearch.renderResults(container, searchResults, input.value);
-      });
+      MemorySearch.bindMemberFilteredResults(input, container, searchResults);
     }
 
     init();
