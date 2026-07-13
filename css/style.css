@@ -90,6 +90,46 @@ main {
   font-size: 1rem;
 }
 
+.search-member-filter {
+  display: grid;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.search-member-filter-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  color: var(--sub);
+  font-size: .86rem;
+}
+
+.search-member-clear {
+  min-height: 32px;
+  padding: 5px 10px;
+  color: var(--accent);
+  font: inherit;
+  font-size: .82rem;
+  background: transparent;
+  border: 1px solid #d5dfeb;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.search-member-clear:hover,
+.search-member-clear:focus {
+  background: var(--accent-soft);
+}
+
+.search-member-clear[hidden] {
+  display: none;
+}
+
+.search-member-tag {
+  min-height: 38px;
+}
+
 .lead-card {
   padding: 30px;
   margin-bottom: 36px;

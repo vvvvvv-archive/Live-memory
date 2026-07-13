@@ -10,6 +10,15 @@
     group: "グループ"
   };
 
+  const MEMBER_FILTERS = [
+    { id: "sakamoto", name: "坂本昌行", tag: "#坂本昌行" },
+    { id: "nagano", name: "長野博", tag: "#長野博" },
+    { id: "inohara", name: "井ノ原快彦", tag: "#井ノ原快彦" },
+    { id: "morita", name: "森田剛", tag: "#森田剛" },
+    { id: "miyake", name: "三宅健", tag: "#三宅健" },
+    { id: "okada", name: "岡田准一", tag: "#岡田准一" }
+  ];
+
   function normalizeText(value) {
     return String(value || "")
       .normalize("NFKC")
@@ -101,6 +110,28 @@
       .map(name => `#${name}`);
   }
 
+  function selectedMemberTags(selectedMemberIds = []) {
+    const ids = new Set(selectedMemberIds);
+    return MEMBER_FILTERS
+      .filter(member => ids.has(member.id))
+      .map(member => member.tag);
+  }
+
+  function formalMemberTags(result) {
+    return fieldValues(result, "member");
+  }
+
+  function matchesMemberFilter(result, selectedMemberIds = []) {
+    if (!selectedMemberIds.length) {
+      return true;
+    }
+
+    const selectedTags = selectedMemberTags(selectedMemberIds);
+    const resultTags = formalMemberTags(result);
+
+    return selectedTags.some(tag => resultTags.includes(tag));
+  }
+
   function matchBuckets(result) {
     const parts = splitSubtitle(result.subtitle);
     const isSongPage = String(result.href || "").includes("song.html")
@@ -185,17 +216,26 @@
     ];
   }
 
-  function scoreSearchResult(result, query) {
+  function scoreSearchResult(result, query, options = {}) {
     const words = queryWords(query);
+    const selectedMemberIds = options.selectedMemberIds || [];
 
-    if (!words.length || !matchesQuery(searchableText(result), query)) {
+    if (!matchesMemberFilter(result, selectedMemberIds)) {
+      return { matched: false, score: 0, label: "" };
+    }
+
+    if (words.length && !matchesQuery(searchableText(result), query)) {
+      return { matched: false, score: 0, label: "" };
+    }
+
+    if (!words.length && !selectedMemberIds.length) {
       return { matched: false, score: 0, label: "" };
     }
 
     const buckets = matchBuckets(result);
-    let total = 0;
-    let bestLabel = "";
-    let bestScore = 0;
+    let total = selectedMemberIds.length ? 240 : 0;
+    let bestLabel = selectedMemberIds.length ? "メンバー名タグ一致" : "";
+    let bestScore = total;
 
     words.forEach(word => {
       const bucket = buckets.find(item => textIncludes(item.values, word));
@@ -221,11 +261,11 @@
     };
   }
 
-  function rankedResults(results, query) {
+  function rankedResults(results, query, options = {}) {
     return uniqueResults(results)
       .map(result => ({
         ...result,
-        matchInfo: scoreSearchResult(result, query)
+        matchInfo: scoreSearchResult(result, query, options)
       }))
       .filter(result => result.matchInfo.matched)
       .sort((a, b) => {
@@ -404,14 +444,16 @@
     applyFilter();
   }
 
-  function renderResults(container, results, query) {
-    if (!query) {
+  function renderResults(container, results, query, options = {}) {
+    const selectedMemberIds = options.selectedMemberIds || [];
+
+    if (!query && !selectedMemberIds.length) {
       container.hidden = true;
       container.innerHTML = "";
       return;
     }
 
-    const matched = rankedResults(results, query);
+    const matched = rankedResults(results, query, { selectedMemberIds });
     container.hidden = false;
 
     if (matched.length === 0) {
@@ -525,10 +567,93 @@
       && parts[3] === performanceId;
   }
 
+  function createMemberFilter(container) {
+    const selected = new Set();
+    const listeners = new Set();
+
+    if (!container) {
+      return {
+        selectedIds: () => [],
+        setSelectedIds: () => {},
+        onChange: () => {}
+      };
+    }
+
+    container.className = "search-member-filter";
+    container.innerHTML = `
+      <div class="search-member-filter-header">
+        <span>メンバータグで絞り込む</span>
+        <button type="button" class="search-member-clear">すべて解除</button>
+      </div>
+      <div class="prototype-member-tag-list">
+        ${MEMBER_FILTERS.map(member => `
+          <button type="button" class="prototype-member-tag search-member-tag" data-search-member-id="${escapeHtml(member.id)}" aria-pressed="false">
+            ${escapeHtml(member.tag)}
+          </button>
+        `).join("")}
+      </div>
+    `;
+
+    const buttons = [...container.querySelectorAll("[data-search-member-id]")];
+    const clearButton = container.querySelector(".search-member-clear");
+
+    function updateButtons() {
+      buttons.forEach(button => {
+        const isSelected = selected.has(button.dataset.searchMemberId);
+        button.classList.toggle("is-selected", isSelected);
+        button.setAttribute("aria-pressed", String(isSelected));
+      });
+      if (clearButton) {
+        clearButton.hidden = selected.size === 0;
+      }
+    }
+
+    function emitChange() {
+      updateButtons();
+      listeners.forEach(listener => listener());
+    }
+
+    buttons.forEach(button => {
+      button.addEventListener("click", () => {
+        const id = button.dataset.searchMemberId;
+        if (selected.has(id)) {
+          selected.delete(id);
+        } else {
+          selected.add(id);
+        }
+        emitChange();
+      });
+    });
+
+    if (clearButton) {
+      clearButton.addEventListener("click", () => {
+        selected.clear();
+        emitChange();
+      });
+    }
+
+    updateButtons();
+
+    return {
+      selectedIds: () => [...selected],
+      setSelectedIds(ids = []) {
+        selected.clear();
+        ids
+          .filter(id => MEMBER_FILTERS.some(member => member.id === id))
+          .forEach(id => selected.add(id));
+        updateButtons();
+      },
+      onChange(listener) {
+        listeners.add(listener);
+      }
+    };
+  }
+
   window.MemorySearch = {
     bindCardFilter,
     renderResults,
     loadMemoryResults,
+    createMemberFilter,
     isMemoryInGroup,
     isMemoryInLive,
     isMemoryInSection,
