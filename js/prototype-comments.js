@@ -350,35 +350,24 @@
     });
   }
 
-  function backendLabel() {
-    return remoteEnabled() ? "共有コメント試験中" : "端末内だけの試作中";
-  }
-
   async function initPrototype(root) {
     const pageKey = root.dataset.pageKey || location.pathname;
     const authorToken = getAuthorToken();
     const form = root.querySelector("[data-comment-form]");
     const status = root.querySelector("[data-comment-status]");
-    const mode = root.querySelector("[data-comment-mode]");
     let comments = [];
 
     function setStatus(message) {
       status.textContent = message || "";
     }
 
-    function setMode() {
-      if (mode) mode.textContent = backendLabel();
-    }
-
     async function refresh() {
       try {
         comments = remoteEnabled() ? await loadRemoteComments(pageKey) : loadLocalComments(pageKey);
         renderList(root, comments, authorToken);
-        setMode();
       } catch (error) {
         console.error(error);
         setStatus("共有コメントの読み込みに失敗しました。設定を確認してください。");
-        if (mode) mode.textContent = "共有コメントを読み込めません";
         comments = remoteEnabled() ? [] : loadLocalComments(pageKey);
         renderList(root, comments, authorToken);
       }
@@ -545,7 +534,6 @@
       }
     });
 
-    setMode();
     await refresh();
   }
 
@@ -553,10 +541,6 @@
     return `
       <div class="prototype-comment-embed">
         <div class="prototype-comment-shell" data-comment-prototype data-page-key="${escapeHtml(pageKey)}">
-          <div class="prototype-comment-intro">
-            <p>ログイン不要で気軽に思い出を残せます。</p>
-            <p class="prototype-comment-mode" data-comment-mode></p>
-          </div>
           <form class="prototype-comment-form" data-comment-form>
             <label>
               <span>ニックネーム（任意）</span>

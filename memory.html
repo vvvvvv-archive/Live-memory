@@ -19,7 +19,6 @@
     <section class="section-block">
       <div class="section-heading">
         <h2>思い出</h2>
-        <p id="memory-description"></p>
       </div>
 
       <div id="giscus-container"></div>
@@ -30,7 +29,7 @@
   <script src="js/site-common.js"></script>
   <script src="js/comment-tools.js?v=20260713-rpc-stage2"></script>
   <script src="js/comment-backend-config.js"></script>
-  <script src="js/prototype-comments.js?v=20260713-rpc-stage2"></script>
+  <script src="js/prototype-comments.js?v=20260713-comment-ui-cleanup"></script>
   <script>
     const params = new URLSearchParams(location.search);
     const groupId = params.get("group");
@@ -91,9 +90,6 @@
       document.getElementById("memory-title").textContent = typeLabel;
       document.getElementById("performance-venue").textContent =
         `${performance.date} ${performance.time} [${performance.area}] ${performance.venue}`;
-      document.getElementById("memory-description").textContent =
-        `この公演の${typeLabel}について思い出を記録できます。`;
-
       const memoryId = `${type}:${groupId}:${liveId}:${performanceId}`;
       appendGiscus(document.getElementById("giscus-container"), memoryId);
     }

@@ -34,7 +34,7 @@
   <script src="js/comment-data.js?v=20260713-rpc-stage2"></script>
   <script src="js/search.js"></script>
   <script src="js/comment-tools.js?v=20260713-rpc-stage2"></script>
-  <script src="js/prototype-comments.js?v=20260713-rpc-stage2"></script>
+  <script src="js/prototype-comments.js?v=20260713-comment-ui-cleanup"></script>
   <script>
     const params = new URLSearchParams(window.location.search);
     const groupId = params.get("group");
@@ -88,7 +88,6 @@
       block.innerHTML = `
         <div class="section-heading">
           <h2>${heading}</h2>
-          <p>${description}</p>
         </div>
         <div class="giscus-container"></div>
       `;
