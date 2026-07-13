@@ -2,7 +2,7 @@
   const STORAGE_PREFIX = "vvvvvv-comment-prototype:";
   const AUTHOR_TOKEN_KEY = `${STORAGE_PREFIX}author-token`;
   const LAST_POST_KEY = `${STORAGE_PREFIX}last-post-at`;
-  const REACTIONS = ["😊", "😍", "😭", "👏", "🔥"];
+  const REACTIONS = ["❤️", "😂", "😭", "🔥", "💯"];
   const MEMBER_TAGS = ["#坂本昌行", "#長野博", "#井ノ原快彦", "#森田剛", "#三宅健", "#岡田准一"];
   const MAX_BODY_LENGTH = 500;
   const MAX_NICKNAME_LENGTH = 24;
