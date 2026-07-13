@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Memories | ｖｖｖｖｖｖ LIVE MEMORY</title>
+  <meta name="description" content="このブラウザから投稿した思い出を確認できます。">
+  <meta property="og:site_name" content="ｖｖｖｖｖｖ LIVE MEMORY">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="My Memories | ｖｖｖｖｖｖ LIVE MEMORY">
+  <meta property="og:description" content="このブラウザから投稿した思い出を確認できます。">
+  <meta property="og:url" content="https://vvvvvv-archive.github.io/Live-memory/my-memories.html">
+  <meta property="og:image" content="https://vvvvvv-archive.github.io/Live-memory/assets/images/ogp.png">
+  <meta property="og:image:alt" content="ｖｖｖｖｖｖ LIVE MEMORY">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="My Memories | ｖｖｖｖｖｖ LIVE MEMORY">
+  <meta name="twitter:description" content="このブラウザから投稿した思い出を確認できます。">
+  <meta name="twitter:image" content="https://vvvvvv-archive.github.io/Live-memory/assets/images/ogp.png">
+
+  <link rel="stylesheet" href="css/style.css?v=20260714-my-memories">
+</head>
+
+<body>
+  <main>
+    <nav class="breadcrumb">
+      <a href="index.html">HOME</a> &gt; My Memories
+    </nav>
+
+    <section class="lead-card my-memories-lead">
+      <h1 class="page-title">My Memories</h1>
+      <p class="lead-subtitle">自分の思い出</p>
+      <p>このブラウザから投稿した思い出を確認できます。</p>
+      <p class="small-note">
+        編集・削除は投稿時と同じブラウザでのみ行えます。別の端末・別のブラウザでは編集・削除できません。
+        ブラウザデータを削除した場合や、シークレット／プライベートブラウズで投稿した場合は、過去の投稿を表示できません。
+      </p>
+    </section>
+
+    <section class="section-block my-memories-section">
+      <div class="section-heading">
+        <h2>自分の思い出</h2>
+        <p id="my-memories-count">読み込み中です。</p>
+      </div>
+
+      <div id="my-memories-list" class="my-memories-list" aria-live="polite">
+        <div class="new-moments-empty">
+          <p>自分の思い出を読み込んでいます。</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>ｖｖｖｖｖｖ LIVE MEMORY</footer>
+  <script src="js/site-common.js?v=20260713-ogp"></script>
+  <script src="js/comment-backend-config.js"></script>
+  <script src="js/comment-data.js?v=20260714-my-memories"></script>
+  <script src="js/my-memories.js?v=20260714-my-memories"></script>
+</body>
+</html>

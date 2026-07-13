@@ -327,6 +327,10 @@ main {
   padding: 28px;
 }
 
+.memory-link-card p {
+  margin-top: 0;
+}
+
 .button {
   display: inline-block;
   margin-top: 10px;
@@ -450,6 +454,81 @@ main {
 
 .new-moments-empty p {
   margin: 0;
+}
+
+.new-moments-empty p + p {
+  margin-top: 8px;
+}
+
+.my-memories-lead .lead-subtitle {
+  margin: 4px 0 12px;
+  color: var(--accent);
+  font-weight: 800;
+}
+
+.my-memories-lead .page-title {
+  word-break: keep-all;
+}
+
+.my-memories-list {
+  display: grid;
+  gap: 14px;
+}
+
+.my-memory-card {
+  color: inherit;
+}
+
+.my-memory-card-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 4px;
+}
+
+.my-memory-reply-label {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  padding: 2px 8px;
+  color: #4f5f7a;
+  font-size: .76rem;
+  font-weight: 700;
+  background: #eef2f7;
+  border: 1px solid #d5dfeb;
+  border-radius: 999px;
+}
+
+.my-memory-date {
+  display: inline-block;
+  margin: 4px 0 10px;
+  color: var(--sub);
+  font-size: .82rem;
+}
+
+.my-memory-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 12px;
+}
+
+.my-memory-tags span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 26px;
+  padding: 3px 9px;
+  color: #3f5f85;
+  font-size: .78rem;
+  font-weight: 700;
+  background: #eef5ee;
+  border: 1px solid #b8d6bd;
+  border-radius: 999px;
+}
+
+.my-memories-empty .button {
+  margin-top: 14px;
 }
 
 .prototype-comment-shell {

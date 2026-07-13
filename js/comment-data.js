@@ -1,5 +1,8 @@
 (function () {
+  const AUTHOR_TOKEN_KEY = "vvvvvv-comment-prototype:author-token";
+
   let supabaseItemsCache = null;
+  let ownSupabaseItemsCache = null;
   let liveCache = new Map();
 
   const PAGE_TYPE_LABELS = {
@@ -22,15 +25,29 @@
     return backendConfig().supabaseUrl.replace(/\/$/, "");
   }
 
-  async function supabaseRequest(path, { method = "GET", body = null } = {}) {
+  function storedAuthorToken() {
+    try {
+      return localStorage.getItem(AUTHOR_TOKEN_KEY) || "";
+    } catch (error) {
+      return "";
+    }
+  }
+
+  async function supabaseRequest(path, { method = "GET", body = null, authorToken = "" } = {}) {
     const config = backendConfig();
+    const headers = {
+      apikey: config.supabaseAnonKey,
+      Authorization: `Bearer ${config.supabaseAnonKey}`,
+      "Content-Type": "application/json"
+    };
+
+    if (authorToken) {
+      headers["x-author-token"] = authorToken;
+    }
+
     const response = await fetch(`${baseUrl()}${path}`, {
       method,
-      headers: {
-        apikey: config.supabaseAnonKey,
-        Authorization: `Bearer ${config.supabaseAnonKey}`,
-        "Content-Type": "application/json"
-      },
+      headers,
       body: body ? JSON.stringify(body) : null
     });
 
@@ -41,10 +58,11 @@
     return response.json();
   }
 
-  async function supabaseRpc(functionName, args = {}) {
+  async function supabaseRpc(functionName, args = {}, options = {}) {
     return supabaseRequest(`/rest/v1/rpc/${functionName}`, {
       method: "POST",
-      body: args
+      body: args,
+      authorToken: options.authorToken || ""
     });
   }
 
@@ -179,17 +197,23 @@
     const context = contextFromMemoryId(memoryId, live);
     const tags = Array.isArray(row.tags) ? row.tags : [];
     const memoryText = String(row.body || "").trim();
+    const href = hrefFromMemoryId(memoryId);
 
     return {
       title: live?.title || "思い出",
       subtitle: [live?.title, context].filter(Boolean).join(" / "),
-      href: hrefFromMemoryId(memoryId),
+      href,
       memoryId,
+      validTarget: Boolean(live && href),
       pageType,
       pageTypeLabel: PAGE_TYPE_LABELS[pageType],
       memoryText,
       createdAt: row.created_at,
       updatedAt: row.updated_at || row.created_at,
+      nickname: row.nickname || "",
+      tags,
+      isReply: Boolean(row.is_reply || row.parent_id),
+      reactions: row.reactions || {},
       commentCount: 1,
       isMemoryResult: true,
       source: "supabase",
@@ -232,12 +256,38 @@
     return supabaseItemsCache;
   }
 
+  async function loadOwnSupabaseMemoryItems() {
+    if (!enabled()) return { items: [], hasAuthorToken: false };
+
+    const authorToken = storedAuthorToken();
+
+    if (!authorToken) {
+      return { items: [], hasAuthorToken: false };
+    }
+
+    if (!ownSupabaseItemsCache) {
+      ownSupabaseItemsCache = (async () => {
+        const rows = await supabaseRpc("get_own_comments", {}, { authorToken });
+        const items = await Promise.all(rows.map(rowToMemoryItem));
+        return items.filter(item => item?.href && item.validTarget && item.memoryText);
+      })();
+    }
+
+    return {
+      items: await ownSupabaseItemsCache,
+      hasAuthorToken: true
+    };
+  }
+
   function clearCache() {
     supabaseItemsCache = null;
+    ownSupabaseItemsCache = null;
   }
 
   window.CommentData = {
     loadSupabaseMemoryItems,
+    loadOwnSupabaseMemoryItems,
+    hasStoredAuthorToken: () => Boolean(storedAuthorToken()),
     clearCache
   };
 })();
