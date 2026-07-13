@@ -94,10 +94,11 @@ function createMemberTagTools() {
 }
 
 function createPostManagementLink() {
-  const wrapper = document.createElement("p");
+  const wrapper = document.createElement("div");
   wrapper.className = "post-management-link";
   wrapper.innerHTML = `
-    <a href="contact.html">投稿の編集・削除について</a>
+    <p>投稿の編集・削除は、投稿時と同じブラウザでのみ行えます。別の端末・別のブラウザでは編集・削除できません。ブラウザデータを削除した場合や、シークレット／プライベートブラウズで投稿した場合は、編集・削除できなくなることがあります。</p>
+    <p><a href="contact.html">投稿の編集・削除について</a></p>
   `;
   return wrapper;
 }

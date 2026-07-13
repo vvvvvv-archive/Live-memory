@@ -744,6 +744,17 @@ main {
 .post-management-link {
   margin: 14px 0 0;
   font-size: .84rem;
+  line-height: 1.7;
+  color: var(--muted);
+  text-align: left;
+}
+
+.post-management-link p {
+  margin: 0;
+}
+
+.post-management-link p + p {
+  margin-top: 4px;
   text-align: right;
 }
 
