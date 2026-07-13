@@ -98,7 +98,7 @@ function createPostManagementLink() {
   wrapper.className = "post-management-link";
   wrapper.innerHTML = `
     <p>投稿の編集・削除は、投稿時と同じブラウザでのみ行えます。別の端末・別のブラウザでは編集・削除できません。ブラウザデータを削除した場合や、シークレット／プライベートブラウズで投稿した場合は、編集・削除できなくなることがあります。</p>
-    <p><a href="contact.html">投稿の編集・削除について</a></p>
+    <p>ご自身で削除できなくなった場合は、<a href="contact.html">お問い合わせフォーム</a>から削除をご依頼ください。</p>
   `;
   return wrapper;
 }
