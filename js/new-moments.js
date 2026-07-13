@@ -97,7 +97,8 @@
   function renderMoment(item) {
     const { liveName, context } = momentDetails(item);
     const quote = excerpt(item.memoryText || item.searchFields?.comment?.[0] || "");
-    const time = relativeTime(item.updatedAt);
+    const postedAt = item.createdAt || item.updatedAt;
+    const time = relativeTime(postedAt);
 
     return `
       <a class="new-moment-card" href="${escapeHtml(item.href)}">
@@ -109,7 +110,7 @@
             <span class="new-moment-label">【${escapeHtml(pageTypeLabel(item))}】</span>
             ${context ? `<span class="new-moment-context">${escapeHtml(context)}</span>` : ""}
           </p>
-          ${time ? `<time datetime="${escapeHtml(item.updatedAt)}">${escapeHtml(time)}</time>` : ""}
+          ${time ? `<time datetime="${escapeHtml(postedAt)}">${escapeHtml(time)}</time>` : ""}
         </div>
       </a>
     `;
@@ -127,8 +128,8 @@
         ? await window.CommentData.loadSupabaseMemoryItems()
         : [];
       const latest = items
-        .filter(item => item.href && item.updatedAt && (item.memoryText || item.searchFields?.comment?.length))
-        .sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt))
+        .filter(item => item.href && (item.createdAt || item.updatedAt) && (item.memoryText || item.searchFields?.comment?.length))
+        .sort((a, b) => new Date(b.createdAt || b.updatedAt) - new Date(a.createdAt || a.updatedAt))
         .slice(0, MAX_NEW_MOMENTS);
 
       if (!latest.length) {

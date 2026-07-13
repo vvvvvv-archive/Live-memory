@@ -106,17 +106,33 @@
       }));
   }
 
-  function reactionCount(comment, emoji) {
-    return (comment.reactions?.[emoji] || []).length;
+  function reactionInfo(comment, emoji, authorToken) {
+    const value = comment.reactions?.[emoji];
+
+    if (Array.isArray(value)) {
+      return {
+        count: value.length,
+        active: value.includes(authorToken)
+      };
+    }
+
+    if (value && typeof value === "object") {
+      return {
+        count: Number(value.count || 0),
+        active: Boolean(value.reacted)
+      };
+    }
+
+    return { count: 0, active: false };
   }
 
   function renderReactionButtons(comment, authorToken) {
     return REACTIONS.map(emoji => {
-      const active = (comment.reactions?.[emoji] || []).includes(authorToken);
+      const reaction = reactionInfo(comment, emoji, authorToken);
       return `
-        <button type="button" class="prototype-reaction${active ? " is-active" : ""}" data-action="react" data-id="${comment.id}" data-emoji="${emoji}">
+        <button type="button" class="prototype-reaction${reaction.active ? " is-active" : ""}" data-action="react" data-id="${comment.id}" data-emoji="${emoji}">
           <span>${emoji}</span>
-          <span>${reactionCount(comment, emoji)}</span>
+          <span>${reaction.count}</span>
         </button>
       `;
     }).join("");
@@ -134,7 +150,7 @@
   }
 
   function renderComment(comment, authorToken, isReply = false) {
-    const owned = comment.authorToken === authorToken;
+    const owned = comment.owned ?? comment.authorToken === authorToken;
     return `
       <article class="prototype-comment${isReply ? " is-reply" : ""}" data-comment-id="${comment.id}">
         <div class="prototype-comment-header">
@@ -233,6 +249,14 @@
     return response.json();
   }
 
+  async function supabaseRpc(functionName, args = {}, { authorToken = "" } = {}) {
+    return supabaseRequest(`/rest/v1/rpc/${functionName}`, {
+      method: "POST",
+      authorToken,
+      body: args
+    });
+  }
+
   function loadLocalComments(pageKey) {
     try {
       return JSON.parse(localStorage.getItem(storageKey(pageKey)) || "[]");
@@ -245,33 +269,23 @@
     localStorage.setItem(storageKey(pageKey), JSON.stringify(comments));
   }
 
-  function rowToComment(row, reactionMap) {
+  function rowToComment(row) {
     return {
       id: row.id,
       parentId: row.parent_id,
       nickname: row.nickname,
       body: row.body,
       tags: row.tags || [],
-      authorToken: row.author_token,
+      owned: Boolean(row.owned),
       createdAt: row.created_at,
       updatedAt: row.updated_at,
-      reactions: reactionMap[row.id] || {},
+      reactions: row.reactions || {},
       replies: []
     };
   }
 
-  function buildReactionMap(rows) {
-    return rows.reduce((map, row) => {
-      map[row.comment_id] ||= {};
-      map[row.comment_id][row.emoji] ||= [];
-      map[row.comment_id][row.emoji].push(row.author_token);
-      return map;
-    }, {});
-  }
-
-  function buildCommentTree(rows, reactionRows) {
-    const reactionMap = buildReactionMap(reactionRows);
-    const comments = rows.map(row => rowToComment(row, reactionMap));
+  function buildCommentTree(rows) {
+    const comments = rows.map(rowToComment);
     const byId = new Map(comments.map(comment => [comment.id, comment]));
     const topLevel = [];
 
@@ -291,78 +305,48 @@
   }
 
   async function loadRemoteComments(pageKey) {
-    const encodedPageKey = encodeURIComponent(pageKey);
-    const rows = await supabaseRequest(
-      `/rest/v1/prototype_comments?page_key=eq.${encodedPageKey}&deleted_at=is.null&select=*&order=created_at.desc`
-    );
-    const ids = rows.map(row => row.id);
-    const reactionRows = ids.length
-      ? await supabaseRequest(`/rest/v1/prototype_comment_reactions?comment_id=in.(${ids.join(",")})&select=*`)
-      : [];
-    return buildCommentTree(rows, reactionRows);
+    const rows = await supabaseRpc("get_public_comments", {
+      target_page_key: pageKey
+    }, { authorToken: getAuthorToken() });
+    return buildCommentTree(rows || []);
   }
 
   async function createRemoteComment(pageKey, comment) {
-    const rows = await supabaseRequest("/rest/v1/prototype_comments", {
-      method: "POST",
-      authorToken: comment.authorToken,
-      body: {
-        page_key: pageKey,
-        parent_id: comment.parentId,
-        nickname: comment.nickname,
-        body: comment.body,
-        tags: comment.tags,
-        author_token: comment.authorToken
-      }
+    return supabaseRpc("create_public_comment", {
+      target_page_key: pageKey,
+      target_parent_id: comment.parentId,
+      input_nickname: comment.nickname,
+      input_body: comment.body,
+      input_tags: comment.tags
+    }, {
+      authorToken: comment.authorToken
     });
-    return rows?.[0];
   }
 
   async function updateRemoteComment(comment, body, authorToken) {
-    await supabaseRequest(`/rest/v1/prototype_comments?id=eq.${comment.id}&author_token=eq.${encodeURIComponent(authorToken)}`, {
-      method: "PATCH",
-      authorToken,
-      body: {
-        body: normalizeText(body),
-        author_token: authorToken,
-        updated_at: nowIso()
-      }
+    return supabaseRpc("update_own_comment", {
+      target_comment_id: comment.id,
+      input_body: normalizeText(body),
+      input_tags: comment.tags || []
+    }, {
+      authorToken
     });
   }
 
   async function deleteRemoteComment(comment, authorToken) {
-    await supabaseRequest(`/rest/v1/prototype_comments?id=eq.${comment.id}&author_token=eq.${encodeURIComponent(authorToken)}`, {
-      method: "PATCH",
-      authorToken,
-      body: {
-        page_key: `deleted:${comment.id}`,
-        body: "削除済み",
-        tags: [],
-        author_token: authorToken,
-        updated_at: nowIso()
-      }
+    return supabaseRpc("delete_own_comment", {
+      target_comment_id: comment.id
+    }, {
+      authorToken
     });
   }
 
   async function toggleRemoteReaction(comment, emoji, authorToken) {
-    const active = (comment.reactions?.[emoji] || []).includes(authorToken);
-
-    if (active) {
-      await supabaseRequest(
-        `/rest/v1/prototype_comment_reactions?comment_id=eq.${comment.id}&emoji=eq.${encodeURIComponent(emoji)}&author_token=eq.${encodeURIComponent(authorToken)}`,
-        { method: "DELETE", authorToken }
-      );
-      return;
-    }
-
-    await supabaseRequest("/rest/v1/prototype_comment_reactions", {
-      method: "POST",
-      authorToken,
-      body: {
-        comment_id: comment.id,
-        emoji,
-        author_token: authorToken
-      }
+    return supabaseRpc("toggle_comment_reaction", {
+      target_comment_id: comment.id,
+      input_emoji: emoji
+    }, {
+      authorToken
     });
   }
 
@@ -394,8 +378,8 @@
       } catch (error) {
         console.error(error);
         setStatus("共有コメントの読み込みに失敗しました。設定を確認してください。");
-        if (mode) mode.textContent = "共有コメント未接続（端末内保存）";
-        comments = loadLocalComments(pageKey);
+        if (mode) mode.textContent = "共有コメントを読み込めません";
+        comments = remoteEnabled() ? [] : loadLocalComments(pageKey);
         renderList(root, comments, authorToken);
       }
     }
@@ -523,7 +507,7 @@
           persistLocal();
         }
 
-        if (action === "edit" && target.authorToken === authorToken) {
+        if (action === "edit" && (target.owned || target.authorToken === authorToken)) {
           const body = promptForText("コメントを編集してください", target.body);
           if (body === null) return;
           const error = validatePost({ body, skipCooldown: true });
@@ -532,8 +516,8 @@
             return;
           }
           if (remoteEnabled()) {
-            await updateRemoteComment(target, body, authorToken);
-            setStatus("編集しました。");
+            const updated = await updateRemoteComment(target, body, authorToken);
+            setStatus(updated ? "編集しました。" : "編集できませんでした。");
             await refresh();
             return;
           }
@@ -543,11 +527,11 @@
           persistLocal();
         }
 
-        if (action === "delete" && target.authorToken === authorToken) {
+        if (action === "delete" && (target.owned || target.authorToken === authorToken)) {
           if (!window.confirm("このコメントを削除しますか？")) return;
           if (remoteEnabled()) {
-            await deleteRemoteComment(target, authorToken);
-            setStatus("削除しました。");
+            const deleted = await deleteRemoteComment(target, authorToken);
+            setStatus(deleted ? "削除しました。" : "削除できませんでした。");
             await refresh();
             return;
           }

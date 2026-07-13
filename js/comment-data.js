@@ -22,13 +22,16 @@
     return backendConfig().supabaseUrl.replace(/\/$/, "");
   }
 
-  async function supabaseRequest(path) {
+  async function supabaseRequest(path, { method = "GET", body = null } = {}) {
     const config = backendConfig();
     const response = await fetch(`${baseUrl()}${path}`, {
+      method,
       headers: {
         apikey: config.supabaseAnonKey,
-        Authorization: `Bearer ${config.supabaseAnonKey}`
-      }
+        Authorization: `Bearer ${config.supabaseAnonKey}`,
+        "Content-Type": "application/json"
+      },
+      body: body ? JSON.stringify(body) : null
     });
 
     if (!response.ok) {
@@ -36,6 +39,13 @@
     }
 
     return response.json();
+  }
+
+  async function supabaseRpc(functionName, args = {}) {
+    return supabaseRequest(`/rest/v1/rpc/${functionName}`, {
+      method: "POST",
+      body: args
+    });
   }
 
   async function loadJson(path) {
@@ -178,6 +188,7 @@
       pageType,
       pageTypeLabel: PAGE_TYPE_LABELS[pageType],
       memoryText,
+      createdAt: row.created_at,
       updatedAt: row.updated_at || row.created_at,
       commentCount: 1,
       isMemoryResult: true,
@@ -206,9 +217,9 @@
     if (!supabaseItemsCache) {
       supabaseItemsCache = (async () => {
         try {
-          const rows = await supabaseRequest(
-            "/rest/v1/prototype_comments?select=id,page_key,parent_id,nickname,body,tags,created_at,updated_at&deleted_at=is.null&page_key=not.like.deleted:%25&order=updated_at.desc"
-          );
+          const rows = await supabaseRpc("get_public_comments", {
+            target_page_key: null
+          });
           const items = await Promise.all(rows.map(rowToMemoryItem));
           return items.filter(item => item?.href && item.memoryText);
         } catch (error) {
