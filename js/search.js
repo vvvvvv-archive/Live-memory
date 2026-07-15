@@ -6,6 +6,7 @@
     schedule: "公演日程",
     video: "映像・円盤",
     goods: "グッズ",
+    stage: "STAGE",
     live: "ライブ",
     group: "グループ"
   };
@@ -64,7 +65,7 @@
 
     return text
       .replace(/https?:\/\/\S+/g, " ")
-      .replace(/\b(?:section|song|video-song|mc|fanservice|other|goods):[A-Za-z0-9:_\-.%]+/g, " ")
+      .replace(/\b(?:section|song|video-song|mc|fanservice|other|goods|stage):[A-Za-z0-9:_\-.%]+/g, " ")
       .replace(/\b(?:identifier|discussionTerm|pathname)\b/gi, " ")
       .replace(/\s+/g, " ")
       .trim();
@@ -349,6 +350,7 @@
     if (type === "video-song") return "video";
     if (["mc", "fanservice", "other"].includes(type)) return "schedule";
     if (type === "goods") return "goods";
+    if (type === "stage") return "stage";
 
     return "";
   }
@@ -360,6 +362,7 @@
     if (value.includes("goods.html") || value.includes("section=goods")) return "goods";
     if (value.includes("memory.html") || value.includes("performance.html") || value.includes("section=schedule")) return "schedule";
     if (value.includes("song.html") || value.includes("section=general")) return "general";
+    if (value.includes("stage.html")) return "stage";
     if (value.includes("live.html")) return "live";
     if (value.includes("group.html")) return "group";
 

@@ -96,12 +96,16 @@ function validateLive(entry) {
   if (liveKeys.has(liveKey)) addError(`${label}: duplicate live id`);
   liveKeys.add(liveKey);
 
-  addUrl(`live.html?group=${live.groupId}&live=${live.id}`, `${label} live`);
+  const isStage = String(live.type || "").toUpperCase() === "STAGE";
+  const detailPage = isStage ? "stage.html" : "live.html";
+  addUrl(`${detailPage}?group=${live.groupId}&live=${live.id}`, `${label} ${live.type}`);
 
   const sectionIds = (live.sections || []).map(section => section.id);
   assertUnique(sectionIds, `${label} sections`);
-  for (const sectionId of ["general", "schedule", "video", "goods"]) {
-    if (!sectionIds.includes(sectionId)) addWarning(`${label}: section "${sectionId}" is missing`);
+  if (!isStage) {
+    for (const sectionId of ["general", "schedule", "video", "goods"]) {
+      if (!sectionIds.includes(sectionId)) addWarning(`${label}: section "${sectionId}" is missing`);
+    }
   }
 
   const performanceIds = (live.performances || []).map(performance => performance.id);
@@ -110,7 +114,7 @@ function validateLive(entry) {
     for (const field of ["id", "date", "time", "area", "venue"]) {
       requireField(performance, field, `${label} performance`);
     }
-    if (performance.id) {
+    if (performance.id && !isStage) {
       addUrl(`performance.html?group=${live.groupId}&live=${live.id}&performance=${performance.id}`, `${label} performance ${performance.id}`);
     }
   }
@@ -120,7 +124,9 @@ function validateLive(entry) {
   for (const setlist of live.setlists || []) {
     requireField(setlist, "id", `${label} setlist`);
     if (!Array.isArray(setlist.songs) || setlist.songs.length === 0) {
-      addError(`${label} setlist ${setlist.id}: songs are required`);
+      if (!isStage) {
+        addError(`${label} setlist ${setlist.id}: songs are required`);
+      }
       continue;
     }
     const songKeys = setlist.songs.map((song, index) => songMemoryKey(song, index));
@@ -136,18 +142,20 @@ function validateLive(entry) {
     });
   }
 
-  const videoSongs = live.video?.setlist?.length
-    ? live.video.setlist
-    : (live.setlists?.find(setlist => setlist.id === "v2") || live.setlists?.[live.setlists.length - 1])?.songs || [];
-  const videoSetlistId = live.video?.setlist?.length ? "video" : (live.setlists?.find(setlist => setlist.id === "v2") || live.setlists?.[live.setlists.length - 1])?.id;
-  const videoSongKeys = videoSongs.map((song, index) => songMemoryKey(song, index));
-  assertUnique(videoSongKeys, `${label} video generated song keys`);
-  videoSongs.forEach((song, index) => {
-    addUrl(
-      `video-song.html?group=${live.groupId}&live=${live.id}&setlist=${videoSetlistId}&song=${index}&order=${song.order}`,
-      `${label} video song ${index}`
-    );
-  });
+  if (!isStage) {
+    const videoSongs = live.video?.setlist?.length
+      ? live.video.setlist
+      : (live.setlists?.find(setlist => setlist.id === "v2") || live.setlists?.[live.setlists.length - 1])?.songs || [];
+    const videoSetlistId = live.video?.setlist?.length ? "video" : (live.setlists?.find(setlist => setlist.id === "v2") || live.setlists?.[live.setlists.length - 1])?.id;
+    const videoSongKeys = videoSongs.map((song, index) => songMemoryKey(song, index));
+    assertUnique(videoSongKeys, `${label} video generated song keys`);
+    videoSongs.forEach((song, index) => {
+      addUrl(
+        `video-song.html?group=${live.groupId}&live=${live.id}&setlist=${videoSetlistId}&song=${index}&order=${song.order}`,
+        `${label} video song ${index}`
+      );
+    });
+  }
 
   const goodsIds = (live.goods || []).map(goods => goods.id);
   assertUnique(goodsIds, `${label} goods`);

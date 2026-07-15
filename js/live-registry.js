@@ -69,12 +69,18 @@
       : generalSetlist;
   }
 
+  function detailHref(groupId, live) {
+    return String(live.type || "").toUpperCase() === "STAGE"
+      ? `stage.html?group=${groupId}&live=${live.id}`
+      : `live.html?group=${groupId}&live=${live.id}`;
+  }
+
   function buildLiveSearchResults(group, live, options = {}) {
     const includeSections = options.includeSections !== false;
     const results = [{
       title: live.title,
       subtitle: `${group.name} / ${live.type} / ${live.year}`,
-      href: `live.html?group=${group.id}&live=${live.id}`,
+      href: detailHref(group.id, live),
       pageType: "live",
       searchFields: {
         group: [group.name],
@@ -84,6 +90,29 @@
       },
       searchText: `${group.name} ${live.type} ${live.year} ${live.title}`
     }];
+
+    if (String(live.type || "").toUpperCase() === "STAGE") {
+      (live.performances || []).forEach(performance => {
+        results.push({
+          title: `${performance.date} ${performance.time}`,
+          subtitle: `${live.title} / [${performance.area}] ${performance.venue}`,
+          href: `stage.html?group=${group.id}&live=${live.id}#stage-schedule`,
+          pageType: "stage",
+          searchFields: {
+            group: [group.name],
+            live: [live.title],
+            pageType: ["STAGE", "舞台", "公演日程"],
+            date: [performance.date],
+            time: [performance.time],
+            area: [performance.area],
+            venue: [performance.venue]
+          },
+          searchText: `${group.name} ${live.type} ${live.year} ${live.title} 舞台 公演日程 ${performance.date} ${performance.time} ${performance.area} ${performance.venue}`
+        });
+      });
+
+      return results;
+    }
 
     if (includeSections) {
       live.sections.forEach(section => {
@@ -194,6 +223,7 @@
     loadAllLives,
     loadGroupLives,
     buildLiveSearchResults,
+    detailHref,
     preferredGeneralSetlist,
     generalSetlists,
     preferredVideoSetlist

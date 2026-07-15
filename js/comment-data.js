@@ -9,7 +9,8 @@
     general: "総合",
     schedule: "公演日程",
     video: "映像・円盤",
-    goods: "グッズ"
+    goods: "グッズ",
+    stage: "STAGE"
   };
 
   function backendConfig() {
@@ -102,6 +103,7 @@
     if (type === "video-song") return "video";
     if (type === "goods") return "goods";
     if (["mc", "fanservice", "other"].includes(type)) return "schedule";
+    if (type === "stage") return "stage";
     return "general";
   }
 
@@ -133,6 +135,10 @@
 
     if (type === "goods") {
       return `goods.html?group=${groupId}&live=${liveId}&goods=${parts[3]}#giscus-container`;
+    }
+
+    if (type === "stage") {
+      return `stage.html?group=${groupId}&live=${liveId}#giscus-container`;
     }
 
     return "";
@@ -175,6 +181,10 @@
 
     if (type === "goods") {
       return live?.goods?.find(item => item.id === parts[3])?.name || "グッズ";
+    }
+
+    if (type === "stage") {
+      return "作品全体";
     }
 
     return "";
@@ -223,7 +233,7 @@
         live: [live?.title].filter(Boolean),
         song: pageType === "general" || pageType === "video" ? [context] : [],
         goods: pageType === "goods" ? [context] : [],
-        venue: pageType === "schedule" ? [context] : []
+        venue: pageType === "schedule" || pageType === "stage" ? [context] : []
       },
       searchText: [
         live?.title,

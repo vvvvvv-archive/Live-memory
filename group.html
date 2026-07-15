@@ -71,10 +71,10 @@
     ｖｖｖｖｖｖ　LIVE MEMORY
   </footer>
   <script src="js/site-common.js?v=20260713-ogp"></script>
-  <script src="js/live-registry.js"></script>
+  <script src="js/live-registry.js?v=20260716-stage-page"></script>
   <script src="js/comment-backend-config.js"></script>
-  <script src="js/comment-data.js?v=20260713-rpc-stage2"></script>
-  <script src="js/search.js?v=20260713-member-filter-all"></script>
+  <script src="js/comment-data.js?v=20260716-stage-page"></script>
+  <script src="js/search.js?v=20260716-stage-page"></script>
   <script>
     const params = new URLSearchParams(window.location.search);
     const groupId = params.get("id");
@@ -128,7 +128,7 @@
           const li = document.createElement("li");
           const a = document.createElement("a");
 
-          a.href = `live.html?group=${groupId}&live=${live.id}`;
+          a.href = LiveRegistry.detailHref(groupId, live);
           a.className = "live-title-link";
           a.innerHTML = formatLiveTitle(live.title);
 
@@ -188,7 +188,7 @@
       renderLives(document.getElementById("stage-list"), stageItems, groupId);
       renderLives(document.getElementById("event-list"), eventItems, groupId);
 
-      const searchResults = liveItems.flatMap(live => LiveRegistry.buildLiveSearchResults(group, live));
+      const searchResults = lives.flatMap(live => LiveRegistry.buildLiveSearchResults(group, live));
       searchResults.push(
         ...await MemorySearch.loadMemoryResults(item =>
           MemorySearch.isMemoryInGroup(item, groupId)

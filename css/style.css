@@ -249,6 +249,67 @@ main {
   font-size: .95rem;
 }
 
+.stage-schedule-accordion {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+.stage-schedule-accordion summary {
+  padding: 22px 24px;
+  color: var(--accent);
+  font-size: 1.35rem;
+  font-weight: bold;
+  cursor: pointer;
+  list-style-position: inside;
+}
+
+.stage-schedule-accordion summary:hover,
+.stage-schedule-accordion summary:focus {
+  background: var(--accent-soft);
+}
+
+.stage-schedule-body {
+  display: grid;
+  gap: 24px;
+  padding: 0 24px 24px;
+}
+
+.stage-schedule-venue {
+  padding-top: 20px;
+  border-top: 1px solid var(--line);
+}
+
+.stage-schedule-venue h3 {
+  margin: 0;
+  color: var(--accent);
+  font-size: 1.1rem;
+}
+
+.stage-schedule-venue-name {
+  margin: 4px 0 12px;
+  color: var(--text);
+  font-weight: bold;
+}
+
+.stage-schedule-list {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.stage-schedule-list li {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  color: var(--sub);
+  font-size: .95rem;
+}
+
 .individual-members-line span {
   display: block;
   white-space: nowrap;

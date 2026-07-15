@@ -215,7 +215,7 @@ function stripInternalText(value, memoryId = "") {
   return String(value || "")
     .replaceAll(memoryId, " ")
     .replace(/https?:\/\/\S+/g, " ")
-    .replace(/\b(?:section|song|video-song|mc|fanservice|other|goods):[A-Za-z0-9:_\-.%]+/g, " ")
+    .replace(/\b(?:section|song|video-song|mc|fanservice|other|goods|stage):[A-Za-z0-9:_\-.%]+/g, " ")
     .replace(/\b(?:identifier|discussionTerm|pathname)\b/gi, " ")
     .replace(/\s+/g, " ")
     .trim();

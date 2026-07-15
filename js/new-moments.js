@@ -6,6 +6,7 @@
     schedule: "公演日程",
     video: "映像・円盤",
     goods: "グッズ",
+    stage: "STAGE",
     live: "LIVE",
     group: "グループ"
   };

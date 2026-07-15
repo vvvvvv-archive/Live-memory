@@ -47,8 +47,8 @@
   </footer>
   <script src="js/site-common.js?v=20260713-ogp"></script>
   <script src="js/comment-backend-config.js"></script>
-  <script src="js/comment-data.js?v=20260713-rpc-stage2"></script>
-  <script src="js/search.js?v=20260713-member-filter-all"></script>
+  <script src="js/comment-data.js?v=20260716-stage-page"></script>
+  <script src="js/search.js?v=20260716-stage-page"></script>
   <script>
     const params = new URLSearchParams(window.location.search);
     const groupId = params.get("group");
@@ -71,6 +71,11 @@
       const groups = await loadJson("data/groups.json");
       const group = groups.find(g => g.id === groupId);
       const live = await loadJson(`data/lives/${groupId}/${liveId}.json`);
+
+      if (String(live.type || "").toUpperCase() === "STAGE") {
+        location.replace(`stage.html?group=${groupId}&live=${liveId}`);
+        return;
+      }
 
       SiteCommon.setDocumentTitle(`${live.title} | ｖｖｖｖｖｖ　LIVE MEMORY`);
 
