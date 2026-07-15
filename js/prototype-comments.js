@@ -42,6 +42,13 @@
     return String(value || "").replace(/\s+/g, " ").trim();
   }
 
+  function normalizeBody(value) {
+    return String(value || "")
+      .replace(/\r\n/g, "\n")
+      .replace(/\r/g, "\n")
+      .trim();
+  }
+
   function relativeTime(value) {
     const date = new Date(value);
     const diffSeconds = Math.max(0, Math.floor((Date.now() - date.getTime()) / 1000));
@@ -60,7 +67,7 @@
   }
 
   function validatePost({ body, skipCooldown = false }) {
-    const cleanBody = normalizeText(body);
+    const cleanBody = normalizeBody(body);
 
     if (!cleanBody) {
       return "コメント本文を入力してください。";
@@ -149,8 +156,46 @@
     `;
   }
 
-  function renderComment(comment, authorToken, isReply = false) {
+  function renderInlineMemberTagButtons(tags = []) {
+    return MEMBER_TAGS.map(tag => {
+      const selected = tags.includes(tag);
+      return `
+        <button type="button" class="prototype-member-tag${selected ? " is-selected" : ""}" data-inline-member-tag="${escapeHtml(tag)}" aria-pressed="${selected ? "true" : "false"}">
+          ${escapeHtml(tag)}
+        </button>
+      `;
+    }).join("");
+  }
+
+  function renderInlineForm(comment, mode) {
+    const isEdit = mode === "edit";
+    const body = isEdit ? comment.body : "";
+    const tags = isEdit ? (comment.tags || []) : [];
+
+    return `
+      <form class="prototype-inline-form" data-inline-form data-inline-mode="${mode}" data-id="${comment.id}">
+        <p class="prototype-inline-title">${isEdit ? "コメントを編集" : "返信を書く"}</p>
+        <textarea name="body" maxlength="500" rows="4">${escapeHtml(body)}</textarea>
+        <div class="prototype-member-tags prototype-inline-tags" aria-label="メンバー名タグ">
+          <p>必要に応じてメンバー名タグを選択できます。</p>
+          <div class="prototype-member-tag-list">
+            ${renderInlineMemberTagButtons(tags)}
+          </div>
+        </div>
+        <div class="prototype-comment-actions">
+          <p class="prototype-comment-note">500文字まで。URLは1件まで。</p>
+          <div class="prototype-inline-buttons">
+            <button class="button" type="submit">${isEdit ? "保存する" : "返信する"}</button>
+            <button type="button" class="prototype-inline-cancel" data-action="cancel-inline">キャンセル</button>
+          </div>
+        </div>
+      </form>
+    `;
+  }
+
+  function renderComment(comment, authorToken, activeComposer, isReply = false) {
     const owned = comment.owned ?? comment.authorToken === authorToken;
+    const activeMode = activeComposer?.id === comment.id ? activeComposer.mode : "";
     return `
       <article class="prototype-comment${isReply ? " is-reply" : ""}" data-comment-id="${comment.id}">
         <div class="prototype-comment-header">
@@ -164,13 +209,14 @@
           ${owned ? `<button type="button" data-action="edit" data-id="${comment.id}">編集</button>` : ""}
           ${owned ? `<button type="button" data-action="delete" data-id="${comment.id}">削除</button>` : ""}
         </div>
+        ${activeMode ? renderInlineForm(comment, activeMode) : ""}
         <div class="prototype-reactions">${renderReactionButtons(comment, authorToken)}</div>
-        ${!isReply ? `<div class="prototype-replies">${(comment.replies || []).map(reply => renderComment(reply, authorToken, true)).join("")}</div>` : ""}
+        ${!isReply ? `<div class="prototype-replies">${(comment.replies || []).map(reply => renderComment(reply, authorToken, activeComposer, true)).join("")}</div>` : ""}
       </article>
     `;
   }
 
-  function renderList(root, comments, authorToken) {
+  function renderList(root, comments, authorToken, activeComposer = null) {
     const list = root.querySelector("[data-comment-list]");
 
     if (!comments.length) {
@@ -178,7 +224,7 @@
       return;
     }
 
-    list.innerHTML = comments.map(comment => renderComment(comment, authorToken)).join("");
+    list.innerHTML = comments.map(comment => renderComment(comment, authorToken, activeComposer)).join("");
   }
 
   function renderMemberTagButtons() {
@@ -194,7 +240,7 @@
       id: window.crypto?.randomUUID ? window.crypto.randomUUID() : `comment-${Date.now()}-${Math.random()}`,
       parentId,
       nickname: normalizeText(nickname).slice(0, MAX_NICKNAME_LENGTH) || "名無しさん",
-      body: normalizeText(body),
+      body: normalizeBody(body),
       tags,
       authorToken,
       createdAt: nowIso(),
@@ -202,10 +248,6 @@
       reactions: {},
       replies: []
     };
-  }
-
-  function promptForText(title, initialValue) {
-    return window.prompt(title, initialValue);
   }
 
   function getBackendConfig() {
@@ -323,11 +365,11 @@
     });
   }
 
-  async function updateRemoteComment(comment, body, authorToken) {
+  async function updateRemoteComment(comment, body, tags, authorToken) {
     return supabaseRpc("update_own_comment", {
       target_comment_id: comment.id,
-      input_body: normalizeText(body),
-      input_tags: comment.tags || []
+      input_body: normalizeBody(body),
+      input_tags: tags || []
     }, {
       authorToken
     });
@@ -356,6 +398,7 @@
     const form = root.querySelector("[data-comment-form]");
     const status = root.querySelector("[data-comment-status]");
     let comments = [];
+    let activeComposer = null;
 
     function setStatus(message) {
       status.textContent = message || "";
@@ -364,18 +407,18 @@
     async function refresh() {
       try {
         comments = remoteEnabled() ? await loadRemoteComments(pageKey) : loadLocalComments(pageKey);
-        renderList(root, comments, authorToken);
+        renderList(root, comments, authorToken, activeComposer);
       } catch (error) {
         console.error(error);
-        setStatus("共有コメントの読み込みに失敗しました。設定を確認してください。");
+        setStatus("コメントの読み込みに失敗しました。時間をおいて再度お試しください。");
         comments = remoteEnabled() ? [] : loadLocalComments(pageKey);
-        renderList(root, comments, authorToken);
+        renderList(root, comments, authorToken, activeComposer);
       }
     }
 
     function persistLocal() {
       saveLocalComments(pageKey, comments);
-      renderList(root, comments, authorToken);
+      renderList(root, comments, authorToken, activeComposer);
     }
 
     async function persistRemoteOrLocal() {
@@ -387,13 +430,19 @@
     }
 
     function selectedTags() {
-      return [...root.querySelectorAll(".prototype-member-tag.is-selected")]
+      return [...root.querySelectorAll("[data-comment-form] .prototype-member-tag.is-selected")]
         .map(button => button.dataset.prototypeMemberTag)
         .filter(Boolean);
     }
 
+    function inlineSelectedTags(inlineForm) {
+      return [...inlineForm.querySelectorAll("[data-inline-member-tag].is-selected")]
+        .map(button => button.dataset.inlineMemberTag)
+        .filter(Boolean);
+    }
+
     function clearSelectedTags() {
-      root.querySelectorAll(".prototype-member-tag.is-selected").forEach(button => {
+      root.querySelectorAll("[data-comment-form] .prototype-member-tag.is-selected").forEach(button => {
         button.classList.remove("is-selected");
         button.setAttribute("aria-pressed", "false");
       });
@@ -426,6 +475,7 @@
         localStorage.setItem(LAST_POST_KEY, String(Date.now()));
         form.reset();
         clearSelectedTags();
+        activeComposer = null;
         setStatus("投稿しました。");
         await persistRemoteOrLocal();
       } catch (error) {
@@ -434,9 +484,92 @@
       }
     });
 
+    root.addEventListener("submit", async event => {
+      const inlineForm = event.target.closest("[data-inline-form]");
+      if (!inlineForm) return;
+
+      event.preventDefault();
+      event.stopPropagation();
+
+      const action = inlineForm.dataset.inlineMode;
+      const id = inlineForm.dataset.id;
+      const target = commentById(comments, id);
+
+      if (!target) {
+        setStatus("対象のコメントが見つかりませんでした。");
+        return;
+      }
+
+      const formData = new FormData(inlineForm);
+      const body = formData.get("body");
+      const error = validatePost({ body, skipCooldown: action === "edit" });
+
+      if (error) {
+        setStatus(error);
+        return;
+      }
+
+      try {
+        if (action === "reply") {
+          const reply = newComment({
+            nickname: "名無しさん",
+            body,
+            authorToken,
+            parentId: target.id,
+            tags: inlineSelectedTags(inlineForm)
+          });
+
+          if (remoteEnabled()) {
+            await createRemoteComment(pageKey, reply);
+            localStorage.setItem(LAST_POST_KEY, String(Date.now()));
+            activeComposer = null;
+            setStatus("返信しました。");
+            await refresh();
+            return;
+          }
+
+          target.replies ||= [];
+          target.replies.push(reply);
+          localStorage.setItem(LAST_POST_KEY, String(Date.now()));
+          activeComposer = null;
+          setStatus("返信しました。");
+          persistLocal();
+          return;
+        }
+
+        if (action === "edit" && (target.owned || target.authorToken === authorToken)) {
+          const tags = inlineSelectedTags(inlineForm);
+
+          if (remoteEnabled()) {
+            const updated = await updateRemoteComment(target, body, tags, authorToken);
+            activeComposer = updated ? null : activeComposer;
+            setStatus(updated ? "編集しました。" : "編集できませんでした。投稿時と同じブラウザか確認してください。");
+            await refresh();
+            return;
+          }
+
+          target.body = normalizeBody(body);
+          target.tags = tags;
+          target.updatedAt = nowIso();
+          activeComposer = null;
+          setStatus("編集しました。");
+          persistLocal();
+          return;
+        }
+
+        setStatus("操作できませんでした。投稿時と同じブラウザか確認してください。");
+      } catch (error) {
+        console.error(error);
+        setStatus("処理に失敗しました。少し待ってからもう一度お試しください。");
+      }
+    });
+
     root.addEventListener("click", async event => {
       const memberTagButton = event.target.closest("[data-prototype-member-tag]");
       if (memberTagButton) {
+        event.preventDefault();
+        event.stopPropagation();
+
         const isSelected = memberTagButton.classList.toggle("is-selected");
         memberTagButton.setAttribute("aria-pressed", String(isSelected));
         setStatus(
@@ -447,14 +580,38 @@
         return;
       }
 
+      const inlineTagButton = event.target.closest("[data-inline-member-tag]");
+      if (inlineTagButton) {
+        event.preventDefault();
+        event.stopPropagation();
+
+        const isSelected = inlineTagButton.classList.toggle("is-selected");
+        inlineTagButton.setAttribute("aria-pressed", String(isSelected));
+        return;
+      }
+
       const button = event.target.closest("button[data-action]");
       if (!button) return;
 
+      event.preventDefault();
+      event.stopPropagation();
+
       const action = button.dataset.action;
+
+      if (action === "cancel-inline") {
+        activeComposer = null;
+        renderList(root, comments, authorToken, activeComposer);
+        setStatus("");
+        return;
+      }
+
       const id = button.dataset.id;
       const target = commentById(comments, id);
 
-      if (!target) return;
+      if (!target) {
+        setStatus("対象のコメントが見つかりませんでした。");
+        return;
+      }
 
       try {
         if (action === "react") {
@@ -471,63 +628,40 @@
             ? target.reactions[emoji].filter(token => token !== authorToken)
             : [...target.reactions[emoji], authorToken];
           persistLocal();
+          return;
         }
 
         if (action === "reply") {
-          const body = promptForText("返信を入力してください", "");
-          if (body === null) return;
-          const error = validatePost({ body });
-          if (error) {
-            setStatus(error);
-            return;
-          }
-          const reply = newComment({ nickname: "名無しさん", body, authorToken, parentId: target.id });
-          if (remoteEnabled()) {
-            await createRemoteComment(pageKey, reply);
-            localStorage.setItem(LAST_POST_KEY, String(Date.now()));
-            setStatus("返信しました。");
-            await refresh();
-            return;
-          }
-          target.replies ||= [];
-          target.replies.push(reply);
-          localStorage.setItem(LAST_POST_KEY, String(Date.now()));
-          setStatus("返信しました。");
-          persistLocal();
+          activeComposer = { mode: "reply", id: target.id };
+          renderList(root, comments, authorToken, activeComposer);
+          root.querySelector("[data-inline-form] textarea")?.focus();
+          return;
         }
 
         if (action === "edit" && (target.owned || target.authorToken === authorToken)) {
-          const body = promptForText("コメントを編集してください", target.body);
-          if (body === null) return;
-          const error = validatePost({ body, skipCooldown: true });
-          if (error) {
-            setStatus(error);
-            return;
-          }
-          if (remoteEnabled()) {
-            const updated = await updateRemoteComment(target, body, authorToken);
-            setStatus(updated ? "編集しました。" : "編集できませんでした。");
-            await refresh();
-            return;
-          }
-          target.body = normalizeText(body);
-          target.updatedAt = nowIso();
-          setStatus("編集しました。");
-          persistLocal();
+          activeComposer = { mode: "edit", id: target.id };
+          renderList(root, comments, authorToken, activeComposer);
+          root.querySelector("[data-inline-form] textarea")?.focus();
+          return;
         }
 
         if (action === "delete" && (target.owned || target.authorToken === authorToken)) {
           if (!window.confirm("このコメントを削除しますか？")) return;
           if (remoteEnabled()) {
             const deleted = await deleteRemoteComment(target, authorToken);
-            setStatus(deleted ? "削除しました。" : "削除できませんでした。");
+            activeComposer = null;
+            setStatus(deleted ? "削除しました。" : "削除できませんでした。投稿時と同じブラウザか確認してください。");
             await refresh();
             return;
           }
           comments = removeComment(comments, id);
+          activeComposer = null;
           setStatus("削除しました。");
           persistLocal();
+          return;
         }
+
+        setStatus("操作できませんでした。投稿時と同じブラウザか確認してください。");
       } catch (error) {
         console.error(error);
         setStatus("処理に失敗しました。少し待ってからもう一度お試しください。");

@@ -680,6 +680,8 @@ main {
 .prototype-comment-body {
   margin: 0;
   white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .prototype-comment-tags {
@@ -712,9 +714,59 @@ main {
   flex-wrap: wrap;
 }
 
+.prototype-inline-form {
+  display: grid;
+  gap: 10px;
+  padding: 14px;
+  background: rgba(238,242,247,.55);
+  border: 1px solid #d5dfeb;
+  border-radius: 14px;
+}
+
+.prototype-inline-title {
+  margin: 0;
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.prototype-inline-form textarea {
+  width: 100%;
+  padding: 12px 14px;
+  color: var(--text);
+  font: inherit;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  resize: vertical;
+}
+
+.prototype-inline-tags {
+  background: rgba(255,255,255,.62);
+}
+
+.prototype-inline-buttons {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.prototype-inline-cancel {
+  min-height: 40px;
+  padding: 8px 14px;
+  color: var(--accent);
+  font: inherit;
+  font-size: .9rem;
+  background: var(--paper);
+  border: 1px solid #d5dfeb;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
 .prototype-comment-toolbar button,
 .prototype-reaction {
-  padding: 5px 9px;
+  min-height: 40px;
+  padding: 8px 12px;
   color: var(--accent);
   font: inherit;
   font-size: .82rem;
@@ -722,6 +774,7 @@ main {
   border: 1px solid #d5dfeb;
   border-radius: 999px;
   cursor: pointer;
+  touch-action: manipulation;
 }
 
 .prototype-reaction {
@@ -732,6 +785,8 @@ main {
 
 .prototype-comment-toolbar button:hover,
 .prototype-comment-toolbar button:focus,
+.prototype-inline-cancel:hover,
+.prototype-inline-cancel:focus,
 .prototype-reaction:hover,
 .prototype-reaction:focus,
 .prototype-reaction.is-active {
