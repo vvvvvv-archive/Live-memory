@@ -7,6 +7,13 @@
     "displayOrder": 2026
   },
   {
+    "groupId": "individual",
+    "liveId": "suna-no-onna-2026",
+    "memberId": "go-morita",
+    "path": "data/lives/individual/suna-no-onna-2026.json",
+    "displayOrder": 2026
+  },
+  {
     "groupId": "20th-century",
     "liveId": "utauhito-odoruhito-2026",
     "path": "data/lives/20th-century/utauhito-odoruhito-2026.json",
