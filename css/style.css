@@ -220,6 +220,25 @@ main {
   font-size: .95rem;
 }
 
+.request-link-row {
+  margin: 14px 0 30px;
+  text-align: right;
+}
+
+.request-link-row a {
+  color: var(--accent);
+  font-size: .94rem;
+  font-weight: 700;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: .22em;
+}
+
+.request-link-row a:hover,
+.request-link-row a:focus {
+  color: #4f5f7a;
+}
+
 .archive-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
