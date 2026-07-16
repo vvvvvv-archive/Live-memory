@@ -62,8 +62,8 @@
   <footer>ｖｖｖｖｖｖ　LIVE MEMORY</footer>
   <script src="js/site-common.js?v=20260713-ogp"></script>
   <script src="js/comment-backend-config.js"></script>
-  <script src="js/comment-data.js?v=20260713-rpc-stage2"></script>
-  <script src="js/search.js?v=20260713-member-filter-all"></script>
+  <script src="js/comment-data.js?v=20260717-date-format"></script>
+  <script src="js/search.js?v=20260717-date-format"></script>
   <script>
     const params = new URLSearchParams(window.location.search);
     const groupId = params.get("group");
@@ -75,24 +75,33 @@
       return response.json();
     }
 
+    function formatDisplayDate(date) {
+      return String(date || "").replace(/-/g, "/");
+    }
+
+    function formatDisplayDateTime(performance) {
+      return [formatDisplayDate(performance?.date), performance?.time].filter(Boolean).join(" ");
+    }
+
     async function init() {
       const groups = await loadJson("data/groups.json");
       const group = groups.find(g => g.id === groupId);
       const live = await loadJson(`data/lives/${groupId}/${liveId}.json`);
       const performance = live.performances.find(p => p.id === performanceId);
+      const displayDateTime = formatDisplayDateTime(performance);
 
-      SiteCommon.setDocumentTitle(`${performance.date} ${performance.time} | ${live.title} | ｖｖｖｖｖｖ　LIVE MEMORY`);
+      SiteCommon.setDocumentTitle(`${displayDateTime} | ${live.title} | ｖｖｖｖｖｖ　LIVE MEMORY`);
 
       document.getElementById("breadcrumb").innerHTML = `
         <a href="index.html">HOME</a> &gt;
         <a href="group.html?id=${group.id}">${group.name}</a> &gt;
         <a href="live.html?group=${group.id}&live=${live.id}">${live.title}</a> &gt;
         <a href="section.html?group=${group.id}&live=${live.id}&section=schedule">公演日程</a> &gt;
-        ${performance.date} ${performance.time}
+        ${displayDateTime}
       `;
 
       document.getElementById("performance-title").textContent =
-        `${performance.date} ${performance.time}`;
+        displayDateTime;
 
       document.getElementById("performance-venue").textContent =
         `[${performance.area}] ${performance.venue}${performance.performanceType ? " / " + performance.performanceType : ""}`;
@@ -119,9 +128,9 @@
         document.getElementById("other-link")
       ];
 
-      cards[0].dataset.search = `${live.title} ${performance.date} ${performance.time} ${performance.area} ${performance.venue} ${performance.performanceType || ""} MC`;
-      cards[1].dataset.search = `${live.title} ${performance.date} ${performance.time} ${performance.area} ${performance.venue} ${performance.performanceType || ""} ファンサ fanservice`;
-      cards[2].dataset.search = `${live.title} ${performance.date} ${performance.time} ${performance.area} ${performance.venue} ${performance.performanceType || ""} その他 other`;
+      cards[0].dataset.search = `${live.title} ${displayDateTime} ${performance.date} ${performance.time} ${performance.area} ${performance.venue} ${performance.performanceType || ""} MC`;
+      cards[1].dataset.search = `${live.title} ${displayDateTime} ${performance.date} ${performance.time} ${performance.area} ${performance.venue} ${performance.performanceType || ""} ファンサ fanservice`;
+      cards[2].dataset.search = `${live.title} ${displayDateTime} ${performance.date} ${performance.time} ${performance.area} ${performance.venue} ${performance.performanceType || ""} その他 other`;
 
       const input = document.getElementById("performance-search");
       const memoryResults = await MemorySearch.loadMemoryResults(item =>

@@ -29,18 +29,18 @@
       <p class="official-link" id="official-link"></p>
     </section>
 
-    <section class="section-block" id="stage-memory">
-      <div class="section-heading">
-        <h2>思い出</h2>
-      </div>
-      <div class="giscus-container" id="giscus-container"></div>
-    </section>
-
     <section class="section-block" id="stage-schedule">
       <details class="stage-schedule-accordion">
         <summary>公演日程</summary>
         <div class="stage-schedule-body" id="stage-schedule-body"></div>
       </details>
+    </section>
+
+    <section class="section-block" id="stage-memory">
+      <div class="section-heading">
+        <h2>思い出</h2>
+      </div>
+      <div class="giscus-container" id="giscus-container"></div>
     </section>
   </main>
 
@@ -69,6 +69,14 @@
         .replace(/>/g, "&gt;")
         .replace(/"/g, "&quot;")
         .replace(/'/g, "&#039;");
+    }
+
+    function formatDisplayDate(date) {
+      return String(date || "").replace(/-/g, "/");
+    }
+
+    function formatDisplayDateTime(item) {
+      return [formatDisplayDate(item.date), item.time].filter(Boolean).join(" ");
     }
 
     function createMemoryGuidelines() {
@@ -117,8 +125,7 @@
           <ul class="stage-schedule-list">
             ${group.items.map(item => `
               <li>
-                <time datetime="${escapeHtml(item.date)}">${escapeHtml(item.date)}</time>
-                <span>${escapeHtml(item.time)}</span>
+                <time datetime="${escapeHtml(item.date)}">${escapeHtml(formatDisplayDateTime(item))}</time>
               </li>
             `).join("")}
           </ul>

@@ -47,8 +47,8 @@
   </footer>
   <script src="js/site-common.js?v=20260713-ogp"></script>
   <script src="js/comment-backend-config.js"></script>
-  <script src="js/comment-data.js?v=20260716-stage-page"></script>
-  <script src="js/search.js?v=20260716-stage-page"></script>
+  <script src="js/comment-data.js?v=20260717-date-format"></script>
+  <script src="js/search.js?v=20260717-date-format"></script>
   <script>
     const params = new URLSearchParams(window.location.search);
     const groupId = params.get("group");
@@ -65,6 +65,14 @@
       }
 
       return `section.html?group=${groupId}&live=${liveId}&section=${sectionId}`;
+    }
+
+    function formatDisplayDate(date) {
+      return String(date || "").replace(/-/g, "/");
+    }
+
+    function formatDisplayDateTime(performance) {
+      return [formatDisplayDate(performance?.date), performance?.time].filter(Boolean).join(" ");
     }
 
     async function init() {
@@ -144,11 +152,12 @@
       });
 
       live.performances.forEach(performance => {
+        const displayDateTime = formatDisplayDateTime(performance);
         searchResults.push({
-          title: `${performance.date} ${performance.time}`,
+          title: displayDateTime,
           subtitle: `[${performance.area}] ${performance.venue}${performance.performanceType ? " / " + performance.performanceType : ""}`,
           href: `performance.html?group=${groupId}&live=${liveId}&performance=${performance.id}`,
-          searchText: `${live.title} ${performance.date} ${performance.time} ${performance.area} ${performance.venue} ${performance.performanceType || ""}`
+          searchText: `${live.title} ${displayDateTime} ${performance.date} ${performance.time} ${performance.area} ${performance.venue} ${performance.performanceType || ""}`
         });
       });
 

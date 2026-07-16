@@ -69,6 +69,14 @@
       : generalSetlist;
   }
 
+  function formatDisplayDate(date) {
+    return String(date || "").replace(/-/g, "/");
+  }
+
+  function formatDisplayDateTime(performance) {
+    return [formatDisplayDate(performance?.date), performance?.time].filter(Boolean).join(" ");
+  }
+
   function detailHref(groupId, live) {
     return String(live.type || "").toUpperCase() === "STAGE"
       ? `stage.html?group=${groupId}&live=${live.id}`
@@ -93,8 +101,9 @@
 
     if (String(live.type || "").toUpperCase() === "STAGE") {
       (live.performances || []).forEach(performance => {
+        const displayDateTime = formatDisplayDateTime(performance);
         results.push({
-          title: `${performance.date} ${performance.time}`,
+          title: displayDateTime,
           subtitle: `${live.title} / [${performance.area}] ${performance.venue}`,
           href: `stage.html?group=${group.id}&live=${live.id}#stage-schedule`,
           pageType: "stage",
@@ -107,7 +116,7 @@
             area: [performance.area],
             venue: [performance.venue]
           },
-          searchText: `${group.name} ${live.type} ${live.year} ${live.title} 舞台 公演日程 ${performance.date} ${performance.time} ${performance.area} ${performance.venue}`
+          searchText: `${group.name} ${live.type} ${live.year} ${live.title} 舞台 公演日程 ${displayDateTime} ${performance.date} ${performance.time} ${performance.area} ${performance.venue}`
         });
       });
 
@@ -135,8 +144,9 @@
     }
 
     live.performances.forEach(performance => {
+      const displayDateTime = formatDisplayDateTime(performance);
       results.push({
-        title: `${performance.date} ${performance.time}`,
+        title: displayDateTime,
         subtitle: `${live.title} / [${performance.area}] ${performance.venue}${performance.performanceType ? " / " + performance.performanceType : ""}`,
         href: `performance.html?group=${group.id}&live=${live.id}&performance=${performance.id}`,
         pageType: "schedule",
@@ -150,7 +160,7 @@
           venue: [performance.venue],
           performanceType: [performance.performanceType]
         },
-        searchText: `${group.name} ${live.type} ${live.year} ${live.title} 公演日程 ${performance.date} ${performance.time} ${performance.area} ${performance.venue} ${performance.performanceType || ""}`
+        searchText: `${group.name} ${live.type} ${live.year} ${live.title} 公演日程 ${displayDateTime} ${performance.date} ${performance.time} ${performance.area} ${performance.venue} ${performance.performanceType || ""}`
       });
     });
 
@@ -224,6 +234,8 @@
     loadGroupLives,
     buildLiveSearchResults,
     detailHref,
+    formatDisplayDate,
+    formatDisplayDateTime,
     preferredGeneralSetlist,
     generalSetlists,
     preferredVideoSetlist

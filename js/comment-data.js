@@ -82,6 +82,14 @@
     return liveCache.get(key);
   }
 
+  function formatDisplayDate(date) {
+    return String(date || "").replace(/-/g, "/");
+  }
+
+  function formatDisplayDateTime(performance) {
+    return [formatDisplayDate(performance?.date), performance?.time].filter(Boolean).join(" ");
+  }
+
   function normalizeMemoryId(pageKey) {
     const value = String(pageKey || "");
 
@@ -176,7 +184,7 @@
     if (["mc", "fanservice", "other"].includes(type)) {
       const performance = live?.performances?.find(item => item.id === parts[3]);
       const typeLabel = type === "mc" ? "MC" : type === "fanservice" ? "ファンサ" : "その他";
-      return [performance?.date, performance?.time, performance?.venue, typeLabel].filter(Boolean).join(" ");
+      return [formatDisplayDateTime(performance), performance?.venue, typeLabel].filter(Boolean).join(" ");
     }
 
     if (type === "goods") {

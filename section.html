@@ -44,8 +44,8 @@
   </footer>
   <script src="js/site-common.js?v=20260713-ogp"></script>
   <script src="js/comment-backend-config.js"></script>
-  <script src="js/comment-data.js?v=20260713-rpc-stage2"></script>
-  <script src="js/search.js?v=20260713-member-filter-all"></script>
+  <script src="js/comment-data.js?v=20260717-date-format"></script>
+  <script src="js/search.js?v=20260717-date-format"></script>
   <script src="js/comment-tools.js?v=20260713-contact-report"></script>
   <script src="js/prototype-comments.js?v=20260715-mobile-comment-actions-fix"></script>
   <script>
@@ -72,6 +72,14 @@
         <p>${subtitle}</p>
       `;
       return a;
+    }
+
+    function formatDisplayDate(date) {
+      return String(date || "").replace(/-/g, "/");
+    }
+
+    function formatDisplayDateTime(performance) {
+      return [formatDisplayDate(performance?.date), performance?.time].filter(Boolean).join(" ");
     }
 
     function appendGiscus(container, memoryId) {
@@ -206,7 +214,7 @@
         grid.className = "archive-grid";
 
         live.performances.forEach(performance => {
-          const title = `${performance.date} ${performance.time}`;
+          const title = formatDisplayDateTime(performance);
           const subtitle = `[${performance.area}] ${performance.venue}${performance.performanceType ? " / " + performance.performanceType : ""}`;
           const href = `performance.html?group=${groupId}&live=${liveId}&performance=${performance.id}`;
           const card = createCard(title, subtitle, href);

@@ -61,6 +61,14 @@
       return response.json();
     }
 
+    function formatDisplayDate(date) {
+      return String(date || "").replace(/-/g, "/");
+    }
+
+    function formatDisplayDateTime(performance) {
+      return [formatDisplayDate(performance?.date), performance?.time].filter(Boolean).join(" ");
+    }
+
     function appendGiscus(container, memoryId) {
       appendPrototypeCommentsIfEnabled(container, groupId, liveId, memoryId, {
         afterForm: [createMemoryGuidelines(), createPostManagementLink()]
@@ -88,21 +96,22 @@
       const live = await loadJson(`data/lives/${groupId}/${liveId}.json`);
       const performance = live.performances.find(p => p.id === performanceId);
       const typeLabel = memoryTypes[type] || "思い出";
+      const displayDateTime = formatDisplayDateTime(performance);
 
-      SiteCommon.setDocumentTitle(`${typeLabel} | ${performance.date} ${performance.time} | ｖｖｖｖｖｖ　LIVE MEMORY`);
+      SiteCommon.setDocumentTitle(`${typeLabel} | ${displayDateTime} | ｖｖｖｖｖｖ　LIVE MEMORY`);
 
       document.getElementById("breadcrumb").innerHTML = `
         <a href="index.html">HOME</a> &gt;
         <a href="group.html?id=${group.id}">${group.name}</a> &gt;
         <a href="live.html?group=${group.id}&live=${live.id}">${live.title}</a> &gt;
         <a href="section.html?group=${group.id}&live=${live.id}&section=schedule">公演日程</a> &gt;
-        <a href="performance.html?group=${group.id}&live=${live.id}&performance=${performance.id}">${performance.date} ${performance.time}</a> &gt;
+        <a href="performance.html?group=${group.id}&live=${live.id}&performance=${performance.id}">${displayDateTime}</a> &gt;
         ${typeLabel}
       `;
 
       document.getElementById("memory-title").textContent = typeLabel;
       document.getElementById("performance-venue").textContent =
-        `${performance.date} ${performance.time} [${performance.area}] ${performance.venue}`;
+        `${displayDateTime} [${performance.area}] ${performance.venue}`;
       const memoryId = `${type}:${groupId}:${liveId}:${performanceId}`;
       appendGiscus(document.getElementById("giscus-container"), memoryId);
     }

@@ -110,6 +110,14 @@ async function groupNameForId(groupId) {
   return groups.find(group => group.id === groupId)?.name || groupId;
 }
 
+function formatDisplayDate(date) {
+  return String(date || "").replace(/-/g, "/");
+}
+
+function formatDisplayDateTime(performance) {
+  return [formatDisplayDate(performance?.date), performance?.time].filter(Boolean).join(" ");
+}
+
 function resolveSongFromMemoryParts(live, parts) {
   const type = parts[0];
   const isNewSongId = parts[4]?.startsWith("song-");
@@ -294,7 +302,7 @@ async function subtitleForMemoryId(memoryId) {
     const [, groupId, liveId, performanceId] = parts;
     const live = await loadLive(groupId, liveId);
     const performance = live.performances.find(item => item.id === performanceId);
-    return `${live.title} / ${performance?.date || performanceId} ${performance?.time || ""} / ${labels[type]}`;
+    return `${live.title} / ${formatDisplayDateTime(performance) || performanceId} / ${labels[type]}`;
   }
 
   if (type === "goods") {
