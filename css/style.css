@@ -70,6 +70,10 @@ main {
   box-shadow: var(--shadow);
 }
 
+.random-memory-result {
+  margin-top: 18px;
+}
+
 .search-card {
   padding: 20px;
   margin-bottom: 28px;
@@ -776,6 +780,13 @@ main {
 .prototype-comment {
   display: grid;
   gap: 10px;
+  transition: background-color .25s ease, box-shadow .25s ease;
+}
+
+.prototype-comment.is-comment-target {
+  border-radius: 10px;
+  background: var(--accent-soft);
+  box-shadow: 0 0 0 3px rgba(96, 113, 143, .18);
 }
 
 .prototype-comment.is-reply {

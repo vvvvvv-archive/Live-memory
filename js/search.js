@@ -415,7 +415,9 @@
     }
 
     results.forEach(result => {
-      const key = result.href || `${result.title}:${result.subtitle}`;
+      const key = result.commentId
+        ? `comment:${result.commentId}`
+        : (result.href || `${result.title}:${result.subtitle}`);
       const existing = byHref.get(key);
 
       if (!existing) {
@@ -527,6 +529,8 @@
           title: item.title || "記録された思い出",
           subtitle: item.subtitle || "思い出",
           href: item.href,
+          commentId: item.commentId,
+          parentId: item.parentId,
           memoryId: item.memoryId,
           pageType,
           pageTypeLabel: item.pageTypeLabel,

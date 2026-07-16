@@ -193,11 +193,51 @@
     `;
   }
 
+  function commentDomId(commentId) {
+    return `comment-${commentId}`;
+  }
+
+  function targetCommentIdFromLocation() {
+    const params = new URLSearchParams(location.search);
+    const queryComment = params.get("comment");
+
+    if (queryComment) {
+      return queryComment;
+    }
+
+    const hash = decodeURIComponent(String(location.hash || "").replace(/^#/, ""));
+    return hash.startsWith("comment-") ? hash.slice("comment-".length) : "";
+  }
+
+  function findCommentElement(root, commentId) {
+    if (!commentId) return null;
+
+    return [...root.querySelectorAll("[data-comment-id]")]
+      .find(element => element.dataset.commentId === commentId) || null;
+  }
+
+  function revealLinkedComment(root, behavior = "auto") {
+    const targetId = targetCommentIdFromLocation();
+    const target = findCommentElement(root, targetId);
+
+    if (!target) {
+      return;
+    }
+
+    window.setTimeout(() => {
+      target.scrollIntoView({ block: "center", behavior });
+      target.classList.add("is-comment-target");
+      window.setTimeout(() => {
+        target.classList.remove("is-comment-target");
+      }, 3000);
+    }, 0);
+  }
+
   function renderComment(comment, authorToken, activeComposer, isReply = false) {
     const owned = comment.owned ?? comment.authorToken === authorToken;
     const activeMode = activeComposer?.id === comment.id ? activeComposer.mode : "";
     return `
-      <article class="prototype-comment${isReply ? " is-reply" : ""}" data-comment-id="${comment.id}">
+      <article id="${escapeHtml(commentDomId(comment.id))}" class="prototype-comment${isReply ? " is-reply" : ""}" data-comment-id="${escapeHtml(comment.id)}">
         <div class="prototype-comment-header">
           <strong>${escapeHtml(comment.nickname || "名無しさん")}</strong>
           <time datetime="${escapeHtml(comment.createdAt)}">${escapeHtml(relativeTime(comment.createdAt))}</time>
@@ -225,6 +265,7 @@
     }
 
     list.innerHTML = comments.map(comment => renderComment(comment, authorToken, activeComposer)).join("");
+    revealLinkedComment(root);
   }
 
   function renderMemberTagButtons() {

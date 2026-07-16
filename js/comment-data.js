@@ -152,6 +152,13 @@
     return "";
   }
 
+  function hrefWithCommentId(href, commentId) {
+    if (!href || !commentId) return href || "";
+
+    const [base] = String(href).split("#");
+    return `${base}#comment-${encodeURIComponent(commentId)}`;
+  }
+
   function allSetlists(live) {
     const setlists = Array.isArray(live?.setlists) ? [...live.setlists] : [];
 
@@ -215,12 +222,14 @@
     const context = contextFromMemoryId(memoryId, live);
     const tags = Array.isArray(row.tags) ? row.tags : [];
     const memoryText = String(row.body || "").trim();
-    const href = hrefFromMemoryId(memoryId);
+    const href = hrefWithCommentId(hrefFromMemoryId(memoryId), row.id);
 
     return {
       title: live?.title || "思い出",
       subtitle: [live?.title, context].filter(Boolean).join(" / "),
       href,
+      commentId: row.id,
+      parentId: row.parent_id || "",
       memoryId,
       validTarget: Boolean(live && href),
       pageType,
@@ -305,6 +314,7 @@
   window.CommentData = {
     loadSupabaseMemoryItems,
     loadOwnSupabaseMemoryItems,
+    hrefWithCommentId,
     hasStoredAuthorToken: () => Boolean(storedAuthorToken()),
     clearCache
   };

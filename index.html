@@ -17,7 +17,7 @@
   <meta name="twitter:description" content="V6、20th Century、Coming Century、そして6人それぞれの活動に関する記憶を未来へ残すための非公式ファンアーカイブ">
   <meta name="twitter:image" content="https://vvvvvv-archive.github.io/Live-memory/assets/images/ogp.png">
 
-  <link rel="stylesheet" href="css/style.css?v=20260717-news-manual">
+  <link rel="stylesheet" href="css/style.css?v=20260717-comment-target">
 </head>
 
 <body>
@@ -90,6 +90,7 @@
         <p>いつかの誰かの思い出をランダムに表示できます。</p>
         <button class="button random-memory-button" id="random-memory-button" type="button" disabled>思い出をめくる</button>
         <p class="small-note random-memory-status" id="random-memory-status" hidden></p>
+        <div id="random-memory-result" class="random-memory-result"></div>
       </div>
     </section>
 
@@ -138,9 +139,9 @@
   <script src="js/site-common.js?v=20260713-ogp"></script>
   <script src="js/live-registry.js?v=20260717-date-format"></script>
   <script src="js/comment-backend-config.js"></script>
-  <script src="js/comment-data.js?v=20260717-date-format"></script>
-  <script src="js/search.js?v=20260717-date-format"></script>
-  <script src="js/random-memory.js"></script>
+  <script src="js/comment-data.js?v=20260717-comment-target"></script>
+  <script src="js/search.js?v=20260717-comment-target"></script>
+  <script src="js/random-memory.js?v=20260717-comment-target"></script>
   <script src="js/new-moments.js?v=20260716-stage-page"></script>
   <script>
     async function initSearch() {

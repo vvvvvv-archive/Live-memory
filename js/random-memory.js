@@ -15,11 +15,48 @@
   }
 
   function targetHref(href) {
-    if (!href || href.includes("#")) {
-      return href;
-    }
+    return href || "";
+  }
 
-    return `${href}#giscus-container`;
+  function escapeHtml(value) {
+    return String(value || "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  }
+
+  function excerpt(text, maxLength = 72) {
+    const source = String(text || "").replace(/\s+/g, " ").trim();
+    return source.length > maxLength ? `${source.slice(0, maxLength)}…` : source;
+  }
+
+  function splitSubtitle(subtitle) {
+    return String(subtitle || "").split(" / ").filter(Boolean);
+  }
+
+  function renderRandomItem(item) {
+    const host = document.getElementById("random-memory-result");
+    if (!host || !item) return;
+
+    const parts = splitSubtitle(item.subtitle);
+    const liveName = parts[0] || item.title || "";
+    const context = parts.slice(1).join(" / ");
+
+    host.innerHTML = `
+      <a class="new-moment-card random-memory-card" href="${escapeHtml(targetHref(item.href))}">
+        <span class="new-moment-icon" aria-hidden="true">💬</span>
+        <p class="new-moment-quote">「${escapeHtml(excerpt(commentText(item)))}」</p>
+        <div class="new-moment-meta">
+          ${liveName ? `<p class="new-moment-live">${escapeHtml(liveName)}</p>` : ""}
+          <p>
+            ${item.pageTypeLabel ? `<span class="new-moment-label">【${escapeHtml(item.pageTypeLabel)}】</span>` : ""}
+            ${context ? `<span class="new-moment-context">${escapeHtml(context)}</span>` : ""}
+          </p>
+        </div>
+      </a>
+    `;
   }
 
   function pickRandom(items) {
@@ -73,7 +110,7 @@
         }
 
         lastRandomHref = targetHref(item.href);
-        window.location.href = lastRandomHref;
+        renderRandomItem(item);
       });
     } catch (error) {
       button.disabled = true;
