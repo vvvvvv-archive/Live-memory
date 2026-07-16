@@ -17,7 +17,7 @@
   <meta name="twitter:description" content="V6、20th Century、Coming Century、そして6人それぞれの活動に関する記憶を未来へ残すための非公式ファンアーカイブ">
   <meta name="twitter:image" content="https://vvvvvv-archive.github.io/Live-memory/assets/images/ogp.png">
 
-  <link rel="stylesheet" href="css/style.css?v=20260713-member-filter-all">
+  <link rel="stylesheet" href="css/style.css?v=20260717-news">
 </head>
 
 <body>
@@ -105,6 +105,14 @@
       </div>
     </section>
 
+    <section class="section-block news-section">
+      <div class="section-heading">
+        <h2>NEWS</h2>
+      </div>
+
+      <div id="news-list" class="news-list" aria-live="polite"></div>
+    </section>
+
     <section class="section-block">
       <div class="section-heading">
         <h2>About</h2>
@@ -161,6 +169,65 @@
     initSearch();
     initRandomMemory();
     initNewMoments();
+    initNews();
+
+    function escapeNewsHtml(value) {
+      return String(value ?? "").replace(/[&<>"']/g, char => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        "\"": "&quot;",
+        "'": "&#39;"
+      }[char]));
+    }
+
+    async function initNews() {
+      const container = document.getElementById("news-list");
+      if (!container) return;
+
+      try {
+        const [groups, members, entries] = await Promise.all([
+          LiveRegistry.loadGroups(),
+          LiveRegistry.loadMembers(),
+          LiveRegistry.loadEntries()
+        ]);
+        const groupById = new Map(groups.map(group => [group.id, group]));
+        const memberById = new Map(members.map(member => [member.id, member]));
+
+        const items = await Promise.all(
+          entries
+            .filter(entry => entry.addedDate)
+            .map(async entry => {
+              const live = await LiveRegistry.loadJson(entry.path || `data/lives/${entry.groupId}/${entry.liveId}.json`);
+              const groupId = entry.groupId || live.groupId;
+              const group = groupById.get(groupId);
+              const member = entry.memberId ? memberById.get(entry.memberId) : null;
+              return {
+                addedDate: entry.addedDate,
+                addedAt: entry.addedAt || entry.addedDate,
+                name: member?.name || group?.name || groupId,
+                title: live.title,
+                href: LiveRegistry.detailHref(groupId, live)
+              };
+            })
+        );
+
+        const latest = items
+          .sort((a, b) => String(b.addedAt).localeCompare(String(a.addedAt)) || a.title.localeCompare(b.title, "ja"))
+          .slice(0, 3);
+
+        container.innerHTML = latest.map(item => `
+          <div class="news-item">
+            <time datetime="${escapeNewsHtml(item.addedDate)}">${escapeNewsHtml(LiveRegistry.formatDisplayDate(item.addedDate))}</time>
+            <p class="news-source">${escapeNewsHtml(item.name)}</p>
+            <a class="news-title" href="${escapeNewsHtml(item.href)}">${escapeNewsHtml(item.title)}</a>
+          </div>
+        `).join("");
+      } catch (error) {
+        container.innerHTML = "";
+        console.error("Failed to load news", error);
+      }
+    }
   </script>
 </body>
 </html>

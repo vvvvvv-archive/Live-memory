@@ -4,6 +4,8 @@
     "liveId": "rutsubo-2026",
     "memberId": "masayuki-sakamoto",
     "path": "data/lives/individual/rutsubo-2026.json",
+    "addedDate": "2026-07-16",
+    "addedAt": "2026-07-16T02:30:01+09:00",
     "displayOrder": 2026
   },
   {
@@ -11,30 +13,40 @@
     "liveId": "suna-no-onna-2026",
     "memberId": "go-morita",
     "path": "data/lives/individual/suna-no-onna-2026.json",
+    "addedDate": "2026-07-17",
+    "addedAt": "2026-07-17T00:55:53+09:00",
     "displayOrder": 2026
   },
   {
     "groupId": "20th-century",
     "liveId": "utauhito-odoruhito-2026",
     "path": "data/lives/20th-century/utauhito-odoruhito-2026.json",
+    "addedDate": "2026-07-07",
+    "addedAt": "2026-07-07T20:34:44+09:00",
     "displayOrder": 2026
   },
   {
     "groupId": "20th-century",
     "liveId": "chikyuwotobidasou-2024",
     "path": "data/lives/20th-century/chikyuwotobidasou-2024.json",
+    "addedDate": "2026-07-10",
+    "addedAt": "2026-07-10T12:10:48+09:00",
     "displayOrder": 2024
   },
   {
     "groupId": "20th-century",
     "liveId": "bokutachi-20th-century-2023",
     "path": "data/lives/20th-century/bokutachi-20th-century-2023.json",
+    "addedDate": "2026-07-10",
+    "addedAt": "2026-07-10T19:29:13+09:00",
     "displayOrder": 2023
   },
   {
     "groupId": "v6",
     "liveId": "v6-groove-2021",
     "path": "data/lives/v6/v6-groove-2021.json",
+    "addedDate": "2026-07-10",
+    "addedAt": "2026-07-10T22:14:27+09:00",
     "displayOrder": 2021
   }
 ]
