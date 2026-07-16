@@ -257,10 +257,8 @@ main {
 
 .news-item {
   display: grid;
-  grid-template-columns: minmax(86px, auto) minmax(96px, 150px) minmax(0, 1fr);
-  gap: 12px;
-  align-items: baseline;
-  padding: 14px 0;
+  gap: 6px;
+  padding: 16px 0;
   border-bottom: 1px solid var(--line);
 }
 
@@ -270,10 +268,11 @@ main {
   font-weight: 700;
 }
 
-.news-source {
+.news-body {
   margin: 0;
-  color: var(--sub);
-  font-size: .92rem;
+  color: var(--text);
+  font-size: .98rem;
+  line-height: 1.7;
 }
 
 .news-title {
@@ -1270,12 +1269,6 @@ font-weight:600;
   .live-title-main,
   .live-title-sub {
     display: block;
-  }
-
-  .news-item {
-    grid-template-columns: 1fr;
-    gap: 4px;
-    padding: 16px 0;
   }
 
   .news-title {
