@@ -42,7 +42,7 @@
       <div class="member-card-grid" id="member-card-grid"></div>
     </section>
 
-    <section class="section-block">
+    <section class="section-block" id="group-live-section">
       <div class="section-heading">
         <h2>LIVE</h2>
         <p id="live-count"></p>
@@ -50,7 +50,7 @@
       <ul class="list" id="live-list"></ul>
     </section>
 
-    <section class="section-block">
+    <section class="section-block" id="group-stage-section">
       <div class="section-heading">
         <h2>STAGE</h2>
         <p id="stage-count"></p>
@@ -58,7 +58,7 @@
       <ul class="list" id="stage-list"></ul>
     </section>
 
-    <section class="section-block">
+    <section class="section-block" id="group-event-section">
       <div class="section-heading">
         <h2>EVENT</h2>
         <p id="event-count"></p>
@@ -180,13 +180,19 @@
       const stageItems = livesByType(lives, "STAGE");
       const eventItems = livesByType(lives, "EVENT");
 
-      document.getElementById("live-count").textContent = `登録数：${liveItems.length}`;
-      document.getElementById("stage-count").textContent = `登録数：${stageItems.length}`;
-      document.getElementById("event-count").textContent = `登録数：${eventItems.length}`;
+      if (groupId === "individual") {
+        document.getElementById("group-live-section").hidden = true;
+        document.getElementById("group-stage-section").hidden = true;
+        document.getElementById("group-event-section").hidden = true;
+      } else {
+        document.getElementById("live-count").textContent = `登録数：${liveItems.length}`;
+        document.getElementById("stage-count").textContent = `登録数：${stageItems.length}`;
+        document.getElementById("event-count").textContent = `登録数：${eventItems.length}`;
 
-      renderLives(document.getElementById("live-list"), liveItems, groupId);
-      renderLives(document.getElementById("stage-list"), stageItems, groupId);
-      renderLives(document.getElementById("event-list"), eventItems, groupId);
+        renderLives(document.getElementById("live-list"), liveItems, groupId);
+        renderLives(document.getElementById("stage-list"), stageItems, groupId);
+        renderLives(document.getElementById("event-list"), eventItems, groupId);
+      }
 
       const searchResults = lives.flatMap(live => LiveRegistry.buildLiveSearchResults(group, live));
       searchResults.push(
