@@ -225,6 +225,11 @@ main {
   text-align: right;
 }
 
+.request-link-row-centered {
+  margin: 14px 0 0;
+  text-align: center;
+}
+
 .request-link-row a {
   color: var(--accent);
   font-size: .94rem;
