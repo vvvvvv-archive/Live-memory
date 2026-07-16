@@ -9,6 +9,7 @@
     general: "総合",
     schedule: "公演日程",
     video: "映像・円盤",
+    videoBonus: "特典映像",
     goods: "グッズ",
     stage: "STAGE"
   };
@@ -109,6 +110,7 @@
 
     if (type === "section" || type === "song") return "general";
     if (type === "video-song") return "video";
+    if (type === "video-bonus") return "videoBonus";
     if (type === "goods") return "goods";
     if (["mc", "fanservice", "other"].includes(type)) return "schedule";
     if (type === "stage") return "stage";
@@ -135,6 +137,10 @@
       const songParam = Number.isFinite(index) ? `&song=${index}` : "";
       const orderParam = Number.isFinite(order) ? `&order=${order}` : "";
       return `${file}?group=${groupId}&live=${liveId}&setlist=${setlistId}${songParam}${orderParam}#giscus-container`;
+    }
+
+    if (type === "video-bonus") {
+      return `video-bonus.html?group=${groupId}&live=${liveId}&bonus=${encodeURIComponent(parts[3] || "")}#giscus-container`;
     }
 
     if (["mc", "fanservice", "other"].includes(type)) {
@@ -198,6 +204,16 @@
       return live?.goods?.find(item => item.id === parts[3])?.name || "グッズ";
     }
 
+    if (type === "video-bonus") {
+      for (const section of live?.video?.bonusSections || []) {
+        const item = (section.items || []).find(candidate => candidate.id === parts[3] || (candidate.pageId || candidate.id) === parts[3]);
+        if (item) {
+          return [section.title, item.title].filter(Boolean).join(" / ");
+        }
+      }
+      return "特典映像";
+    }
+
     if (type === "stage") {
       return "作品全体";
     }
@@ -249,6 +265,7 @@
         member: tags,
         live: [live?.title].filter(Boolean),
         song: pageType === "general" || pageType === "video" ? [context] : [],
+        media: pageType === "videoBonus" ? [context] : [],
         goods: pageType === "goods" ? [context] : [],
         venue: pageType === "schedule" || pageType === "stage" ? [context] : []
       },

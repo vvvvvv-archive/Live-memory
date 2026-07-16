@@ -542,54 +542,126 @@
       {
         "title": "初回盤A 特典映像",
         "items": [
-          "20th Century Live tour 2023 ～僕たち20th Centuryです！～（2023/2/2 中野サンプラザ公演）",
-          "LIVE TOUR Behind The Scenes"
-        ]
+          {
+            "id": "bonus-s01-i01",
+            "title": "20th Century Live tour 2023 ～僕たち20th Centuryです！～（2023/2/2 中野サンプラザ公演）"
+          },
+          {
+            "id": "bonus-s01-i02",
+            "title": "LIVE TOUR Behind The Scenes"
+          }
+        ],
+        "id": "bonus-s01"
       },
       {
         "title": "初回盤B Music Video・MVメイキング集",
         "items": [
-          "夢の島セレナーデ",
-          "水曜日",
-          "あなたと"
-        ]
+          {
+            "id": "bonus-s02-i01",
+            "title": "夢の島セレナーデ"
+          },
+          {
+            "id": "bonus-s02-i02",
+            "title": "水曜日"
+          },
+          {
+            "id": "bonus-s02-i03",
+            "title": "あなたと"
+          }
+        ],
+        "id": "bonus-s02"
       },
       {
         "title": "初回盤B Billboard Live Digest映像 / Billboard Live OSAKA",
         "items": [
-          "Behind The Scenes",
-          "会って話を",
-          "季節",
-          "MC",
-          "Talk about you",
-          "君の笑顔につられて"
-        ]
+          {
+            "id": "bonus-s03-i01",
+            "title": "Behind The Scenes"
+          },
+          {
+            "id": "bonus-s03-i02",
+            "title": "会って話を"
+          },
+          {
+            "id": "bonus-s03-i03",
+            "title": "季節"
+          },
+          {
+            "id": "bonus-s03-i04",
+            "title": "MC"
+          },
+          {
+            "id": "bonus-s03-i05",
+            "title": "Talk about you"
+          },
+          {
+            "id": "bonus-s03-i06",
+            "title": "君の笑顔につられて"
+          }
+        ],
+        "id": "bonus-s03"
       },
       {
         "title": "初回盤B Billboard Live Digest映像 / Billboard Live TOKYO",
         "items": [
-          "Behind The Scenes",
-          "red",
-          "Precious Love",
-          "MC",
-          "素敵な夜",
-          "夢の島セレナーデ",
-          "Shelter"
-        ]
+          {
+            "id": "bonus-s04-i01",
+            "title": "Behind The Scenes"
+          },
+          {
+            "id": "bonus-s04-i02",
+            "title": "red"
+          },
+          {
+            "id": "bonus-s04-i03",
+            "title": "Precious Love"
+          },
+          {
+            "id": "bonus-s04-i04",
+            "title": "MC"
+          },
+          {
+            "id": "bonus-s04-i05",
+            "title": "素敵な夜"
+          },
+          {
+            "id": "bonus-s04-i06",
+            "title": "夢の島セレナーデ"
+          },
+          {
+            "id": "bonus-s04-i07",
+            "title": "Shelter"
+          }
+        ],
+        "id": "bonus-s04"
       },
       {
         "title": "初回盤B バンドセッション映像",
         "items": [
-          "恋はこれから",
-          "君の笑顔につられて",
-          "夢の島セレナーデ"
-        ]
+          {
+            "id": "bonus-s05-i01",
+            "title": "恋はこれから"
+          },
+          {
+            "id": "bonus-s05-i02",
+            "title": "君の笑顔につられて"
+          },
+          {
+            "id": "bonus-s05-i03",
+            "title": "夢の島セレナーデ"
+          }
+        ],
+        "id": "bonus-s05"
       },
       {
         "title": "三形態同時購入特典",
         "items": [
-          "ホール公演MC集DVD"
-        ]
+          {
+            "id": "bonus-s06-i01",
+            "title": "ホール公演MC集DVD"
+          }
+        ],
+        "id": "bonus-s06"
       }
     ]
   },

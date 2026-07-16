@@ -5,6 +5,7 @@
     general: "総合",
     schedule: "公演日程",
     video: "映像・円盤",
+    videoBonus: "特典映像",
     goods: "グッズ",
     stage: "STAGE",
     live: "LIVE",

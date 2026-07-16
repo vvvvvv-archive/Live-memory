@@ -204,6 +204,30 @@
       });
     });
 
+    (live.video?.bonusSections || []).forEach(section => {
+      (section.items || []).forEach(item => {
+        const bonusPageId = item?.pageId || item?.id;
+
+        if (!bonusPageId || !item?.title) {
+          return;
+        }
+
+        results.push({
+          title: item.title,
+          subtitle: `${live.title} / ${section.title || "特典映像"}`,
+          href: `video-bonus.html?group=${group.id}&live=${live.id}&bonus=${encodeURIComponent(bonusPageId)}`,
+          pageType: "videoBonus",
+          searchFields: {
+            group: [group.name],
+            live: [live.title],
+            pageType: ["映像・円盤", "特典映像", section.title],
+            media: [item.title]
+          },
+          searchText: `${group.name} ${live.type} ${live.year} ${live.title} 映像 円盤 特典映像 ${section.title || ""} ${item.title}`
+        });
+      });
+    });
+
     live.goods.forEach(goods => {
       const priceText = goods.priceLabel || `${goods.price.toLocaleString()}円`;
       results.push({

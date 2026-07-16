@@ -16,3 +16,7 @@ function generalSongMemoryId(groupId, liveId, setlistId, song, index) {
 function videoSongMemoryId(groupId, liveId, setlistId, song, index) {
   return `video-song:${groupId}:${liveId}:${setlistId}:${songMemoryKey(song, index)}`;
 }
+
+function videoBonusMemoryId(groupId, liveId, bonusId) {
+  return `video-bonus:${groupId}:${liveId}:${bonusId}`;
+}

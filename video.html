@@ -45,8 +45,9 @@
   </footer>
   <script src="js/site-common.js?v=20260713-ogp"></script>
   <script src="js/comment-backend-config.js"></script>
-  <script src="js/comment-data.js?v=20260717-comment-target"></script>
-  <script src="js/search.js?v=20260717-comment-target"></script>
+  <script src="js/comment-data.js?v=20260717-video-bonus"></script>
+  <script src="js/search.js?v=20260717-video-bonus"></script>
+  <script src="js/memory-ids.js?v=20260717-video-bonus"></script>
   <script>
     const params = new URLSearchParams(window.location.search);
     const groupId = params.get("group");
@@ -70,6 +71,14 @@
 
     function videoSongHref(setlist, song, index) {
       return `video-song.html?group=${groupId}&live=${liveId}&setlist=${setlist.id}&song=${index}&order=${song.order}`;
+    }
+
+    function videoBonusPageId(item) {
+      return item.pageId || item.id;
+    }
+
+    function videoBonusHref(item) {
+      return `video-bonus.html?group=${groupId}&live=${liveId}&bonus=${encodeURIComponent(videoBonusPageId(item))}`;
     }
 
     function videoFeatureTitle(video) {
@@ -127,8 +136,13 @@
         grid.className = "archive-grid";
 
         section.items.forEach(item => {
-          const card = createCard(item, "特典映像", `video.html?group=${groupId}&live=${liveId}`);
-          card.dataset.search = `${live.title} 映像 円盤 特典映像 ${section.title} ${item}`;
+          if (!item?.id || !videoBonusPageId(item)) {
+            console.warn("Bonus video item is missing id", { groupId, liveId, section, item });
+            return;
+          }
+
+          const card = createCard(item.title, "特典映像", videoBonusHref(item));
+          card.dataset.search = `${live.title} 映像 円盤 特典映像 ${section.title} ${item.title}`;
           searchableCards.push(card);
           grid.appendChild(card);
         });

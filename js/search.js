@@ -5,6 +5,7 @@
     general: "総合",
     schedule: "公演日程",
     video: "映像・円盤",
+    videoBonus: "特典映像",
     goods: "グッズ",
     stage: "STAGE",
     live: "ライブ",
@@ -65,7 +66,7 @@
 
     return text
       .replace(/https?:\/\/\S+/g, " ")
-      .replace(/\b(?:section|song|video-song|mc|fanservice|other|goods|stage):[A-Za-z0-9:_\-.%]+/g, " ")
+      .replace(/\b(?:section|song|video-song|video-bonus|mc|fanservice|other|goods|stage):[A-Za-z0-9:_\-.%]+/g, " ")
       .replace(/\b(?:identifier|discussionTerm|pathname)\b/gi, " ")
       .replace(/\s+/g, " ")
       .trim();
@@ -142,6 +143,7 @@
     const isGoodsPage = result.pageType === "goods";
     const isLivePage = result.pageType === "live";
     const isSchedulePage = result.pageType === "schedule";
+    const isVideoBonusPage = result.pageType === "videoBonus";
 
     return [
       {
@@ -171,7 +173,8 @@
         score: 330,
         values: [
           ...fieldValues(result, "media"),
-          ...(result.pageType === "video" && !isSongPage ? [result.title, result.subtitle] : [])
+          ...(result.pageType === "video" && !isSongPage ? [result.title, result.subtitle] : []),
+          ...(isVideoBonusPage ? [result.title, result.subtitle] : [])
         ]
       },
       {
@@ -348,6 +351,7 @@
 
     if (type === "song" || type === "section") return "general";
     if (type === "video-song") return "video";
+    if (type === "video-bonus") return "videoBonus";
     if (["mc", "fanservice", "other"].includes(type)) return "schedule";
     if (type === "goods") return "goods";
     if (type === "stage") return "stage";
@@ -358,6 +362,7 @@
   function pageTypeFromHref(href) {
     const value = String(href || "");
 
+    if (value.includes("video-bonus.html")) return "videoBonus";
     if (value.includes("video-song.html") || value.includes("video.html")) return "video";
     if (value.includes("goods.html") || value.includes("section=goods")) return "goods";
     if (value.includes("memory.html") || value.includes("performance.html") || value.includes("section=schedule")) return "schedule";
@@ -570,7 +575,7 @@
     }
 
     if (sectionId === "video") {
-      return type === "video-song" || (type === "section" && parts[3] === "video");
+      return type === "video-song" || type === "video-bonus" || (type === "section" && parts[3] === "video");
     }
 
     if (sectionId === "goods") {

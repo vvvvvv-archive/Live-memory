@@ -54,9 +54,13 @@
     "setlist": [],
     "bonusSections": [
       {
+        "id": "bonus-s01",
         "title": "初回盤 特典映像",
         "items": [
-          "特典映像タイトル"
+          {
+            "id": "bonus-s01-i01",
+            "title": "特典映像タイトル"
+          }
         ]
       }
     ]

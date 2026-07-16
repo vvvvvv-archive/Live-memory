@@ -516,19 +516,42 @@
       {
         "title": "初回盤 特典映像",
         "items": [
-          "ちきゅとびツアー初日ダイジェスト @2024.6.4 仙台サンプラザホール",
-          "「イナズマロックフェス2024」Limited Edition（副音声付き）",
-          "「イナズマロックフェス2024」Behind The Scenes",
-          "「Masayuki Sakamoto Billboard Live 2024」Limited Edition（副音声付き）",
-          "「Masayuki Sakamoto Billboard Live 2024」Behind The Scenes"
-        ]
+          {
+            "id": "bonus-s01-i01",
+            "title": "ちきゅとびツアー初日ダイジェスト @2024.6.4 仙台サンプラザホール"
+          },
+          {
+            "id": "bonus-s01-i02",
+            "title": "「イナズマロックフェス2024」Limited Edition（副音声付き）"
+          },
+          {
+            "id": "bonus-s01-i03",
+            "title": "「イナズマロックフェス2024」Behind The Scenes"
+          },
+          {
+            "id": "bonus-s01-i04",
+            "title": "「Masayuki Sakamoto Billboard Live 2024」Limited Edition（副音声付き）"
+          },
+          {
+            "id": "bonus-s01-i05",
+            "title": "「Masayuki Sakamoto Billboard Live 2024」Behind The Scenes"
+          }
+        ],
+        "id": "bonus-s01"
       },
       {
         "title": "通常盤 特典映像",
         "items": [
-          "ちきゅとびDocumentary ～UFOを見たことがありますか？～",
-          "ちきゅとびツアーファイナルダイジェスト @2024.7.19 神奈川県民ホール"
-        ]
+          {
+            "id": "bonus-s02-i01",
+            "title": "ちきゅとびDocumentary ～UFOを見たことがありますか？～"
+          },
+          {
+            "id": "bonus-s02-i02",
+            "title": "ちきゅとびツアーファイナルダイジェスト @2024.7.19 神奈川県民ホール"
+          }
+        ],
+        "id": "bonus-s02"
       }
     ]
   },

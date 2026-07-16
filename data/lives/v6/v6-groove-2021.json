@@ -378,16 +378,30 @@
       {
         "title": "初回盤A 特典映像",
         "items": [
-          "全国ツアーMC集",
-          "V6 GROOVE LIVE TOUR Document Video"
-        ]
+          {
+            "id": "bonus-s01-i01",
+            "title": "全国ツアーMC集"
+          },
+          {
+            "id": "bonus-s01-i02",
+            "title": "V6 GROOVE LIVE TOUR Document Video"
+          }
+        ],
+        "id": "bonus-s01"
       },
       {
         "title": "初回盤B 特典映像",
         "items": [
-          "V-Land WANDERER",
-          "未公開ライブ映像セレクト集"
-        ]
+          {
+            "id": "bonus-s02-i01",
+            "title": "V-Land WANDERER"
+          },
+          {
+            "id": "bonus-s02-i02",
+            "title": "未公開ライブ映像セレクト集"
+          }
+        ],
+        "id": "bonus-s02"
       }
     ]
   },

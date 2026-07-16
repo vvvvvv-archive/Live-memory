@@ -216,9 +216,13 @@ goodsId: uchu-penlight
   ],
   "bonusSections": [
     {
+      "id": "bonus-s01",
       "title": "初回盤 特典映像",
       "items": [
-        "特典映像タイトル"
+        {
+          "id": "bonus-s01-i01",
+          "title": "特典映像タイトル"
+        }
       ]
     }
   ]
@@ -226,6 +230,7 @@ goodsId: uchu-penlight
 ```
 
 `video.setlist` が空の場合は、総合ページで使うセットリストが映像・円盤ページにも表示されます。
+`bonusSections` と各 `items` には必ず安定した `id` を付けます。このIDは特典映像専用ページのURLとコメント識別子に使われるため、表示タイトルを修正しても変更しないでください。同一内容の特典映像を複数形態から同じページへまとめたい場合のみ、各 item に同じ `pageId` を追加してください。
 
 ## グッズ情報の書き方
 

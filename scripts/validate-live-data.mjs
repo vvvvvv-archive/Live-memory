@@ -56,8 +56,8 @@ function songMemoryKey(song, index) {
   return `song-${index}:order-${order}:${safeTitle}`;
 }
 
-function addUrl(url, label) {
-  if (generatedUrls.has(url)) {
+function addUrl(url, label, { allowDuplicate = false } = {}) {
+  if (generatedUrls.has(url) && !allowDuplicate) {
     addError(`duplicate generated URL: ${url} (${generatedUrls.get(url)} / ${label})`);
   }
   generatedUrls.set(url, label);
@@ -155,6 +155,42 @@ function validateLive(entry) {
         `${label} video song ${index}`
       );
     });
+
+    const bonusSectionIds = (live.video?.bonusSections || []).map(section => section.id);
+    assertUnique(bonusSectionIds, `${label} video bonus sections`);
+    const bonusItemIds = [];
+
+    for (const section of live.video?.bonusSections || []) {
+      requireField(section, "id", `${label} video bonus section`);
+      requireField(section, "title", `${label} video bonus section`);
+
+      if (!Array.isArray(section.items)) {
+        addError(`${label} video bonus section ${section.id || "(missing id)"}: items must be an array`);
+        continue;
+      }
+
+      section.items.forEach((item, index) => {
+        if (!item || typeof item !== "object" || Array.isArray(item)) {
+          addError(`${label} video bonus section ${section.id || "(missing id)"} item ${index}: item must be an object with stable id and title`);
+          return;
+        }
+
+        requireField(item, "id", `${label} video bonus section ${section.id || "(missing id)"} item ${index}`);
+        requireField(item, "title", `${label} video bonus section ${section.id || "(missing id)"} item ${index}`);
+        bonusItemIds.push(item.id);
+        const bonusPageId = item.pageId || item.id;
+
+        if (bonusPageId) {
+          addUrl(
+            `video-bonus.html?group=${live.groupId}&live=${live.id}&bonus=${bonusPageId}`,
+            `${label} video bonus ${section.id || "(missing id)"}/${item.id}`,
+            { allowDuplicate: Boolean(item.pageId) }
+          );
+        }
+      });
+    }
+
+    assertUnique(bonusItemIds, `${label} video bonus items`);
   }
 
   const goodsIds = (live.goods || []).map(goods => goods.id);
