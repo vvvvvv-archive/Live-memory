@@ -286,15 +286,6 @@
         }
 
         content.appendChild(grid);
-
-        const memoryBlock = appendMemoryBlock(
-          content,
-          "グッズ情報と思い出",
-          "このライブで発売されたグッズの情報と思い出を記録できます。",
-          `section:${groupId}:${liveId}:goods`
-        );
-        memoryBlock.dataset.search = `${live.title} グッズ goods 情報 思い出`;
-        searchableCards.push(memoryBlock);
       }
 
       const empty = document.createElement("p");
