@@ -1149,9 +1149,15 @@ main {
   font-weight: 700;
 }
 
+.search-result-matches {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
 .search-result-match {
   display: inline-block;
-  margin-bottom: 10px;
   padding: 3px 8px;
   color: var(--sub);
   font-size: .74rem;

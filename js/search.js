@@ -135,14 +135,18 @@
   }
 
   function matchedMemberTagCount(result, selectedMemberIds = []) {
+    return matchedMemberTags(result, selectedMemberIds).length;
+  }
+
+  function matchedMemberTags(result, selectedMemberIds = []) {
     if (!selectedMemberIds.length) {
-      return 0;
+      return [];
     }
 
     const selectedTags = selectedMemberTags(selectedMemberIds);
     const resultTags = new Set(formalMemberTags(result));
 
-    return selectedTags.filter(tag => resultTags.has(tag)).length;
+    return selectedTags.filter(tag => resultTags.has(tag));
   }
 
   function matchBuckets(result) {
@@ -249,7 +253,7 @@
 
     const buckets = matchBuckets(result);
     let total = selectedMemberIds.length ? 240 : 0;
-    let bestLabel = selectedMemberIds.length ? "メンバー名タグ一致" : "";
+    let bestLabel = "";
     let bestScore = total;
 
     words.forEach(word => {
@@ -272,7 +276,8 @@
     return {
       matched: true,
       score: total,
-      label: bestLabel || "その他一致",
+      label: bestLabel || (words.length ? "その他一致" : ""),
+      matchedTags: matchedMemberTags(result, selectedMemberIds),
       matchedTagCount: matchedMemberTagCount(result, selectedMemberIds)
     };
   }
@@ -416,6 +421,22 @@
     `;
   }
 
+  function renderMatchInfo(matchInfo = {}) {
+    const chips = [];
+
+    if (matchInfo.label && matchInfo.label !== "メンバー名タグ一致") {
+      chips.push(`<span class="search-result-match">${escapeHtml(matchInfo.label)}</span>`);
+    }
+
+    (matchInfo.matchedTags || []).forEach(tag => {
+      chips.push(`<span class="search-result-match">${escapeHtml(tag)}</span>`);
+    });
+
+    return chips.length
+      ? `<div class="search-result-matches">${chips.join("")}</div>`
+      : "";
+  }
+
   function uniqueResults(results) {
     const byHref = new Map();
 
@@ -522,7 +543,7 @@
           return `
           <a class="archive-card search-result-card" href="${escapeHtml(result.href)}">
             <span class="search-result-type">【${escapeHtml(pageTypeLabel(result))}】</span>
-            <span class="search-result-match">${escapeHtml(result.matchInfo.label)}</span>
+            ${renderMatchInfo(result.matchInfo)}
             ${renderResultText(result, query)}
             ${snippet ? `<p class="search-result-excerpt">「${highlightQuery(snippet, query)}」</p>` : ""}
           </a>
