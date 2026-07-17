@@ -134,6 +134,17 @@
     return selectedTags.some(tag => resultTags.includes(tag));
   }
 
+  function matchedMemberTagCount(result, selectedMemberIds = []) {
+    if (!selectedMemberIds.length) {
+      return 0;
+    }
+
+    const selectedTags = selectedMemberTags(selectedMemberIds);
+    const resultTags = new Set(formalMemberTags(result));
+
+    return selectedTags.filter(tag => resultTags.has(tag)).length;
+  }
+
   function matchBuckets(result) {
     const parts = splitSubtitle(result.subtitle);
     const isSongPage = String(result.href || "").includes("song.html")
@@ -261,7 +272,8 @@
     return {
       matched: true,
       score: total,
-      label: bestLabel || "その他一致"
+      label: bestLabel || "その他一致",
+      matchedTagCount: matchedMemberTagCount(result, selectedMemberIds)
     };
   }
 
@@ -273,6 +285,10 @@
       }))
       .filter(result => result.matchInfo.matched)
       .sort((a, b) => {
+        if (b.matchInfo.matchedTagCount !== a.matchInfo.matchedTagCount) {
+          return b.matchInfo.matchedTagCount - a.matchInfo.matchedTagCount;
+        }
+
         if (b.matchInfo.score !== a.matchInfo.score) {
           return b.matchInfo.score - a.matchInfo.score;
         }
