@@ -459,6 +459,10 @@ main {
   margin-top: 0;
 }
 
+.random-memory-panel {
+  margin: 18px 0 34px;
+}
+
 .button {
   display: inline-block;
   margin-top: 10px;
