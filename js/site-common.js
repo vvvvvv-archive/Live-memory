@@ -37,7 +37,7 @@
       footer.dataset.enhanced = "true";
       footer.innerHTML = `
         <nav class="footer-links" aria-label="サイト情報">
-          <a href="about.html">このサイトについて</a>
+          <a href="about.html">サイトの利用について</a>
           <a href="contact.html">お問い合わせ</a>
         </nav>
         <a href="index.html" class="footer-logo" aria-label="V6 LIVE MEMORY ホームへ戻る">${SITE_NAME}</a>
