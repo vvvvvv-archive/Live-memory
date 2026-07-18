@@ -36,5 +36,11 @@
     "liveId": "v6-groove-2021",
     "path": "data/lives/v6/v6-groove-2021.json",
     "displayOrder": 2021
+  },
+  {
+    "groupId": "v6",
+    "liveId": "the-ones-2017",
+    "path": "data/lives/v6/the-ones-2017.json",
+    "displayOrder": 2017
   }
 ]

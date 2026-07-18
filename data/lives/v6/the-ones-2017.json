@@ -1,0 +1,397 @@
+{
+  "id": "the-ones-2017",
+  "groupId": "v6",
+  "type": "LIVE",
+  "year": 2017,
+  "title": "LIVE TOUR 2017 The ONES",
+  "officialUrl": "https://mentrecording.jp/v6/discography/detail.php?id=1015578",
+  "sections": [
+    {
+      "id": "general",
+      "label": "総合",
+      "description": "ツアー全体の思い出や、曲ごとの思い出を残す場所です。"
+    },
+    {
+      "id": "schedule",
+      "label": "公演日程",
+      "description": "各公演ごとのMC、ファンサ、その他の思い出を残す場所です。"
+    },
+    {
+      "id": "video",
+      "label": "映像・円盤",
+      "description": "ライブ映像、特典映像、配信などの思い出を残す場所です。"
+    },
+    {
+      "id": "goods",
+      "label": "グッズ",
+      "description": "販売されたグッズに関する思い出を残す場所です。"
+    }
+  ],
+  "performances": [
+    {
+      "id": "20170811-1800",
+      "date": "2017-08-11",
+      "time": "18:00",
+      "area": "愛知",
+      "venue": "日本ガイシスポーツプラザ ガイシホール"
+    },
+    {
+      "id": "20170812-1700",
+      "date": "2017-08-12",
+      "time": "17:00",
+      "area": "愛知",
+      "venue": "日本ガイシスポーツプラザ ガイシホール"
+    },
+    {
+      "id": "20170813-1700",
+      "date": "2017-08-13",
+      "time": "17:00",
+      "area": "愛知",
+      "venue": "日本ガイシスポーツプラザ ガイシホール"
+    },
+    {
+      "id": "20170819-1700",
+      "date": "2017-08-19",
+      "time": "17:00",
+      "area": "福岡",
+      "venue": "マリンメッセ福岡"
+    },
+    {
+      "id": "20170820-1700",
+      "date": "2017-08-20",
+      "time": "17:00",
+      "area": "福岡",
+      "venue": "マリンメッセ福岡"
+    },
+    {
+      "id": "20170908-1800",
+      "date": "2017-09-08",
+      "time": "18:00",
+      "area": "大阪",
+      "venue": "大阪城ホール"
+    },
+    {
+      "id": "20170909-1700",
+      "date": "2017-09-09",
+      "time": "17:00",
+      "area": "大阪",
+      "venue": "大阪城ホール"
+    },
+    {
+      "id": "20170910-1700",
+      "date": "2017-09-10",
+      "time": "17:00",
+      "area": "大阪",
+      "venue": "大阪城ホール"
+    },
+    {
+      "id": "20170916-1700",
+      "date": "2017-09-16",
+      "time": "17:00",
+      "area": "宮城",
+      "venue": "宮城・セキスイハイムアリーナ"
+    },
+    {
+      "id": "20170917-1700",
+      "date": "2017-09-17",
+      "time": "17:00",
+      "area": "宮城",
+      "venue": "宮城・セキスイハイムアリーナ"
+    },
+    {
+      "id": "20170930-1700",
+      "date": "2017-09-30",
+      "time": "17:00",
+      "area": "北海道",
+      "venue": "北海道立総合体育センター（北海きたえーる）"
+    },
+    {
+      "id": "20171001-1700",
+      "date": "2017-10-01",
+      "time": "17:00",
+      "area": "北海道",
+      "venue": "北海道立総合体育センター（北海きたえーる）"
+    },
+    {
+      "id": "20171006-1800",
+      "date": "2017-10-06",
+      "time": "18:00",
+      "area": "神奈川",
+      "venue": "横浜アリーナ"
+    },
+    {
+      "id": "20171007-1700",
+      "date": "2017-10-07",
+      "time": "17:00",
+      "area": "神奈川",
+      "venue": "横浜アリーナ"
+    },
+    {
+      "id": "20171008-1700",
+      "date": "2017-10-08",
+      "time": "17:00",
+      "area": "神奈川",
+      "venue": "横浜アリーナ"
+    },
+    {
+      "id": "20171009-1700",
+      "date": "2017-10-09",
+      "time": "17:00",
+      "area": "神奈川",
+      "venue": "横浜アリーナ"
+    },
+    {
+      "id": "20171017-1800",
+      "date": "2017-10-17",
+      "time": "18:00",
+      "area": "神奈川",
+      "venue": "横浜アリーナ"
+    },
+    {
+      "id": "20171018-1800",
+      "date": "2017-10-18",
+      "time": "18:00",
+      "area": "神奈川",
+      "venue": "横浜アリーナ"
+    },
+    {
+      "id": "20171020-1800",
+      "date": "2017-10-20",
+      "time": "18:00",
+      "area": "静岡",
+      "venue": "静岡エコパアリーナ"
+    },
+    {
+      "id": "20171021-1700",
+      "date": "2017-10-21",
+      "time": "17:00",
+      "area": "静岡",
+      "venue": "静岡エコパアリーナ"
+    },
+    {
+      "id": "20171022-1600",
+      "date": "2017-10-22",
+      "time": "16:00",
+      "area": "静岡",
+      "venue": "静岡エコパアリーナ"
+    }
+  ],
+  "setlists": [
+    {
+      "id": "v1",
+      "name": "main setlist",
+      "songs": [
+        {
+          "order": 1,
+          "title": "Can't Get Enough",
+          "artist": "V6"
+        },
+        {
+          "order": 2,
+          "title": "never",
+          "artist": "V6"
+        },
+        {
+          "order": 3,
+          "title": "BEAT OF LIFE",
+          "artist": "V6"
+        },
+        {
+          "order": 4,
+          "title": "SOUZO",
+          "artist": "V6"
+        },
+        {
+          "order": 5,
+          "title": "HONEY BEAT",
+          "artist": "V6"
+        },
+        {
+          "order": 6,
+          "title": "Beautiful World",
+          "artist": "V6"
+        },
+        {
+          "order": 7,
+          "title": "Answer",
+          "artist": "V6"
+        },
+        {
+          "order": 8,
+          "title": "Remember your love",
+          "artist": "V6"
+        },
+        {
+          "order": 9,
+          "title": "Round & Round",
+          "artist": "V6"
+        },
+        {
+          "order": 10,
+          "title": "刹那的Night",
+          "artist": "V6"
+        },
+        {
+          "order": 11,
+          "title": "COLORS",
+          "artist": "V6"
+        },
+        {
+          "order": 12,
+          "title": "by your side",
+          "artist": "V6"
+        },
+        {
+          "order": 13,
+          "title": "Believe Your Smile",
+          "artist": "V6"
+        },
+        {
+          "order": 14,
+          "title": "会って話を",
+          "artist": "20th Century"
+        },
+        {
+          "order": 15,
+          "title": "足跡",
+          "artist": "V6"
+        },
+        {
+          "order": 16,
+          "title": "太陽と月のこどもたち",
+          "artist": "V6"
+        },
+        {
+          "order": 17,
+          "title": "DOMINO",
+          "artist": "V6"
+        },
+        {
+          "order": 18,
+          "title": "Get Naked",
+          "artist": "Coming Century"
+        },
+        {
+          "order": 19,
+          "title": "SPARK",
+          "artist": "V6"
+        },
+        {
+          "order": 20,
+          "title": "MANIAC",
+          "artist": "V6"
+        },
+        {
+          "order": 21,
+          "title": "レッツゴー6匹",
+          "artist": "V6"
+        },
+        {
+          "order": 22,
+          "title": "Medley",
+          "artist": "V6",
+          "note": "Sexy.Honey.Bunny! ～ グッデイ!! ～ 愛のMelody ～ 本気がいっぱい ～ MUSIC FOR THE PEOPLE ～ 愛なんだ"
+        },
+        {
+          "order": 23,
+          "title": "ボク・空・キミ",
+          "artist": "V6"
+        },
+        {
+          "order": 24,
+          "title": "The One",
+          "artist": "V6"
+        },
+        {
+          "order": 25,
+          "title": "ハナヒラケ",
+          "artist": "V6"
+        },
+        {
+          "order": 26,
+          "title": "WAになっておどろう",
+          "artist": "V6"
+        },
+        {
+          "order": 27,
+          "title": "Cloudy sky",
+          "artist": "V6"
+        },
+        {
+          "order": 28,
+          "title": "CHANGE THE WORLD",
+          "artist": "V6"
+        }
+      ]
+    }
+  ],
+  "video": {
+    "officialUrl": "https://mentrecording.jp/v6/discography/detail.php?id=1015578",
+    "mainFeature": {
+      "title": "LIVE TOUR 2017 The ONES",
+      "releaseDate": "2018-03-14"
+    },
+    "setlist": [],
+    "bonusSections": [
+      {
+        "id": "bonus-s01",
+        "title": "初回盤A 特典映像",
+        "items": [
+          {
+            "id": "bonus-s01-i01",
+            "title": "全国ツアーいいとこどり集"
+          },
+          {
+            "id": "bonus-s01-i02",
+            "title": "We are \"The ONES\" 完全密着ドキュメント"
+          }
+        ]
+      },
+      {
+        "id": "bonus-s02",
+        "title": "初回盤B 特典映像",
+        "items": [
+          {
+            "id": "bonus-s02-i01",
+            "title": "長野生誕企画「博のイイところ45!」"
+          },
+          {
+            "id": "bonus-s02-i02",
+            "title": "シンクロするまでリハに戻れま6!"
+          },
+          {
+            "id": "bonus-s02-i03",
+            "title": "全国ツアーMC集"
+          },
+          {
+            "id": "bonus-s02-i04",
+            "title": "カミセンMC集"
+          }
+        ]
+      },
+      {
+        "id": "bonus-s03",
+        "title": "通常盤 特典映像 / メンバーパーソナルエディット",
+        "items": [
+          {
+            "id": "bonus-s03-i01",
+            "title": "BEAT OF LIFE"
+          },
+          {
+            "id": "bonus-s03-i02",
+            "title": "Remember your love"
+          },
+          {
+            "id": "bonus-s03-i03",
+            "title": "会って話を"
+          },
+          {
+            "id": "bonus-s03-i04",
+            "title": "Get Naked"
+          }
+        ]
+      }
+    ]
+  },
+  "goods": []
+}
