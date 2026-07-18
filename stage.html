@@ -17,7 +17,7 @@
   <meta name="twitter:description" content="V6、20th Century、Coming Century、そして6人それぞれの活動に関する記憶を未来へ残すための非公式ファンアーカイブ">
   <meta name="twitter:image" content="https://vvvvvv-archive.github.io/Live-memory/assets/images/ogp.png">
 
-  <link rel="stylesheet" href="css/style.css?v=20260717-member-tag-chips">
+  <link rel="stylesheet" href="css/style.css?v=20260718-schedule-short-date">
 </head>
 
 <body>
@@ -71,12 +71,45 @@
         .replace(/'/g, "&#039;");
     }
 
-    function formatDisplayDate(date) {
+    function formatFullDisplayDate(date) {
       return String(date || "").replace(/-/g, "/");
     }
 
+    function formatShortDisplayDate(date) {
+      const value = String(date || "");
+      const match = value.match(/^\d{4}-(\d{2})-(\d{2})$/);
+      return match ? `${match[1]}/${match[2]}` : formatFullDisplayDate(value);
+    }
+
     function formatDisplayDateTime(item) {
-      return [formatDisplayDate(item.date), item.time].filter(Boolean).join(" ");
+      return [formatShortDisplayDate(item.date), item.time].filter(Boolean).join(" ");
+    }
+
+    function performanceYear(performance) {
+      return String(performance?.date || "").slice(0, 4);
+    }
+
+    function hasMultiplePerformanceYears(performances = []) {
+      return new Set(performances.map(performanceYear).filter(Boolean)).size > 1;
+    }
+
+    function renderScheduleItems(items = [], showYearHeadings = false) {
+      let currentYear = "";
+      return items.map(item => {
+        const year = performanceYear(item);
+        const yearHeading = showYearHeadings && year !== currentYear
+          ? `<li class="schedule-year-heading stage-schedule-year">${escapeHtml(year)}</li>`
+          : "";
+        if (showYearHeadings && year !== currentYear) {
+          currentYear = year;
+        }
+        return `
+          ${yearHeading}
+          <li>
+            <time datetime="${escapeHtml(item.date)}">${escapeHtml(formatDisplayDateTime(item))}</time>
+          </li>
+        `;
+      }).join("");
     }
 
     function createMemoryGuidelines() {
@@ -118,16 +151,14 @@
         return;
       }
 
+      const showYearHeadings = hasMultiplePerformanceYears(performances);
+
       body.innerHTML = groups.map(group => `
         <section class="stage-schedule-venue">
           <h3>【${escapeHtml(group.area)}】</h3>
           <p class="stage-schedule-venue-name">${escapeHtml(group.venue)}</p>
           <ul class="stage-schedule-list">
-            ${group.items.map(item => `
-              <li>
-                <time datetime="${escapeHtml(item.date)}">${escapeHtml(formatDisplayDateTime(item))}</time>
-              </li>
-            `).join("")}
+            ${renderScheduleItems(group.items, showYearHeadings)}
           </ul>
         </section>
       `).join("");

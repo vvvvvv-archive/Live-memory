@@ -254,6 +254,14 @@ main {
   gap: 18px;
 }
 
+.schedule-year-heading {
+  grid-column: 1 / -1;
+  margin: 14px 0 0;
+  color: var(--accent);
+  font-size: 1.12rem;
+  font-weight: 800;
+}
+
 .archive-card {
   display: block;
   padding: 24px;
@@ -375,6 +383,12 @@ main {
   flex-wrap: wrap;
   color: var(--sub);
   font-size: .95rem;
+}
+
+.stage-schedule-list .stage-schedule-year {
+  margin-top: 8px;
+  color: var(--accent);
+  font-size: 1rem;
 }
 
 .individual-members-line span {

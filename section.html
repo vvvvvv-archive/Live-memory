@@ -17,7 +17,7 @@
   <meta name="twitter:description" content="V6、20th Century、Coming Century、そして6人それぞれの活動に関する記憶を未来へ残すための非公式ファンアーカイブ">
   <meta name="twitter:image" content="https://vvvvvv-archive.github.io/Live-memory/assets/images/ogp.png">
 
-  <link rel="stylesheet" href="css/style.css?v=20260717-member-tag-chips">
+  <link rel="stylesheet" href="css/style.css?v=20260718-schedule-short-date">
 </head>
 
 <body>
@@ -74,12 +74,26 @@
       return a;
     }
 
-    function formatDisplayDate(date) {
+    function formatFullDisplayDate(date) {
       return String(date || "").replace(/-/g, "/");
     }
 
+    function formatShortDisplayDate(date) {
+      const value = String(date || "");
+      const match = value.match(/^\d{4}-(\d{2})-(\d{2})$/);
+      return match ? `${match[1]}/${match[2]}` : formatFullDisplayDate(value);
+    }
+
     function formatDisplayDateTime(performance) {
-      return [formatDisplayDate(performance?.date), performance?.time].filter(Boolean).join(" ");
+      return [formatShortDisplayDate(performance?.date), performance?.time].filter(Boolean).join(" ");
+    }
+
+    function performanceYear(performance) {
+      return String(performance?.date || "").slice(0, 4);
+    }
+
+    function hasMultiplePerformanceYears(performances = []) {
+      return new Set(performances.map(performanceYear).filter(Boolean)).size > 1;
     }
 
     function appendGiscus(container, memoryId) {
@@ -213,12 +227,24 @@
         const grid = document.createElement("div");
         grid.className = "archive-grid";
 
+        const showYearHeadings = hasMultiplePerformanceYears(live.performances);
+        let currentYear = "";
+
         live.performances.forEach(performance => {
+          const year = performanceYear(performance);
+          if (showYearHeadings && year !== currentYear) {
+            currentYear = year;
+            const yearHeading = document.createElement("h3");
+            yearHeading.className = "schedule-year-heading";
+            yearHeading.textContent = year;
+            grid.appendChild(yearHeading);
+          }
+
           const title = formatDisplayDateTime(performance);
           const subtitle = `[${performance.area}] ${performance.venue}${performance.performanceType ? " / " + performance.performanceType : ""}`;
           const href = `performance.html?group=${groupId}&live=${liveId}&performance=${performance.id}`;
           const card = createCard(title, subtitle, href);
-          card.dataset.search = `${live.title} ${title} ${subtitle}`;
+          card.dataset.search = `${live.title} ${title} ${performance.date} ${formatFullDisplayDate(performance.date)} ${subtitle}`;
           searchableCards.push(card);
           grid.appendChild(card);
         });
