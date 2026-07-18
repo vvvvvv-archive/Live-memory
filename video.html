@@ -161,8 +161,9 @@
             return;
           }
 
-          const card = createCard(item.title, "特典映像", videoBonusHref(item));
-          card.dataset.search = `${live.title} 映像 円盤 特典映像 ${section.title} ${item.title}`;
+          const subtitle = item.subtitle || "特典映像";
+          const card = createCard(item.title, subtitle, videoBonusHref(item));
+          card.dataset.search = `${live.title} 映像 円盤 特典映像 ${section.title} ${item.title} ${subtitle}`;
           searchableCards.push(card);
           grid.appendChild(card);
         });

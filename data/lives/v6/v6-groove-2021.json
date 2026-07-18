@@ -402,6 +402,25 @@
           }
         ],
         "id": "bonus-s02"
+      },
+      {
+        "id": "bonus-s03",
+        "title": "通常盤 特典映像 / メンバーパーソナルエディット",
+        "items": [
+          {
+            "id": "bonus-s03-i01",
+            "title": "TL"
+          },
+          {
+            "id": "bonus-s03-i02",
+            "title": "Medley",
+            "subtitle": "Believe Your Smile ～ 愛のMelody ～ 本気がいっぱい ～ Darling ～ グッデイ!! ～ HONEY BEAT ～ CHANGE THE WORLD ～ WAになっておどろう ～ 愛なんだ"
+          },
+          {
+            "id": "bonus-s03-i03",
+            "title": "目を閉じれば"
+          }
+        ]
       }
     ]
   },
