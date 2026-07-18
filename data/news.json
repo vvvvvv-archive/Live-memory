@@ -8,10 +8,11 @@
   },
   {
     "date": "2026-07-18",
-    "prefix": "V6 「",
+    "prefix": "「",
     "linkText": "LIVE TOUR 2015 -SINCE 1995～FOREVER-",
     "suffix": "」を追加しました！",
-    "href": "live.html?group=v6&live=since-1995-forever-2015"
+    "href": "live.html?group=v6&live=since-1995-forever-2015",
+    "linePrefix": "V6"
   },
   {
     "date": "2026-07-17",

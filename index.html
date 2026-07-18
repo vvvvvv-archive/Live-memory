@@ -193,10 +193,13 @@
           const link = item.href && item.linkText
             ? `<a class="news-title" href="${escapeNewsHtml(item.href)}">${escapeNewsHtml(item.linkText)}</a>`
             : escapeNewsHtml(item.linkText || "");
+          const prefix = item.linePrefix
+            ? `${escapeNewsHtml(item.linePrefix)}<br>${escapeNewsHtml(item.prefix || "")}`
+            : escapeNewsHtml(item.prefix || "");
           return `
           <div class="news-item">
             <time datetime="${escapeNewsHtml(item.date)}">更新：${escapeNewsHtml(LiveRegistry.formatDisplayDate(item.date))}</time>
-            <p class="news-body">${escapeNewsHtml(item.prefix || "")}${link}${escapeNewsHtml(item.suffix || "")}</p>
+            <p class="news-body">${prefix}${link}${escapeNewsHtml(item.suffix || "")}</p>
           </div>
         `;
         }).join("");
