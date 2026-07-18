@@ -42,5 +42,11 @@
     "liveId": "the-ones-2017",
     "path": "data/lives/v6/the-ones-2017.json",
     "displayOrder": 2017
+  },
+  {
+    "groupId": "v6",
+    "liveId": "since-1995-forever-2015",
+    "path": "data/lives/v6/since-1995-forever-2015.json",
+    "displayOrder": 2015
   }
 ]
