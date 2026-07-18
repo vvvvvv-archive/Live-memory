@@ -131,6 +131,30 @@
       return block;
     }
 
+    function formatSetlistCardText(song) {
+      const symphonyMatch = String(song.title || "").match(/^(39 Symphony 第[^ ]+楽章)\s+(.+)$/);
+      if (symphonyMatch) {
+        const sectionLabel = song.section === "encore" ? "Encore" : "";
+        const subtitleParts = [
+          symphonyMatch[2].replace(/～/g, " ～ "),
+          sectionLabel
+        ].filter(Boolean);
+        return {
+          title: `${song.order}. ${symphonyMatch[1]}`,
+          subtitle: subtitleParts.join(" / ")
+        };
+      }
+
+      const title = `${song.order}. ${song.title}`;
+      const sectionLabel = song.section === "encore" ? "Encore" : "";
+      const note = song.note ? ` / ${song.note}` : "";
+      const artist = song.artist ? song.artist : "";
+      return {
+        title,
+        subtitle: `${artist}${note}${sectionLabel ? " / " + sectionLabel : ""}`
+      };
+    }
+
     function generalSongHref(setlist, song, index) {
       return `song.html?group=${groupId}&live=${liveId}&setlist=${setlist.id}&song=${index}&order=${song.order}`;
     }
@@ -161,14 +185,10 @@
       grid.className = "archive-grid";
 
       setlist.songs.forEach((song, index) => {
-        const title = `${song.order}. ${song.title}`;
-        const sectionLabel = song.section === "encore" ? "Encore" : "";
-        const note = song.note ? ` / ${song.note}` : "";
-        const artist = song.artist ? song.artist : "";
-        const subtitle = `${artist}${note}${sectionLabel ? " / " + sectionLabel : ""}`;
+        const { title, subtitle } = formatSetlistCardText(song);
         const href = songHrefBuilder(setlist, song, index);
         const card = createCard(title, subtitle, href);
-        card.dataset.search = `${live.title} ${title} ${subtitle}`;
+        card.dataset.search = `${live.title} ${title} ${song.title} ${subtitle} ${song.artist || ""}`;
         searchableCards.push(card);
         grid.appendChild(card);
       });
