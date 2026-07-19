@@ -396,10 +396,21 @@
     return value.split(":");
   }
 
+  function siteRootUrl() {
+    const path = window.location.pathname;
+    const adminIndex = path.indexOf("/admin/");
+
+    if (adminIndex >= 0) {
+      return `${window.location.origin}${path.slice(0, adminIndex + 1)}`;
+    }
+
+    return new URL("../", window.location.href).href;
+  }
+
   function prefixedSiteHref(href) {
     if (!href) return "";
     if (/^https?:\/\//.test(href)) return href;
-    return `../${href.replace(/^\.\//, "")}`;
+    return new URL(href.replace(/^\.\//, ""), siteRootUrl()).href;
   }
 
   async function enrichComment(row) {
