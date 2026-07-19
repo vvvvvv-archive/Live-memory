@@ -951,6 +951,75 @@ main {
   color: var(--sub);
 }
 
+.comment-delete-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: rgba(34, 38, 48, .46);
+}
+
+.comment-delete-dialog {
+  width: min(100%, 420px);
+  padding: 24px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  box-shadow: var(--shadow);
+}
+
+.comment-delete-dialog h2 {
+  margin: 0 0 12px;
+  color: var(--text);
+  font-size: 1.2rem;
+}
+
+.comment-delete-dialog p {
+  margin: 0;
+  color: var(--sub);
+  line-height: 1.8;
+}
+
+.comment-delete-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 22px;
+}
+
+.comment-delete-actions button {
+  min-height: 44px;
+  padding: 10px 18px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.comment-delete-cancel {
+  background: var(--card);
+  color: var(--text);
+}
+
+.comment-delete-confirm {
+  background: #b95b5b;
+  border-color: #b95b5b;
+  color: #fff;
+}
+
+.comment-delete-actions button:focus-visible {
+  outline: 3px solid rgba(96, 113, 143, .35);
+  outline-offset: 2px;
+}
+
+.comment-delete-actions button:disabled {
+  cursor: wait;
+  opacity: .7;
+}
+
 .memory-guidelines {
   margin-top: 16px;
   padding: 16px 18px;

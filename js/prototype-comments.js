@@ -113,6 +113,13 @@
       }));
   }
 
+  function rpcSucceeded(value) {
+    if (value === true) return true;
+    if (Array.isArray(value)) return value.some(item => item === true || item?.delete_own_comment === true);
+    if (value && typeof value === "object") return Object.values(value).some(item => item === true);
+    return false;
+  }
+
   function reactionInfo(comment, emoji, authorToken) {
     const value = comment.reactions?.[emoji];
 
@@ -231,6 +238,60 @@
         target.classList.remove("is-comment-target");
       }, 3000);
     }, 0);
+  }
+
+  function confirmCommentDelete({ hasReplies = false } = {}) {
+    return new Promise(resolve => {
+      const previousOverflow = document.body.style.overflow;
+      const modal = document.createElement("div");
+      modal.className = "comment-delete-modal";
+      modal.setAttribute("role", "dialog");
+      modal.setAttribute("aria-modal", "true");
+      modal.setAttribute("aria-labelledby", "comment-delete-title");
+      modal.innerHTML = `
+        <div class="comment-delete-dialog">
+          <h2 id="comment-delete-title">このコメントを削除しますか？</h2>
+          <p>${hasReplies ? "このコメントへの返信も表示されなくなり、元に戻せません。" : "削除したコメントは元に戻せません。"}</p>
+          <div class="comment-delete-actions">
+            <button type="button" class="comment-delete-cancel" data-delete-cancel>キャンセル</button>
+            <button type="button" class="comment-delete-confirm" data-delete-confirm>削除する</button>
+          </div>
+        </div>
+      `;
+
+      let settled = false;
+      const close = value => {
+        if (settled) return;
+        settled = true;
+        document.removeEventListener("keydown", onKeydown);
+        document.body.style.overflow = previousOverflow;
+        modal.remove();
+        resolve(value);
+      };
+      const onKeydown = event => {
+        if (event.key === "Escape") {
+          event.preventDefault();
+          close(false);
+        }
+      };
+
+      modal.addEventListener("click", event => {
+        if (event.target === modal || event.target.closest("[data-delete-cancel]")) {
+          close(false);
+          return;
+        }
+        const confirmButton = event.target.closest("[data-delete-confirm]");
+        if (confirmButton) {
+          confirmButton.disabled = true;
+          close(true);
+        }
+      });
+
+      document.addEventListener("keydown", onKeydown);
+      document.body.style.overflow = "hidden";
+      document.body.appendChild(modal);
+      modal.querySelector("[data-delete-cancel]")?.focus();
+    });
   }
 
   function renderComment(comment, authorToken, activeComposer, isReply = false) {
@@ -440,6 +501,7 @@
     const status = root.querySelector("[data-comment-status]");
     let comments = [];
     let activeComposer = null;
+    let deletingCommentId = "";
 
     function setStatus(message) {
       status.textContent = message || "";
@@ -687,17 +749,36 @@
         }
 
         if (action === "delete" && (target.owned || target.authorToken === authorToken)) {
-          if (!window.confirm("このコメントを削除しますか？")) return;
+          if (deletingCommentId) return;
+          deletingCommentId = target.id;
+          button.disabled = true;
+
+          const confirmed = await confirmCommentDelete({
+            hasReplies: !target.parentId && (target.replies || []).length > 0
+          });
+          if (!confirmed) {
+            deletingCommentId = "";
+            button.disabled = false;
+            return;
+          }
+
           if (remoteEnabled()) {
-            const deleted = await deleteRemoteComment(target, authorToken);
+            const deleted = rpcSucceeded(await deleteRemoteComment(target, authorToken));
             activeComposer = null;
-            setStatus(deleted ? "削除しました。" : "削除できませんでした。投稿時と同じブラウザか確認してください。");
-            await refresh();
+            setStatus(deleted ? "コメントを削除しました。" : "コメントを削除できませんでした。時間をおいて再度お試しください。");
+            if (deleted) {
+              deletingCommentId = "";
+              await refresh();
+            } else {
+              deletingCommentId = "";
+              button.disabled = false;
+            }
             return;
           }
           comments = removeComment(comments, id);
           activeComposer = null;
-          setStatus("削除しました。");
+          setStatus("コメントを削除しました。");
+          deletingCommentId = "";
           persistLocal();
           return;
         }
@@ -705,6 +786,8 @@
         setStatus("操作できませんでした。投稿時と同じブラウザか確認してください。");
       } catch (error) {
         console.error(error);
+        deletingCommentId = "";
+        button.disabled = false;
         setStatus("処理に失敗しました。少し待ってからもう一度お試しください。");
       }
     });
