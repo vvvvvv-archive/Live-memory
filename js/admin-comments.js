@@ -8,7 +8,8 @@
     offset: 0,
     hasMore: true,
     loading: false,
-    contextCache: null
+    contextCache: null,
+    supportsStatusRpc: true
   };
 
   const els = {};
@@ -52,6 +53,10 @@
     } catch (error) {
       return String(value);
     }
+  }
+
+  function displayDateLabel(label, value) {
+    return value ? `${label}：${formatDateTime(value)}` : "";
   }
 
   function loadStoredSession() {
@@ -187,6 +192,140 @@
     return data;
   }
 
+  function closeAdminModal(modal, previousOverflow, returnFocusTo, resolve, value) {
+    document.body.style.overflow = previousOverflow;
+    modal.remove();
+    setTimeout(() => {
+      if (returnFocusTo?.isConnected && !returnFocusTo.disabled) {
+        returnFocusTo.focus({ preventScroll: true });
+      }
+    }, 0);
+    resolve(value);
+  }
+
+  function bindModalKeyboard(modal, close) {
+    return event => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        close(false);
+        return;
+      }
+      if (event.key !== "Tab") return;
+      const focusable = Array.from(modal.querySelectorAll("button:not([disabled]), input:not([disabled]), a[href]"));
+      if (!focusable.length) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+  }
+
+  function confirmSoftDelete(comment, returnFocusTo) {
+    return new Promise(resolve => {
+      const previousOverflow = document.body.style.overflow;
+      const modal = document.createElement("div");
+      modal.className = "admin-modal";
+      modal.setAttribute("role", "dialog");
+      modal.setAttribute("aria-modal", "true");
+      modal.setAttribute("aria-labelledby", "admin-soft-delete-title");
+      modal.innerHTML = `
+        <div class="admin-dialog">
+          <h2 id="admin-soft-delete-title">このコメントを非表示にしますか？</h2>
+          <p>公開ページや検索結果から表示されなくなります。<br>管理者ページから再表示できます。</p>
+          <div class="admin-dialog-summary">
+            <strong>${escapeHtml(comment.nickname)}</strong><br>
+            ${escapeHtml(comment.body.slice(0, 120))}
+          </div>
+          <div class="admin-dialog-actions">
+            <button class="admin-button is-secondary" type="button" data-admin-cancel>キャンセル</button>
+            <button class="admin-button" type="button" data-admin-confirm>非表示にする</button>
+          </div>
+        </div>
+      `;
+      let settled = false;
+      const close = value => {
+        if (settled) return;
+        settled = true;
+        document.removeEventListener("keydown", onKeydown);
+        closeAdminModal(modal, previousOverflow, returnFocusTo, resolve, value);
+      };
+      const onKeydown = bindModalKeyboard(modal, close);
+      modal.addEventListener("click", event => {
+        if (event.target === modal || event.target.closest("[data-admin-cancel]")) close(false);
+        if (event.target.closest("[data-admin-confirm]")) close(true);
+      });
+      document.addEventListener("keydown", onKeydown);
+      document.body.style.overflow = "hidden";
+      document.body.appendChild(modal);
+      modal.querySelector("[data-admin-cancel]")?.focus();
+    });
+  }
+
+  function confirmHardDelete(comment, returnFocusTo) {
+    return new Promise(resolve => {
+      const previousOverflow = document.body.style.overflow;
+      const modal = document.createElement("div");
+      modal.className = "admin-modal";
+      modal.setAttribute("role", "dialog");
+      modal.setAttribute("aria-modal", "true");
+      modal.setAttribute("aria-labelledby", "admin-hard-delete-title");
+      modal.innerHTML = `
+        <div class="admin-dialog">
+          <h2 id="admin-hard-delete-title">このコメントを完全に削除しますか？</h2>
+          <p>データベースから削除され、元に戻せません。<br>関連する返信やリアクションも削除される場合があります。</p>
+          <div class="admin-dialog-summary">
+            ニックネーム：<strong>${escapeHtml(comment.nickname)}</strong><br>
+            投稿日：${escapeHtml(formatDateTime(comment.createdAt))}<br>
+            投稿先：${escapeHtml(comment.targetDetail)}<br>
+            コメントID：${escapeHtml(comment.id)}<br>
+            返信件数：${comment.childCount}件<br>
+            リアクション数：${comment.reactionTotal}件<br>
+            本文：${escapeHtml(comment.body.slice(0, 120))}
+          </div>
+          <p>確認のため「完全削除」と入力してください。</p>
+          <input class="admin-confirm-input" type="text" autocomplete="off" data-hard-delete-input>
+          <div class="admin-dialog-actions">
+            <button class="admin-button is-secondary" type="button" data-admin-cancel>キャンセル</button>
+            <button class="admin-button is-danger" type="button" data-admin-confirm disabled>完全削除する</button>
+          </div>
+        </div>
+      `;
+      let settled = false;
+      const close = value => {
+        if (settled) return;
+        settled = true;
+        document.removeEventListener("keydown", onKeydown);
+        closeAdminModal(modal, previousOverflow, returnFocusTo, resolve, value);
+      };
+      const onKeydown = bindModalKeyboard(modal, close);
+      modal.addEventListener("input", event => {
+        if (event.target.matches("[data-hard-delete-input]")) {
+          const button = modal.querySelector("[data-admin-confirm]");
+          button.disabled = event.target.value.trim() !== "完全削除";
+        }
+      });
+      modal.addEventListener("keydown", event => {
+        if (event.key === "Enter" && event.target.matches("[data-hard-delete-input]")) {
+          event.preventDefault();
+        }
+      });
+      modal.addEventListener("click", event => {
+        if (event.target === modal || event.target.closest("[data-admin-cancel]")) close(false);
+        const confirmButton = event.target.closest("[data-admin-confirm]");
+        if (confirmButton && !confirmButton.disabled) close(true);
+      });
+      document.addEventListener("keydown", onKeydown);
+      document.body.style.overflow = "hidden";
+      document.body.appendChild(modal);
+      modal.querySelector("[data-admin-cancel]")?.focus();
+    });
+  }
+
   async function loadJson(path) {
     const response = await fetch(`../${path}`, { cache: "no-store" });
     if (!response.ok) {
@@ -278,6 +417,7 @@
       parentBody: row.parent_body || "",
       reactions: row.reactions || {},
       reactionTotal: Number(row.reaction_total || 0),
+      childCount: Number(row.child_count || 0),
       groupName,
       groupFilterKey: context.member ? `member:${context.member.id}` : `group:${groupId}`,
       liveTitle,
@@ -342,15 +482,30 @@
     const nicknameQuery = normalizeText(els.nicknameFilter.value);
     const groupValue = els.groupFilter.value;
     const replyValue = els.replyFilter.value;
+    const statusValue = els.statusFilter.value;
 
-    return state.comments.filter(comment => {
+    const comments = state.comments.filter(comment => {
       if (bodyQuery && !normalizeText(comment.body).includes(bodyQuery)) return false;
       if (nicknameQuery && !normalizeText(comment.nickname).includes(nicknameQuery)) return false;
       if (groupValue && comment.groupFilterKey !== groupValue) return false;
       if (replyValue === "comment" && comment.isReply) return false;
       if (replyValue === "reply" && !comment.isReply) return false;
+      if (statusValue === "visible" && comment.deletedAt) return false;
+      if (statusValue === "hidden" && !comment.deletedAt) return false;
       return true;
     });
+
+    if (statusValue === "hidden") {
+      return [...comments].sort((a, b) => {
+        const deletedDiff = new Date(b.deletedAt || 0) - new Date(a.deletedAt || 0);
+        if (deletedDiff) return deletedDiff;
+        const createdDiff = new Date(b.createdAt || 0) - new Date(a.createdAt || 0);
+        if (createdDiff) return createdDiff;
+        return String(b.id).localeCompare(String(a.id));
+      });
+    }
+
+    return comments;
   }
 
   function reactionLabel(comment) {
@@ -367,36 +522,55 @@
     const parentHtml = comment.isReply
       ? `<div class="admin-comment-parent">返信先：${escapeHtml(comment.parentNickname || "親コメント")}<br>${escapeHtml(comment.parentBody || "親コメント本文は取得できません。")}</div>`
       : "";
-    const deletedChip = comment.deletedAt ? `<span class="admin-chip is-danger">削除済み</span>` : "";
+    const statusChip = comment.deletedAt
+      ? `<span class="admin-chip is-danger">非表示</span>`
+      : `<span class="admin-chip is-visible">公開中</span>`;
     const editedChip = comment.edited ? `<span class="admin-chip">編集済み</span>` : "";
     const replyChip = comment.isReply ? `<span class="admin-chip">返信</span>` : `<span class="admin-chip">通常コメント</span>`;
+    const dateLabels = [
+      displayDateLabel("投稿日", comment.createdAt),
+      comment.deletedAt ? displayDateLabel("非表示", comment.deletedAt) : ""
+    ].filter(Boolean).join("<br>");
+    const pageLink = comment.href
+      ? `<a class="admin-text-link" href="${escapeHtml(comment.href)}">元ページで確認</a>`
+      : "";
+    const managementButtons = comment.deletedAt
+      ? `
+        <button class="admin-control-button" type="button" data-admin-action="restore" data-id="${escapeHtml(comment.id)}">再表示する</button>
+        <button class="admin-control-button is-danger" type="button" data-admin-action="hard-delete" data-id="${escapeHtml(comment.id)}">完全削除</button>
+      `
+      : `
+        <button class="admin-control-button" type="button" data-admin-action="soft-delete" data-id="${escapeHtml(comment.id)}">非表示にする</button>
+        <button class="admin-control-button is-danger" type="button" data-admin-action="hard-delete" data-id="${escapeHtml(comment.id)}">完全削除</button>
+      `;
     const body = `
       <div class="admin-comment-meta">
         <time datetime="${escapeHtml(comment.createdAt)}">${escapeHtml(formatDateTime(comment.createdAt))}</time>
         ${replyChip}
         ${editedChip}
-        ${deletedChip}
+        ${statusChip}
       </div>
       <div class="admin-comment-context">
         ${escapeHtml(comment.groupName)} / ${escapeHtml(comment.liveType)} / ${escapeHtml(comment.liveTitle)}<br>
         ${escapeHtml(comment.targetDetail)}
       </div>
+      <div class="admin-comment-meta">${dateLabels}</div>
       <p class="admin-comment-body">${escapeHtml(comment.body)}</p>
       ${parentHtml}
       ${tagHtml}
       <div class="admin-comment-meta">
         <span>${escapeHtml(reactionLabel(comment))}</span>
-        <span>元ページで確認</span>
+        <span>返信 ${comment.childCount}件</span>
       </div>
       <div class="admin-comment-ids">
         comment_id: ${escapeHtml(comment.id)}<br>
         page_key: ${escapeHtml(comment.pageKey)}
       </div>
+      <div class="admin-comment-controls">
+        ${pageLink}
+        ${managementButtons}
+      </div>
     `;
-
-    if (comment.href) {
-      return `<a class="admin-comment-card${comment.deletedAt ? " is-deleted" : ""}" href="${escapeHtml(comment.href)}">${body}</a>`;
-    }
 
     return `<article class="admin-comment-card${comment.deletedAt ? " is-deleted" : ""}">${body}</article>`;
   }
@@ -416,9 +590,90 @@
     els.list.innerHTML = comments.map(renderCommentCard).join("");
   }
 
+  function findComment(commentId) {
+    return state.comments.find(comment => comment.id === commentId) || null;
+  }
+
+  async function runAdminCommentAction(action, comment, button) {
+    if (!comment || button.disabled) return;
+    const previousText = button.textContent;
+    button.disabled = true;
+    button.textContent = "処理中";
+
+    try {
+      if (action === "soft-delete") {
+        const confirmed = await confirmSoftDelete(comment, button);
+        if (!confirmed) return;
+        const ok = await adminRpc("admin_soft_delete_comment", { target_comment_id: comment.id });
+        if (!ok) throw new Error("admin_soft_delete_comment returned false.");
+        comment.deletedAt = new Date().toISOString();
+        comment.updatedAt = comment.deletedAt;
+        setStatus(els.commentsStatus, "コメントを非表示にしました。");
+      }
+
+      if (action === "restore") {
+        const ok = await adminRpc("admin_restore_comment", { target_comment_id: comment.id });
+        if (!ok) throw new Error("admin_restore_comment returned false.");
+        comment.deletedAt = "";
+        setStatus(els.commentsStatus, "コメントを再表示しました。");
+      }
+
+      if (action === "hard-delete") {
+        const confirmed = await confirmHardDelete(comment, button);
+        if (!confirmed) return;
+        const ok = await adminRpc("admin_hard_delete_comment", { target_comment_id: comment.id });
+        if (!ok) throw new Error("admin_hard_delete_comment returned false.");
+        state.comments = state.comments.filter(item => item.id !== comment.id && item.parentId !== comment.id);
+        setStatus(els.commentsStatus, "コメントを完全に削除しました。");
+      }
+
+      renderGroupOptions();
+      renderComments();
+    } catch (error) {
+      console.error(error);
+      const message = action === "restore"
+        ? "コメントを再表示できませんでした。"
+        : action === "hard-delete"
+          ? "コメントを完全削除できませんでした。"
+          : "コメントを非表示にできませんでした。";
+      setStatus(els.commentsStatus, message, true);
+    } finally {
+      if (button.isConnected) {
+        button.disabled = false;
+        button.textContent = previousText;
+      }
+    }
+  }
+
   async function verifyAdmin() {
     const result = await adminRpc("is_comment_admin", {});
     return result === true;
+  }
+
+  async function fetchAdminComments() {
+    const args = {
+      result_limit: PAGE_SIZE,
+      result_offset: state.offset
+    };
+
+    if (state.supportsStatusRpc) {
+      args.status_filter = els.statusFilter.value || "all";
+    }
+
+    try {
+      return await adminRpc("get_admin_comments", args);
+    } catch (error) {
+      const message = String(error?.data?.message || error?.message || "");
+      if (state.supportsStatusRpc && /status_filter|get_admin_comments|Could not find|schema cache/i.test(message)) {
+        state.supportsStatusRpc = false;
+        console.warn("Admin status_filter RPC is not available yet. Falling back to the existing admin RPC.", error);
+        return adminRpc("get_admin_comments", {
+          result_limit: PAGE_SIZE,
+          result_offset: state.offset
+        });
+      }
+      throw error;
+    }
   }
 
   async function loadComments({ reset = false } = {}) {
@@ -434,10 +689,7 @@
         state.hasMore = true;
       }
 
-      const rows = await adminRpc("get_admin_comments", {
-        result_limit: PAGE_SIZE,
-        result_offset: state.offset
-      });
+      const rows = await fetchAdminComments();
       const enriched = await Promise.all((rows || []).map(enrichComment));
       state.comments.push(...enriched);
       state.offset += enriched.length;
@@ -508,10 +760,18 @@
     els.logout.addEventListener("click", signOut);
     els.deniedLogout.addEventListener("click", signOut);
     els.loadMore.addEventListener("click", () => loadComments());
+    els.list.addEventListener("click", event => {
+      const button = event.target.closest("[data-admin-action]");
+      if (!button) return;
+      event.preventDefault();
+      const comment = findComment(button.dataset.id);
+      runAdminCommentAction(button.dataset.adminAction, comment, button);
+    });
     [els.bodyFilter, els.nicknameFilter, els.groupFilter, els.replyFilter].forEach(element => {
       element.addEventListener("input", renderComments);
       element.addEventListener("change", renderComments);
     });
+    els.statusFilter.addEventListener("change", () => loadComments({ reset: true }));
   }
 
   function collectElements() {
@@ -527,6 +787,7 @@
     els.nicknameFilter = document.getElementById("admin-filter-nickname");
     els.groupFilter = document.getElementById("admin-filter-group");
     els.replyFilter = document.getElementById("admin-filter-reply");
+    els.statusFilter = document.getElementById("admin-filter-status");
     els.loadedCount = document.getElementById("admin-loaded-count");
     els.visibleCount = document.getElementById("admin-visible-count");
     els.commentsStatus = document.getElementById("admin-comments-status");

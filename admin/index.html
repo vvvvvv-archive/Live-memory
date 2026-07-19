@@ -6,7 +6,7 @@
   <meta name="robots" content="noindex, nofollow" />
   <title>Comment Admin | V6 LIVE MEMORY</title>
   <link rel="stylesheet" href="../css/style.css?v=20260719-delete-modal">
-  <link rel="stylesheet" href="../css/admin.css?v=20260719-admin-comments">
+  <link rel="stylesheet" href="../css/admin.css?v=20260719-admin-comment-actions">
 </head>
 
 <body class="admin-page">
@@ -73,6 +73,14 @@
               <option value="reply">返信</option>
             </select>
           </label>
+          <label>
+            状態
+            <select id="admin-filter-status">
+              <option value="all">すべて</option>
+              <option value="visible">公開中</option>
+              <option value="hidden">非表示</option>
+            </select>
+          </label>
         </div>
         <div class="admin-summary">
           <span id="admin-loaded-count">0件読み込み済み</span>
@@ -93,6 +101,6 @@
   </script>
   <script src="../js/comment-backend-config.js"></script>
   <script src="../js/comment-data.js?v=20260719-admin-comments"></script>
-  <script src="../js/admin-comments.js?v=20260719-admin-comments-path-fallback"></script>
+  <script src="../js/admin-comments.js?v=20260719-admin-comment-actions"></script>
 </body>
 </html>
