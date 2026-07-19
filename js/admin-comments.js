@@ -398,19 +398,26 @@
 
   function siteRootUrl() {
     const path = window.location.pathname;
-    const adminIndex = path.indexOf("/admin/");
+    const adminIndex = path.indexOf("/admin");
 
-    if (adminIndex >= 0) {
+    if (adminIndex >= 0 && (path[adminIndex + "/admin".length] === "/" || path.length === adminIndex + "/admin".length)) {
       return `${window.location.origin}${path.slice(0, adminIndex + 1)}`;
     }
 
     return new URL("../", window.location.href).href;
   }
 
-  function prefixedSiteHref(href) {
+  function prefixedSiteHref(href, commentId = "") {
     if (!href) return "";
     if (/^https?:\/\//.test(href)) return href;
-    return new URL(href.replace(/^\.\//, ""), siteRootUrl()).href;
+    const url = new URL(href.replace(/^\.\//, ""), siteRootUrl());
+
+    if (commentId) {
+      url.hash = "";
+      url.searchParams.set("comment", commentId);
+    }
+
+    return url.href;
   }
 
   async function enrichComment(row) {
@@ -453,7 +460,7 @@
       liveType: context.live?.type || "",
       targetLabel: memoryItem?.pageTypeLabel || "",
       targetDetail: memoryItem?.subtitle || row.page_key || liveTitle,
-      href: row.deleted_at ? "" : prefixedSiteHref(memoryItem?.href || ""),
+      href: row.deleted_at ? "" : prefixedSiteHref(memoryItem?.href || "", row.id),
       edited: Boolean(row.updated_at && row.updated_at !== row.created_at)
     };
   }
