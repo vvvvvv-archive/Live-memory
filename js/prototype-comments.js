@@ -240,7 +240,7 @@
     }, 0);
   }
 
-  function confirmCommentDelete({ hasReplies = false } = {}) {
+  function confirmCommentDelete({ hasReplies = false, returnFocusTo = null } = {}) {
     return new Promise(resolve => {
       const previousOverflow = document.body.style.overflow;
       const modal = document.createElement("div");
@@ -266,12 +266,31 @@
         document.removeEventListener("keydown", onKeydown);
         document.body.style.overflow = previousOverflow;
         modal.remove();
+        setTimeout(() => {
+          if (returnFocusTo?.isConnected && !returnFocusTo.disabled) {
+            returnFocusTo.focus({ preventScroll: true });
+          }
+        }, 0);
         resolve(value);
       };
       const onKeydown = event => {
         if (event.key === "Escape") {
           event.preventDefault();
           close(false);
+          return;
+        }
+        if (event.key === "Tab") {
+          const focusable = Array.from(modal.querySelectorAll("button:not([disabled])"));
+          if (!focusable.length) return;
+          const first = focusable[0];
+          const last = focusable[focusable.length - 1];
+          if (event.shiftKey && document.activeElement === first) {
+            event.preventDefault();
+            last.focus();
+          } else if (!event.shiftKey && document.activeElement === last) {
+            event.preventDefault();
+            first.focus();
+          }
         }
       };
 
@@ -754,7 +773,8 @@
           button.disabled = true;
 
           const confirmed = await confirmCommentDelete({
-            hasReplies: !target.parentId && (target.replies || []).length > 0
+            hasReplies: !target.parentId && (target.replies || []).length > 0,
+            returnFocusTo: button
           });
           if (!confirmed) {
             deletingCommentId = "";
