@@ -198,25 +198,36 @@
   async function loadContextRegistry() {
     if (state.contextCache) return state.contextCache;
 
-    const [groups, members, entries] = await Promise.all([
-      loadJson("data/groups.json"),
-      loadJson("data/members.json"),
-      loadJson("data/lives/index.json")
-    ]);
-    const groupById = new Map(groups.map(group => [group.id, group]));
-    const memberById = new Map(members.map(member => [member.id, member]));
-    const liveByKey = new Map();
+    try {
+      const [groups, members, entries] = await Promise.all([
+        loadJson("data/groups.json"),
+        loadJson("data/members.json"),
+        loadJson("data/lives/index.json")
+      ]);
+      const groupById = new Map(groups.map(group => [group.id, group]));
+      const memberById = new Map(members.map(member => [member.id, member]));
+      const liveByKey = new Map();
 
-    await Promise.all(entries.map(async entry => {
-      const livePath = entry.path || `data/lives/${entry.groupId}/${entry.liveId}.json`;
-      const live = await loadJson(livePath);
-      const groupId = entry.groupId || live.groupId;
-      const group = groupById.get(groupId);
-      const member = live.memberId ? memberById.get(live.memberId) : null;
-      liveByKey.set(`${groupId}:${live.id}`, { group, member, live });
-    }));
+      await Promise.all(entries.map(async entry => {
+        const livePath = entry.path || `data/lives/${entry.groupId}/${entry.liveId}.json`;
+        const live = await loadJson(livePath);
+        const groupId = entry.groupId || live.groupId;
+        const group = groupById.get(groupId);
+        const member = live.memberId ? memberById.get(live.memberId) : null;
+        liveByKey.set(`${groupId}:${live.id}`, { group, member, live });
+      }));
 
-    state.contextCache = { groupById, memberById, liveByKey };
+      state.contextCache = { groupById, memberById, liveByKey, available: true };
+    } catch (error) {
+      console.warn("Admin context data could not be loaded. Comments will be shown with page_key fallback.", error);
+      state.contextCache = {
+        groupById: new Map(),
+        memberById: new Map(),
+        liveByKey: new Map(),
+        available: false
+      };
+    }
+
     return state.contextCache;
   }
 
@@ -240,11 +251,16 @@
     const liveId = parts[2] || "";
     const registry = await loadContextRegistry();
     const context = registry.liveByKey.get(`${groupId}:${liveId}`) || {};
-    const memoryItem = window.CommentData?.rowToMemoryItem
-      ? await window.CommentData.rowToMemoryItem(row)
-      : null;
+    let memoryItem = null;
+    try {
+      memoryItem = window.CommentData?.rowToMemoryItem
+        ? await window.CommentData.rowToMemoryItem(row)
+        : null;
+    } catch (error) {
+      console.warn("Admin comment target could not be resolved.", error);
+    }
     const groupName = context.member?.name || context.group?.name || groupId || "不明";
-    const liveTitle = context.live?.title || memoryItem?.title || "投稿先不明";
+    const liveTitle = context.live?.title || memoryItem?.title || row.page_key || "投稿先不明";
     const tags = Array.isArray(row.tags) ? row.tags : [];
 
     return {
@@ -267,7 +283,7 @@
       liveTitle,
       liveType: context.live?.type || "",
       targetLabel: memoryItem?.pageTypeLabel || "",
-      targetDetail: memoryItem?.subtitle || liveTitle,
+      targetDetail: memoryItem?.subtitle || row.page_key || liveTitle,
       href: row.deleted_at ? "" : prefixedSiteHref(memoryItem?.href || ""),
       edited: Boolean(row.updated_at && row.updated_at !== row.created_at)
     };
