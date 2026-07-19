@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Comment Admin | V6 LIVE MEMORY</title>
+  <link rel="stylesheet" href="../css/style.css?v=20260719-delete-modal">
+  <link rel="stylesheet" href="../css/admin.css?v=20260719-admin-comments">
+</head>
+
+<body class="admin-page">
+  <main class="admin-shell">
+    <section class="admin-lead">
+      <h1>Comment Admin</h1>
+      <p>管理者本人だけがコメントを確認するためのページです。通常サイトからはリンクしていません。</p>
+    </section>
+
+    <section class="admin-panel" id="admin-login-panel">
+      <h2>管理者ログイン</h2>
+      <form class="admin-login-form" id="admin-login-form">
+        <label>
+          メールアドレス
+          <input type="email" name="email" autocomplete="email" required>
+        </label>
+        <label>
+          パスワード
+          <input type="password" name="password" autocomplete="current-password" required>
+        </label>
+        <div class="admin-actions">
+          <button class="admin-button" type="submit">ログイン</button>
+        </div>
+        <p class="admin-status" id="admin-login-status" aria-live="polite"></p>
+      </form>
+    </section>
+
+    <section class="admin-panel" id="admin-denied-panel" hidden>
+      <h2>アクセスできません</h2>
+      <p>このページを閲覧する権限がありません。</p>
+      <button class="admin-button is-secondary" type="button" id="admin-denied-logout">ログアウト</button>
+    </section>
+
+    <section class="admin-panel" id="admin-dashboard" hidden>
+      <div class="admin-actions">
+        <div>
+          <h2>コメント一覧</h2>
+          <p class="admin-status" id="admin-session-label">ログイン中です。</p>
+        </div>
+        <button class="admin-button is-secondary" type="button" id="admin-logout">ログアウト</button>
+      </div>
+
+      <div class="admin-toolbar">
+        <div class="admin-filter">
+          <label>
+            コメント本文
+            <input type="search" id="admin-filter-body" placeholder="本文で探す">
+          </label>
+          <label>
+            ニックネーム
+            <input type="search" id="admin-filter-nickname" placeholder="名前で探す">
+          </label>
+          <label>
+            グループ・個人
+            <select id="admin-filter-group">
+              <option value="">すべて</option>
+            </select>
+          </label>
+          <label>
+            種別
+            <select id="admin-filter-reply">
+              <option value="all">すべて</option>
+              <option value="comment">通常コメント</option>
+              <option value="reply">返信</option>
+            </select>
+          </label>
+        </div>
+        <div class="admin-summary">
+          <span id="admin-loaded-count">0件読み込み済み</span>
+          <span id="admin-visible-count">0件表示中</span>
+        </div>
+      </div>
+
+      <p class="admin-status" id="admin-comments-status" aria-live="polite"></p>
+      <div class="admin-comment-list" id="admin-comment-list"></div>
+      <div class="admin-actions">
+        <button class="admin-button" type="button" id="admin-load-more">さらに読み込む</button>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    window.VVVVVV_SITE_BASE_PATH = "../";
+  </script>
+  <script src="../js/comment-backend-config.js"></script>
+  <script src="../js/comment-data.js?v=20260719-admin-comments"></script>
+  <script src="../js/admin-comments.js?v=20260719-admin-comments"></script>
+</body>
+</html>

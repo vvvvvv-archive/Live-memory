@@ -27,6 +27,10 @@
     return backendConfig().supabaseUrl.replace(/\/$/, "");
   }
 
+  function siteBasePath() {
+    return window.VVVVVV_SITE_BASE_PATH || "";
+  }
+
   function storedAuthorToken() {
     try {
       return localStorage.getItem(AUTHOR_TOKEN_KEY) || "";
@@ -69,7 +73,7 @@
   }
 
   async function loadJson(path) {
-    const response = await fetch(path, { cache: "no-store" });
+    const response = await fetch(`${siteBasePath()}${path}`, { cache: "no-store" });
     return response.json();
   }
 
@@ -331,6 +335,7 @@
   window.CommentData = {
     loadSupabaseMemoryItems,
     loadOwnSupabaseMemoryItems,
+    rowToMemoryItem,
     hrefWithCommentId,
     hasStoredAuthorToken: () => Boolean(storedAuthorToken()),
     clearCache
