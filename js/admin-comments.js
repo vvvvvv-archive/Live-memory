@@ -630,7 +630,14 @@
       renderGroupOptions();
       renderComments();
     } catch (error) {
-      console.error(error);
+      if (action === "hard-delete") {
+        console.error("Admin hard delete failed", {
+          commentId: comment?.id || "",
+          error
+        });
+      } else {
+        console.error(error);
+      }
       const message = action === "restore"
         ? "コメントを再表示できませんでした。"
         : action === "hard-delete"
