@@ -515,6 +515,9 @@ from public.prototype_comments;
 select count(*) as prototype_comment_reactions_count
 from public.prototype_comment_reactions;
 
+-- Ask PostgREST to refresh its schema cache after creating/replacing RPCs.
+notify pgrst, 'reload schema';
+
 -- ============================================================
 -- 8. Rollback
 -- ============================================================

@@ -323,6 +323,11 @@ select
 
 select to_regprocedure('public.admin_hard_delete_comment(uuid)') as existing_admin_hard_delete_comment;
 
+-- Ask PostgREST to refresh its schema cache after creating/replacing RPCs.
+-- If this returns success but the function is still not visible immediately,
+-- wait a short while and retry from the admin page.
+notify pgrst, 'reload schema';
+
 -- ============================================================
 -- 5. Rollback
 -- ============================================================
