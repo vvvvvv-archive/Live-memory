@@ -192,6 +192,24 @@
     return data;
   }
 
+  async function adminRpcWithFallback(functionName, argVariants = []) {
+    let lastError = null;
+
+    for (const args of argVariants) {
+      try {
+        return await adminRpc(functionName, args);
+      } catch (error) {
+        lastError = error;
+        const message = String(error?.data?.message || error?.message || "");
+        if (!/PGRST202|Could not find the function|schema cache|parameter/i.test(message)) {
+          throw error;
+        }
+      }
+    }
+
+    throw lastError || new Error(`Admin RPC failed: ${functionName}`);
+  }
+
   function closeAdminModal(modal, previousOverflow, returnFocusTo, resolve, value) {
     document.body.style.overflow = previousOverflow;
     modal.remove();
@@ -621,7 +639,12 @@
       if (action === "hard-delete") {
         const confirmed = await confirmHardDelete(comment, button);
         if (!confirmed) return;
-        const ok = await adminRpc("admin_hard_delete_comment", { target_comment_id: comment.id });
+        const ok = await adminRpcWithFallback("admin_hard_delete_comment", [
+          { target_comment_id: comment.id },
+          { comment_id: comment.id },
+          { target_id: comment.id },
+          { id: comment.id }
+        ]);
         if (!ok) throw new Error("admin_hard_delete_comment returned false.");
         state.comments = state.comments.filter(item => item.id !== comment.id && item.parentId !== comment.id);
         setStatus(els.commentsStatus, "コメントを完全に削除しました。");
