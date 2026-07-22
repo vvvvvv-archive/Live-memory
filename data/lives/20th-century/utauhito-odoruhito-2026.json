@@ -438,6 +438,8 @@
     }
   ],
   "video": {
+    "status": "unreleased",
+    "message": "未発売です。発売後、情報が確認でき次第掲載します。",
     "setlist": []
   },
   "goods": [

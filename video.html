@@ -17,7 +17,7 @@
   <meta name="twitter:description" content="V6、20th Century、Coming Century、そして6人それぞれの活動に関する記憶を未来へ残すための非公式ファンアーカイブ">
   <meta name="twitter:image" content="https://vvvvvv-archive.github.io/Live-memory/assets/images/ogp.png">
 
-  <link rel="stylesheet" href="css/style.css?v=20260719-delete-modal">
+  <link rel="stylesheet" href="css/style.css?v=20260722-video-unreleased">
 </head>
 
 <body>
@@ -90,6 +90,20 @@
       const recording = [feature.recordedDate || feature.date, feature.venue].filter(Boolean).join("");
 
       return [title, recording].filter(Boolean).join("");
+    }
+
+    function isVideoUnreleased(live) {
+      return live.video?.status === "unreleased";
+    }
+
+    function appendUnreleasedMessage(container, live) {
+      const block = document.createElement("div");
+      block.className = "video-unreleased-card";
+      block.innerHTML = `
+        <h2>未発売</h2>
+        <p>${live.video?.message || "未発売です。情報が確認でき次第掲載します。"}</p>
+      `;
+      container.appendChild(block);
     }
 
     function formatSetlistCardText(song) {
@@ -200,6 +214,13 @@
 
       const content = document.getElementById("content");
       const searchableCards = [];
+
+      if (isVideoUnreleased(live)) {
+        document.querySelector(".search-card").hidden = true;
+        appendUnreleasedMessage(content, live);
+        return;
+      }
+
       appendSetlist(content, live, searchableCards);
       appendBonusSections(content, live, searchableCards);
 

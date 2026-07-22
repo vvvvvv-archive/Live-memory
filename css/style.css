@@ -224,6 +224,26 @@ main {
   font-size: .95rem;
 }
 
+.video-unreleased-card {
+  padding: 24px;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  box-shadow: var(--shadow);
+}
+
+.video-unreleased-card h2 {
+  margin: 0 0 8px;
+  color: var(--accent);
+  font-size: 1.35rem;
+}
+
+.video-unreleased-card p {
+  margin: 0;
+  color: var(--sub);
+  line-height: 1.8;
+}
+
 .request-link-row {
   margin: 14px 0 30px;
   text-align: right;
