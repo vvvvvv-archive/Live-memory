@@ -264,7 +264,7 @@
         },
         {
           "order": 21,
-          "title": "きみは何者",
+          "title": "君は何する人",
           "artist": "20th Century"
         },
         {
@@ -410,7 +410,7 @@
         },
         {
           "order": 22,
-          "title": "きみは何者",
+          "title": "君は何する人",
           "artist": "20th Century"
         },
         {
@@ -427,6 +427,12 @@
           "order": 25,
           "title": "トビラ",
           "artist": "V6"
+        },
+        {
+          "order": 26,
+          "title": "ツラいチャプター",
+          "artist": "20th Century",
+          "note": "オーラスのみ"
         }
       ]
     }
